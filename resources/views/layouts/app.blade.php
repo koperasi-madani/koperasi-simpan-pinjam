@@ -1,36 +1,46 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <meta charset="utf-8" />
+        <title>Koperasi Simpan Pinjam</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('backend/assets/imgs/logo.png') }}" />
+        <!-- Template CSS -->
+        <link href="{{ asset('') }}backend/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        @stack('css')
+        <style>
+            .btn-primary{
+                background-color: #219ebc !important;
+            }
+        </style>
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+    <body>
+        <div class="screen-overlay"></div>
+        @include('layouts.partials.sidebar')
+        <main class="main-wrap">
+            @include('layouts.partials.topbar')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
+            @yield('content')
+            <!-- content-main end// -->
+            @include('layouts.partials.footer')
+            @include('components.modal-custom')
+        </main>
+        <script src="{{ asset('') }}backend/assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="{{ asset('') }}backend/assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('') }}backend/assets/js/vendors/select2.min.js"></script>
+        <script src="{{ asset('') }}backend/assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="{{ asset('') }}backend/assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <script src="{{ asset('') }}backend/assets/js/vendors/chart.js"></script>
+        <!-- Main Script -->
+        <script src="{{ asset('') }}backend/assets/js/main.js?v=1.1" type="text/javascript"></script>
+        @stack('js')
     </body>
 </html>
