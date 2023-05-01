@@ -74,6 +74,19 @@
                     <a href="">Otorisasi Transaksi Per Operotor</a>
                 </div>
             </li>
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'customer-service' ? 'active' : '' }}">
+                <a class="menu-link " href="page-form-product-1.html">
+                    <i class="icon material-icons md-account_box"></i>
+                    <span class="text ">Transaksi Customer Service</span>
+                </a>
+                <div class="submenu">
+                    <a href="{{ route('nasabah.index') }}">Pembukaan Nasabah Baru</a>
+                    <a href="{{ route('pembukaan-rekening.index') }}">Pembukaan Rekening Baru</a>
+                    <a href="">Perubahan Data Administrasi</a>
+                    <a href="">Pemblokiran Saldo Retail</a>
+                    <a href="">Cetak Buku Tabungan</a>
+                </div>
+            </li>
 
         </ul>
         <hr />

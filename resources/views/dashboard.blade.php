@@ -21,7 +21,7 @@
             <!-- Button trigger modal -->
             <div>
                 <h2 class="content-title card-title">Dashboard</h2>
-                <p>Selamat di aplikasi Koperasi Simpan Pinjam</p>
+                <p>{{ auth()->user()->name }}   , Selamat datang di aplikasi Koperasi Simpan Pinjam</p>
             </div>
             <div>
             </div>

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\PembukaanRekeningController;
+use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +25,17 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('dashboard')->group(function () {
+        // nasabah
+        Route::prefix('customer-service')->group(function () {
+            Route::resource('nasabah', NasabahController::class);
+            Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
+        });
+        // penarikan
+        Route::resource('penarikan', PenarikanController::class);
+    });
+});
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
