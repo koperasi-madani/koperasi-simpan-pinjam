@@ -31,9 +31,9 @@ class NasabahController extends Controller
         $nasabah = NasabahModel::orderBy('created_at', 'DESC')->get();
 
         if($nasabah->count() > 0) {
-            $noAnggota = $nasabah[0]->kode_no_anggota;
+            $noAnggota = $nasabah[0]->no_anggota;
 
-            $lastIncrement = substr($noAnggota, 11);
+            $lastIncrement = substr($noAnggota, 10);
 
             $noAnggota = str_pad($lastIncrement + 1, 4, 0, STR_PAD_LEFT);
             $noAnggota = "AG".$date.$noAnggota;
