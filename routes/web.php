@@ -4,6 +4,7 @@ use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\PembukaanRekeningController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,11 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('customer-service')->group(function () {
             Route::resource('nasabah', NasabahController::class);
             Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
+        });
+        // setting
+        Route::prefix('setting')->group(function()
+        {
+            Route::resource('akun', UserController::class);
         });
         // penarikan
         Route::resource('penarikan', PenarikanController::class);

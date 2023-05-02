@@ -87,6 +87,16 @@
                     <a href="">Cetak Buku Tabungan</a>
                 </div>
             </li>
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'setting' ? 'active' : '' }}">
+                <a class="menu-link " href="page-form-product-1.html">
+                    <i class="icon material-icons md-admin_panel_settings"></i>
+                    <span class="text ">Setting</span>
+                </a>
+                <div class="submenu">
+                    <a href="{{ route('akun.index') }}">Data Pengguna/Akun</a>
+                    <a href="{{ route('pembukaan-rekening.index') }}">Profile Koperasi</a>
+                </div>
+            </li>
 
         </ul>
         <hr />
