@@ -105,7 +105,7 @@
                 timePicker: false,
                 startDate: moment().startOf('hour'),
                 locale: {
-                        format: 'YY-MM-DD'
+                        format: 'Y-MM-DD'
                     }
             });
 
@@ -123,24 +123,35 @@
         <div class="row">
             <div class="card">
                 <header class="card-header">
-                    <h4>Tambah Pembukaan Rekening</h4>
+                    <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
                 <div class="card-body">
-                    <form action="{{ route('pembukaan-rekening.store') }}" method="POST">
+                    <form action="{{ route('setor-tunai.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Nama Nasabah</label>
+                                    <label for="product_name" class="form-label">Kode Rekening</label>
                                     <select name="id_nasabah" id="id_nasabah" class="form-control">
-                                        @foreach ($nasabah as $item)
-                                            <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_anggota }}--{{ $item->nama }}</option>
+                                        @foreach ($data as $item)
+                                            <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                     @error('id_nasabah')
                                         <small class="text-danger">
                                             {{$message}}.
                                         </small>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Kode Setoran</label>
+                                    <input placeholder="Masukkan kode setoran" value="{{ old('kode_setoran',$noSetoran) }}" type="text" value="{{ old('kode_setoran') }}" class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
+                                    @error('kode_setoran')
+                                        <div class="invalid-feedback">
+                                            {{$message}}.
+                                        </div>
                                     @enderror
                                 </div>
                             </div>
@@ -155,37 +166,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Kode Rekening</label>
-                                    <select name="kode" id="kode" class="form-control">
-                                        @foreach ($kode as $item)
-                                            <option value="{{ $item->id }}" {{ old('kode') == $item->id ? 'selected' : '' }}>{{ $item->kode_akun }}--{{ $item->nama_akun }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('kode')
-                                        <small class="text-danger">
-                                            {{$message}}.
-                                        </small>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">No Rekening</label>
-                                    <input placeholder="No Rekening" value="{{ $noRekening }}" type="text" value="{{ old('no_rekening') }}" class="form-control @error('no_rekening') is-invalid @enderror" name="no_rekening" />
-                                    @error('no_rekening')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="col-md-12">
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Saldo Awal</label>
-                                    <input placeholder="Masukkan saldo awal" value="{{ old('saldo_awal') }}" type="text" value="{{ old('saldo_awal') }}" class="form-control @error('saldo_awal') is-invalid @enderror" name="saldo_awal" id="saldo_awal" />
-                                    @error('saldo_awal')
+                                    <label for="product_name" class="form-label">Nominal Setor</label>
+                                    <input placeholder="Masukkan nominal setor" value="{{ old('nominal_setor') }}" type="text" value="{{ old('nominal_setor') }}" class="form-control @error('nominal_setor') is-invalid @enderror" name="nominal_setor" id="saldo_awal" />
+                                    @error('nominal_setor')
                                         <div class="invalid-feedback">
                                             {{$message}}.
                                         </div>
@@ -215,7 +200,7 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <header class="card-header">
-                        <h4>List Pembukaan Rekening</h4>
+                        <h4>List {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                     </header>
                     <div class="card-body">
                         <div class="">
@@ -225,30 +210,22 @@
                                         <th>No</th>
                                         <th scope="col">Nama Nasabah</th>
                                         <th scope="col">No Rekening</th>
-                                        <th scope="col">Saldo Awal</th>
+                                        <th scope="col">Nominal Setoran </th>
                                         <th scope="col">Tanggal</th>
-                                        <th scope="col">Status</th>
                                         <th scope="col" class="text-start">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($data as $item)
+                                    @forelse ($setoran as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 {{ $item->nasabah->nama }} <br>
                                                 <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                             </td>
-                                            <td>{{ $item->no_rekening }}</td>
-                                            <td><b>Rp. {{ number_format($item->saldo_awal,2, ",", ".") }}</b></td>
+                                            <td>{{ $item->kode_setoran }}</td>
+                                            <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
-                                            <td>
-                                                @if ($item->status == 'aktif')
-                                                    <span class="badge rounded-pill alert-success">Aktif</span>
-                                                @else
-                                                    <span class="badge rounded-pill alert-danger">Tidak Aktif</span>
-                                                @endif
-                                            </td>
                                             <td class="text-start">
                                                 <div class="d-flex justify-content-start">
                                                     <form action="{{ route('pembukaan-rekening.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">

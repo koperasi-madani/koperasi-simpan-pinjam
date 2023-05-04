@@ -37,10 +37,11 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th scope="col">NIK</th>
                                 <th scope="col">Nama Nasabah</th>
-                                <th scope="col">Simpanan Pokok</th>
-                                <th scope="col">Simpanan Wajib</th>
-                                <th scope="col">Simpanan Sukarela</th>
+                                <th scope="col">Jenis Kelamin</th>
+                                <th scope="col">Pekerjaan</th>
+                                <th scope="col">Alamat</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Status</th>
                                 <th scope="col" class="text-start">Action</th>
@@ -50,13 +51,21 @@
                             @forelse ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->nik }}</td>
                                     <td>
                                         {{ $item->nama }} <br>
-                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
                                     </td>
-                                    <td><b>Rp. {{ number_format($item->sim_pokok,2, ",", ".") }}</b></td>
-                                    <td><b>Rp. {{ number_format($item->sim_wajib,2, ",", ".") }}</b></td>
-                                    <td><b>Rp. {{ number_format($item->sim_sukarela,2, ",", ".") }}</b></td>
+                                    <td><b>
+                                        @if ($item->jenis_kelamin == '0')
+                                            Laki-Laki
+                                        @else
+                                            Perempuan
+                                        @endif
+                                        </b></td>
+                                    <td>
+                                        {{ $item->pekerjaan }} <br>
+                                    </td>
+                                    <td><b>{{ $item->alamat }}</b></td>
                                     <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
                                     <td>
                                         @if ($item->status == 'aktif')

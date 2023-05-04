@@ -26,21 +26,12 @@
     </script>
     <script>
         $(document).ready(function() {
-            var simpanan_pokok = document.getElementById("simpanan_pokok");
-            simpanan_pokok.value = formatRupiah(simpanan_pokok.value);
-            simpanan_pokok.addEventListener("keyup", function(e) {
-                simpanan_pokok.value = formatRupiah(this.value);
+            var saldo = document.getElementById("saldo");
+            saldo.value = formatRupiah(saldo.value);
+            saldo.addEventListener("keyup", function(e) {
+                saldo.value = formatRupiah(this.value);
             });
-            var simpanan_wajib = document.getElementById("simpanan_wajib");
-            simpanan_wajib.value = formatRupiah(simpanan_wajib.value);
-            simpanan_wajib.addEventListener("keyup", function(e) {
-                simpanan_wajib.value = formatRupiah(this.value);
-            });
-            var simpanan_sukarela = document.getElementById("simpanan_sukarela");
-            simpanan_sukarela.value = formatRupiah(simpanan_sukarela.value);
-            simpanan_sukarela.addEventListener("keyup", function(e) {
-                simpanan_sukarela.value = formatRupiah(this.value);
-            });
+
             /* Fungsi formatRupiah */
             function formatRupiah(angka, prefix) {
                 var number_string = angka.replace(/[^,\d]/g, "").toString(),
@@ -140,6 +131,35 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Pekerjaan</label>
+                                        <input placeholder="Masukkan pekerjaan" type="text" value="{{ old('pekerjaan',$data->pekerjaan) }}" class="form-control @error('pekerjaan') is-invalid @enderror" name="pekerjaan" />
+                                        @error('pekerjaan')
+                                            <div class="invalid-feedback">
+                                                {{$message}}.
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="product_name" class="form-label">Jenis Kelamin</label>
+                                    <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                        <input class="form-check-input" id="jenis_kelamin" name="jenis_kelamin" value="0" {{ old('jenis_kelamin',$data->jenis_kelamin) == '0' ? "checked" : '' }} type="radio">
+                                        <span class="form-check-label"> Laki-Laki </span>
+                                    </label>
+                                    <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                        <input class="form-check-input" id="jeni_kelamin" name="jenis_kelamin" value="1" {{ old('jenis_kelamin',$data->jenis_kelamin) == '1' ? "checked" : '' }} type="radio">
+                                        <span class="form-check-label"> Perempuan </span>
+                                    </label>
+                                    @error('jenis_kelamin')
+                                        <div class="invalid-feedback">
+                                            {{$message}}.
+                                        </div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="mb-4">
@@ -155,48 +175,6 @@
                     </div>
 
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <header class="card-header">
-                        <div class="d-flex justify-content-between">
-                            <h4>Simpanan Data Nasabah</h4>
-                            <div>
-                            </div>
-                        </div>
-
-                    </header>
-                    <div class="card-body">
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Simpanan Pokok</label>
-                            <input type="text" id="simpanan_pokok" value="{{ old('simpanan_pokok',$data->sim_pokok) }}" placeholder="Masukkan simpanan pokok" class="form-control @error('simpanan_pokok') is-invalid @enderror" name="simpanan_pokok"/>
-                            @error('simpanan_pokok')
-                                <div class="invalid-feedback">
-                                    {{$message}}.
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Simpanan Wajib</label>
-                            <input type="text" id="simpanan_wajib" value="{{ old('simpanan_wajib',$data->sim_wajib) }}" placeholder="Masukkan simpanan wajib" class="form-control @error('simpanan_wajib') is-invalid @enderror" name="simpanan_wajib"/>
-                            @error('simpanan_wajib')
-                                <div class="invalid-feedback">
-                                    {{$message}}.
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Simpanan Sukarela</label>
-                            <input type="text" id="simpanan_sukarela"  value="{{ old('simpanan_sukarela',$data->sim_sukarela) }}" placeholder="Masukkan simpanan sukarela" class="form-control @error('simpanan_sukarela') is-invalid @enderror" name="simpanan_sukarela"/>
-                            @error('simpanan_sukarela')
-                                <div class="invalid-feedback">
-                                    {{$message}}.
-                                </div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
          <div class="d-flex justify-content-end mb-5">

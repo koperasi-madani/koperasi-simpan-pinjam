@@ -54,6 +54,8 @@ class NasabahController extends Controller
             'no_anggota' => 'required',
             'ket' => 'required',
             'nik' => 'required',
+            'jenis_kelamin' => 'required',
+            'pekerjaan',
         ]);
         try {
             $anggota = new NasabahModel;
@@ -63,9 +65,8 @@ class NasabahController extends Controller
             $anggota->no_hp = $request->get('no_hp');
             $anggota->alamat = $request->get('ket');
             $anggota->tgl = $request->get('tgl');
-            $anggota->sim_pokok = $this->formatNumber($request->get('simpanan_pokok'));
-            $anggota->sim_wajib = $this->formatNumber($request->get('simpanan_wajib'));
-            $anggota->sim_sukarela = $this->formatNumber($request->get('simpanan_sukarela'));
+            $anggota->pekerjaan = $request->get('pekerjaan');
+            $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->save();
             return redirect()->route('nasabah.index')->withStatus('Berhasil menambahkan data.');
@@ -114,9 +115,8 @@ class NasabahController extends Controller
             $anggota->nik = $request->get('nik');
             $anggota->no_hp = $request->get('no_hp');
             $anggota->alamat = $request->get('ket');
-            $anggota->sim_pokok = $this->formatNumber($request->get('simpanan_pokok'));
-            $anggota->sim_wajib = $this->formatNumber($request->get('simpanan_wajib'));
-            $anggota->sim_sukarela = $this->formatNumber($request->get('simpanan_sukarela'));
+            $anggota->pekerjaan = $request->get('pekerjaan');
+            $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->update();
             return redirect()->route('nasabah.index')->withStatus('Berhasil mengganti data.');

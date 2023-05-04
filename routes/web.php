@@ -4,6 +4,7 @@ use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\PembukaanRekeningController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +32,15 @@ Route::middleware(['auth'])->group(function () {
         // nasabah
         Route::prefix('customer-service')->group(function () {
             Route::resource('nasabah', NasabahController::class);
+            // pembukaan rekening
+            Route::get('cetak/{id}',[PembukaanRekeningController::class,'cetak'])->name('cetak-rekening.pembukaan-rekening');
             Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
+        });
+        // Teller
+        Route::prefix('teller')->group(function () {
+            Route::prefix('transaksi-teller')->group(function () {
+                Route::resource('setor-tunai', SetorTunaiController::class);
+            });
         });
         // setting
         Route::prefix('setting')->group(function()

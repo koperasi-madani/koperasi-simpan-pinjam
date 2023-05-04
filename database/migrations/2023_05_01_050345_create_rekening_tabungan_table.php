@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('buku_tabungan', function (Blueprint $table) {
+        Schema::create('rekening_tabungan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nasabah_id')->constrained('nasabah')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('id_kode_akun')->constrained('kode_akun')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('no_rekening');
-            $table->date('tgl_simpanan')->nullable();
-            $table->date('tgl_penarikan')->nullable();
             $table->date('tgl_transaksi')->nullable();
-            $table->bigInteger('saldo_anggota')->nullable()->default(0);
-            $table->bigInteger('jumlah_simpanan')->nullable()->default(0);
+            $table->date('tgl')->nullable();
+            $table->bigInteger('saldo_awal')->nullable()->default(0);
+            $table->enum('status',['aktif','non-aktif'])->default('aktif');
             $table->text('ket')->nullable()->default('Pembukaan rekening');
             $table->timestamps();
         });

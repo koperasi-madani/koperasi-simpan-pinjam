@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class PembukaanRekening extends Model
 {
     use HasFactory;
-    protected $table = 'buku_tabungan';
+    protected $table = 'rekening_tabungan';
     protected $fillable = [
         'nasabah_id',
+        'id_kode_akun',
         'no_rekening',
-        'tgl_simpanan',
-        'tgl_penarikan',
         'tgl_transaksi',
-        'saldo_anggota',
-        'jumlah_simpanan',
-        'ket',
+        'tgl',
+        'saldo_awal',
         'status',
+        'ket',
     ];
     public function nasabah()
     {

@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nasabah', function (Blueprint $table) {
+        Schema::create('kode_induk', function (Blueprint $table) {
             $table->id();
-            $table->string('no_anggota');
-            $table->foreignId('users_id')->constrained('users','id')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('id_ledger')->constrained('kode_ledger')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('kode_induk');
             $table->string('nama');
-            $table->string('no_hp');
-            $table->text('alamat');
-            $table->datetime('tgl');
-            $table->enum('status',['aktif','non-aktif'])->default('aktif');
+            $table->enum('jenis',['kredit','debit']);
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nasabah');
+        Schema::dropIfExists('kode_induk');
     }
 };

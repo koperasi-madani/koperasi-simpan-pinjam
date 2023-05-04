@@ -87,6 +87,18 @@
                     <a href="">Cetak Buku Tabungan</a>
                 </div>
             </li>
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'teller' ? 'active' : '' }}">
+                <a class="menu-link " href="page-form-product-1.html">
+                    <i class="icon material-icons md-account_box"></i>
+                    <span class="text ">Transaksi Teller</span>
+                </a>
+                <div class="submenu">
+                    <a href="{{ route('setor-tunai.index') }}">Setor Tunai</a>
+                    <a href="{{ route('pembukaan-rekening.index') }}">Penarikan Tunai</a>
+                    <a href="">Pembayaran Kas Teller</a>
+                    <a href="">Penerimaan Kas Teller</a>
+                </div>
+            </li>
             <li class="menu-item has-submenu {{ Request::segment(2) == 'setting' ? 'active' : '' }}">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-admin_panel_settings"></i>

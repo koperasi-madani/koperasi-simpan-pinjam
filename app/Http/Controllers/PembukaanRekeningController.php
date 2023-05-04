@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BukuTabungan;
+use App\Models\KodeAkun;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
 use Exception;
@@ -17,6 +19,7 @@ class PembukaanRekeningController extends Controller
     public function index()
     {
         $data = PembukaanRekening::with('nasabah')->get();
+        $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
         $nasabah = NasabahModel::all();
         $date = date('Yd');
 
@@ -36,7 +39,7 @@ class PembukaanRekeningController extends Controller
             $noRekening = $date."0001";
 
         }
-        return view('pages.pembukaan-rekening.index',compact('data','nasabah','noRekening'));
+        return view('pages.pembukaan-rekening.index',compact('data','nasabah','noRekening','kode'));
     }
 
     /**
@@ -55,7 +58,7 @@ class PembukaanRekeningController extends Controller
         $count = PembukaanRekening::count();
         if ($count > 0) {
             $nasabah = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first();
-            $isUniquenasabah = ($nasabah != null) ? $isUniquenasabah = $nasabah->nasabah_id != $request->id_nasabah ? '' : '|unique:buku_tabungan,nasabah_id' : '' ;
+            $isUniquenasabah = ($nasabah != null) ? $isUniquenasabah = $nasabah->nasabah_id != $request->id_nasabah ? '' : '|unique:rekening_tabungan,nasabah_id' : '' ;
         }else{
             $isUniquenasabah = '';
         }
@@ -69,14 +72,22 @@ class PembukaanRekeningController extends Controller
 
         try {
             $nasabah = NasabahModel::find($request->get('id_nasabah'));
-            $simpanan = NasabahModel::select(DB::raw('SUM(sim_pokok+sim_wajib+sim_sukarela) as amount'))->where('id',$request->get('id_nasabah'))->first();
-            $buku = new PembukaanRekening;
-            $buku->no_rekening = $request->get('no_rekening');
-            $buku->tgl_simpanan = $nasabah->tgl;
+            $rekening = new PembukaanRekening;
+            $rekening->no_rekening = $request->get('no_rekening');
+            $rekening->id_kode_akun = $request->get('kode');
+            $rekening->tgl = $nasabah->tgl;
+            $rekening->tgl_transaksi = $request->get('tgl');
+            $rekening->saldo_awal = $this->formatNumber($request->saldo_awal);
+            $rekening->ket = $request->get('ket');
+            $rekening->nasabah_id = $request->get('id_nasabah');
+            $rekening->save();
+
+            $buku  = new BukuTabungan;
+            $buku->id_rekening_tabungan = $rekening->id;
             $buku->tgl_transaksi = $request->get('tgl');
-            $buku->jumlah_simpanan = $simpanan->amount;
-            $buku->ket = $request->get('ket');
-            $buku->nasabah_id = $request->get('id_nasabah');
+            $buku->nominal_transaksi = $rekening->saldo_awal;
+            $buku->saldo = $rekening->saldo_awal;
+            $buku->jenis = 'masuk';
             $buku->save();
             return redirect()->route('pembukaan-rekening.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
@@ -86,6 +97,16 @@ class PembukaanRekeningController extends Controller
         }
     }
 
+    public function cetak($id)
+    {
+        $data = PembukaanRekening::with('nasabah')->find($id);
+        return view('pages.pembukaan-rekening.cetak',compact('data'));
+    }
+
+    public function formatNumber($param)
+    {
+        return (int)str_replace('.', '', $param);
+    }
     /**
      * Display the specified resource.
      */

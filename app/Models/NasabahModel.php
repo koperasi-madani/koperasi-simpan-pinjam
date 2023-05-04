@@ -18,14 +18,14 @@ class NasabahModel extends Model
         'no_hp',
         'alamat',
         'tgl',
-        'sim_pokok',
-        'sim_wajib',
-        'sim_sukarela',
         'status',
+        'pekerjaan',
+        'jenis_kelamin'
     ];
     public function bukuTabungan()
     {
         return $this->HasOne(PembukaanRekening::class,'nasabah_id');
     }
+
 
 }

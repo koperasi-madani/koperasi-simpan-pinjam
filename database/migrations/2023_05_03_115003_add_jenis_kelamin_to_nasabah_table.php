@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('buku_tabungan', function (Blueprint $table) {
-
-
+        Schema::table('nasabah', function (Blueprint $table) {
+            $table->enum('jenis_kelamin',['0','1'])->nullable()->after('status');
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('buku_tabungan', function (Blueprint $table) {
+        Schema::table('nasabah', function (Blueprint $table) {
             //
         });
     }

@@ -39,6 +39,11 @@
                                         <td >{{ $data->nasabah->nama }}</td>
                                     </tr>
                                     <tr>
+                                        <td width="20%">Jenis Kelamin</td>
+                                        <td width="1%">:</td>
+                                        <td >{{ $data->nasabah->jenis_kelamin == '0' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                    </tr>
+                                    <tr>
                                         <td width="20%">Alamat</td>
                                         <td width="1%">:</td>
                                         <td >{{ $data->nasabah->alamat != null ? $data->nasabah->alamat : '-'  }}</td>
@@ -48,21 +53,7 @@
                                         <td width="1%">:</td>
                                         <td >{{ \Carbon\Carbon::parse($data->tgl)->translatedFormat('d-F-Y') }}</td>
                                     </tr>
-                                    <tr>
-                                        <td width="20%">Simpanan Pokok</td>
-                                        <td width="1%">:</td>
-                                        <td >Rp. {{ number_format($data->nasabah->sim_pokok,2, ",", ".") }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td width="20%">Simpanan Wajib</td>
-                                        <td width="1%">:</td>
-                                        <td >Rp. {{ number_format($data->nasabah->sim_wajib,2, ",", ".") }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td width="20%">Simpanan Sukarela</td>
-                                        <td width="1%">:</td>
-                                        <td >Rp. {{ number_format($data->nasabah->sim_sukarela,2, ",", ".") }}</td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                             <hr>
@@ -73,14 +64,9 @@
                                     <td >{{ $data->no_rekening }}</td>
                                 </tr>
                                 <tr>
-                                    <td width="20%">Jumlah Simpanan</td>
+                                    <td width="20%">Saldo Awal</td>
                                     <td width="1%">:</td>
-                                    <td >Rp. {{ number_format($data->jumlah_simpanan,2, ",", ".") }}</td>
-                                </tr>
-                                <tr>
-                                    <td width="20%">Saldo</td>
-                                    <td width="1%">:</td>
-                                    <td >Rp. {{ number_format($data->saldo,2, ",", ".") }}</td>
+                                    <td >Rp. {{ number_format($data->saldo_awal,2, ",", ".") }}</td>
                                 </tr>
                             </table>
                         </div>
