@@ -28,7 +28,7 @@ class SetorTunaiController extends Controller
         )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->get();
 
 
-        /* generate no anggota  */
+        /* generate no setoran  */
         $noAnggota = null;
         $setoran = Setoran::orderBy('created_at', 'DESC')->get();
 
@@ -46,19 +46,26 @@ class SetorTunaiController extends Controller
         }
 
         $setoran = Setoran::select(
+            'setoran.id',
             'setoran.id_rekening_tabungan',
             'setoran.kode_setoran',
             'setoran.tgl_setor',
             'setoran.nominal_setor',
+            'setoran.validasi',
             'setoran.saldo',
             'rekening_tabungan.nasabah_id',
             'rekening_tabungan.no_rekening',
-            'nasabah.id',
-            'nasabah.nama'
+            'nasabah.id as id_nasabah',
+            'nasabah.nama',
+            'users.id as id_user',
+            'users.kode_user'
             )->join(
                 'rekening_tabungan','rekening_tabungan.id','setoran.id_rekening_tabungan'
             )->join(
                 'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+            )
+            ->join(
+                'users', 'users.id', 'setoran.id_user'
             )->get();
         return view('pages.setor-tunai.index',compact('data','noSetoran','setoran'));
     }
@@ -88,6 +95,7 @@ class SetorTunaiController extends Controller
             $setor->tgl_setor = $request->get('tgl');
             $setor->nominal_setor = $this->formatNumber($request->get('nominal_setor'));
             $setor->validasi = $request->get('ket');
+            $setor->jenis = 'masuk';
             $setor->id_user = Auth::user()->id;
             $setor->save();
 
@@ -112,10 +120,8 @@ class SetorTunaiController extends Controller
 
 
         } catch (Exception $e) {
-            return $e;
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
-            return $e;
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         }
     }
@@ -137,7 +143,24 @@ class SetorTunaiController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = Setoran::select(
+            'setoran.id',
+            'setoran.id_rekening_tabungan',
+            'setoran.kode_setoran',
+            'setoran.tgl_setor',
+            'setoran.nominal_setor',
+            'setoran.validasi',
+            'setoran.saldo',
+            'rekening_tabungan.nasabah_id',
+            'rekening_tabungan.no_rekening',
+            'nasabah.id as id_nasabah',
+            'nasabah.nama'
+            )->join(
+                'rekening_tabungan','rekening_tabungan.id','setoran.id_rekening_tabungan'
+            )->join(
+                'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+            )->where('setoran.id',$id)->first();
+       return view('pages.setor-tunai.edit',compact('data'));
     }
 
     /**
@@ -145,7 +168,31 @@ class SetorTunaiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+            $setor = Setoran::find($id);
+            $setor->tgl_setor = $request->get('tgl');
+            if ($request->get('nominal_setor') != null) {
+                $setor->nominal_setor = $this->formatNumber($request->get('nominal_setor'));
+                // update saldo tabungan jika ada perubahan data
+                $rekening = Setoran::find($id);
+                $tabungan = BukuTabungan::where('id_rekening_tabungan',$rekening->id_rekening_tabungan);
+                $current_tabungan = $tabungan->first()->saldo;
+                $current_saldo = $current_tabungan - $rekening->nominal_setor;
+                $result_saldo = $current_saldo + $this->formatNumber($request->get('nominal_setor'));
+                $tabungan->update([
+                    'saldo' => $result_saldo
+                ]);
+            }
+            $setor->validasi = $request->get('ket');
+            $setor->id_user = Auth::user()->id;
+            $setor->update();
+            return redirect()->route('setor-tunai.index')->withStatus('Berhasil mengganti data.');
+
+        } catch (Exception $e) {
+            return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
+        } catch (QueryException $e){
+            return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
+        }
     }
 
     /**
@@ -153,6 +200,23 @@ class SetorTunaiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $setor = Setoran::find($id);
+            $rekening = Setoran::find($id);
+            $tabungan = BukuTabungan::where('id_rekening_tabungan',$rekening->id_rekening_tabungan);
+            $current_tabungan = $tabungan->first()->saldo;
+            $current_saldo = $current_tabungan - $rekening->nominal_saldo;
+            $tabungan->update([
+                'saldo' => $current_saldo
+            ]);
+
+            $setor->delete();
+            return redirect()->route('setor-tunai.index')->withStatus('Berhasil menghapus data.');
+
+        } catch (Exception $e) {
+            return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
+        } catch (QueryException $e){
+            return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
+        }
     }
 }

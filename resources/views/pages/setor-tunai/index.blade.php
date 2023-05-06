@@ -144,10 +144,10 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Kode Setoran</label>
-                                    <input placeholder="Masukkan kode setoran" value="{{ old('kode_setoran',$noSetoran) }}" type="text" value="{{ old('kode_setoran') }}" class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
+                                    <input placeholder="Masukkan kode setoran" value="{{ old('kode_setoran',$noSetoran) }}" type="text" class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
                                     @error('kode_setoran')
                                         <div class="invalid-feedback">
                                             {{$message}}.
@@ -155,7 +155,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Tanggal</label>
                                     <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
@@ -169,7 +169,7 @@
                             <div class="col-md-12">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Nominal Setor</label>
-                                    <input placeholder="Masukkan nominal setor" value="{{ old('nominal_setor') }}" type="text" value="{{ old('nominal_setor') }}" class="form-control @error('nominal_setor') is-invalid @enderror" name="nominal_setor" id="saldo_awal" />
+                                    <input placeholder="Masukkan nominal setor" value="{{ old('nominal_setor',) }}" type="text"  class="form-control @error('nominal_setor') is-invalid @enderror" name="nominal_setor" id="saldo_awal" />
                                     @error('nominal_setor')
                                         <div class="invalid-feedback">
                                             {{$message}}.
@@ -212,6 +212,8 @@
                                         <th scope="col">No Rekening</th>
                                         <th scope="col">Nominal Setoran </th>
                                         <th scope="col">Tanggal</th>
+                                        <th scope="col">Keterangan</th>
+                                        <th scope="col">Validasi</th>
                                         <th scope="col" class="text-start">Action</th>
                                     </tr>
                                 </thead>
@@ -226,20 +228,19 @@
                                             <td>{{ $item->kode_setoran }}</td>
                                             <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
+                                            <td><b>{{ $item->validasi }}</b></td>
+                                            <td><b>{{ $item->kode_user }}</b></td>
                                             <td class="text-start">
                                                 <div class="d-flex justify-content-start">
-                                                    <form action="{{ route('pembukaan-rekening.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
+                                                    <div class="mx-2">
+                                                        <a href="{{ route('setor-tunai.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
+                                                    </div>
+                                                    <form action="{{ route('setor-tunai.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
                                                         @method('delete')
                                                         @csrf
                                                         <button  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </button>
                                                     </form>
-                                                    <div class="dropdown mx-1">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="{{ route('pembukaan-rekening.show',$item->id) }}">Detail</a>
-                                                            <a class="dropdown-item" href="{{ route('cetak-rekening.pembukaan-rekening',$item->id) }}">Cetak</a>
-                                                        </div>
-                                                    </div>
+
                                                 </div>
                                                 <!-- dropdown //end -->
                                             </td>

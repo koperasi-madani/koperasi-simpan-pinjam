@@ -94,7 +94,7 @@
                 </a>
                 <div class="submenu">
                     <a href="{{ route('setor-tunai.index') }}">Setor Tunai</a>
-                    <a href="{{ route('pembukaan-rekening.index') }}">Penarikan Tunai</a>
+                    <a href="{{ route('penarikan.index') }}">Penarikan Tunai</a>
                     <a href="">Pembayaran Kas Teller</a>
                     <a href="">Penerimaan Kas Teller</a>
                 </div>

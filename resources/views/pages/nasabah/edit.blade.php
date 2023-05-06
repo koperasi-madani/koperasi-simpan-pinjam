@@ -17,7 +17,7 @@
                 timePicker: false,
                 startDate: moment().startOf('hour'),
                 locale: {
-                        format: 'YY-MM-DD'
+                        format: 'Y-MM-DD'
                     }
             });
 

@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
     {
         $dname = ['manager','admin kredit','custome service','head teller','teller', 'akuntansi'];
         $dusername = ['manager','admin-kredit','customer-service','head-teller','teller','akuntansi'];
+        $kodeUser = ['MA001','ADK001','CS001','HT001','TL011','AK001'];
         for ($i=0; $i < count($dname); $i++) {
             $role = new Role;
             $role->name = $dusername[$i];
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
             $user = new User;
             $user->name = $dname[$i];
             $user->username = $dusername[$i];
+            $user->kode_user = $kodeUser[$i];
             $user->email = $dusername[$i].'@gmail.com';
             $user->password = Hash::make('password');
             $user->save();

@@ -27,6 +27,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// cek tabungan
+Route::get('penarikan/cek',[PenarikanController::class,'cekTabungan'])->name('cek.tabungan');
+
 Route::middleware(['auth'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         // nasabah
@@ -40,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('teller')->group(function () {
             Route::prefix('transaksi-teller')->group(function () {
                 Route::resource('setor-tunai', SetorTunaiController::class);
+                Route::resource('penarikan',PenarikanController::class);
             });
         });
         // setting
@@ -47,8 +51,6 @@ Route::middleware(['auth'])->group(function () {
         {
             Route::resource('akun', UserController::class);
         });
-        // penarikan
-        Route::resource('penarikan', PenarikanController::class);
     });
 });
 Route::middleware('auth')->group(function () {
