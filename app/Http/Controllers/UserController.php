@@ -45,6 +45,22 @@ class UserController extends Controller
             $user->username = $request->get('username');
             $user->email = $request->get('email');
             $user->password = Hash::make('password');
+
+            $current_user = User::role($request->get('role'))->get();
+            $noAkun = null;
+
+            if($current_user->count() > 0) {
+                $noAkun = $current_user[0]->kode_user;
+                $lastIncrement = substr($noAkun, 4);
+
+                $noAkun = str_pad($lastIncrement + 1, 3, 0, STR_PAD_LEFT);
+                $noAkun = $this->getRole($request->get('role')).$noAkun;
+            }
+            else {
+                $noAkun = $this->getRole($request->get('role'))."001";
+            }
+            $user->kode_user = $noAkun;
+
             $user->save();
             $user->assignRole($request->get('role'));
 
@@ -53,6 +69,23 @@ class UserController extends Controller
             return redirect()->route('akun.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
             return redirect()->route('akun.index')->withError('Terjadi kesalahan.');
+        }
+    }
+    public function getRole($params)
+    {
+        $role = ['MA','AD','CS','HT','TL','AK'];
+        if ($params == 'manager') {
+            return $role[0];
+        }elseif ($params == 'admin-kredit') {
+            return $role[1];
+        }elseif ($params == 'customer-service') {
+            return $role[2];
+        }elseif ($params == 'head-teller') {
+            return $role[3];
+        }elseif ($params == 'teller') {
+            return $role[4];
+        }elseif ($params == 'akuntansi') {
+            return $role[5];
         }
     }
 

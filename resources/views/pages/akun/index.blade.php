@@ -37,6 +37,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th scope="col">Kode User</th>
                                 <th scope="col">Nama</th>
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
@@ -50,6 +51,9 @@
                             @forelse ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        {{ $item->kode_user }} <br>
+                                    </td>
                                     <td>
                                         {{ $item->name }} <br>
                                     </td>

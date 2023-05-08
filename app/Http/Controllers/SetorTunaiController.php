@@ -29,7 +29,7 @@ class SetorTunaiController extends Controller
 
 
         /* generate no setoran  */
-        $noAnggota = null;
+        $noSetoran = null;
         $setoran = Setoran::orderBy('created_at', 'DESC')->get();
 
         if($setoran->count() > 0) {

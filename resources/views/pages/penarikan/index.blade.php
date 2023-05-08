@@ -100,7 +100,7 @@
                 var sisa_saldo = document.getElementById("sisa_saldo");
                 sisa_saldo.value = formatRupiah(sisa_saldo.value);
             }
-             function hapus_uang(params) {
+            function hapus_uang(params) {
                 const angka = params;
                 const valueWithoutCurrency = angka.replace(/\./g, "").toString();
                 return valueWithoutCurrency;
@@ -351,3 +351,4 @@
     </section>
     @endsection
 </x-app-layout>
+

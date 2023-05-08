@@ -50,7 +50,7 @@
                             <form action="{{ route('akun.store') }}" method="POST">
                             @csrf
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Nama </label>
                                         <input placeholder="Masukkan Nama Akun" type="text" value="{{ old('nama') }}" class="form-control @error('nama') is-invalid @enderror" name="nama" />
@@ -61,7 +61,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Username </label>
                                         <input placeholder="Masukkan Username" type="text" value="{{ old('username') }}" class="form-control @error('username') is-invalid @enderror" name="username" />
@@ -72,7 +72,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Email </label>
                                         <input placeholder="Masukkan Email" type="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" name="email" />
@@ -88,7 +88,7 @@
                                         <label for="product_name" class="form-label">Password </label>
                                         <div class="d-flex flex-row">
                                             <div class="w-75">
-                                                <input placeholder="Masukkan Password" style="height: 41px" type="text" id="password" value="{{ old('password') }}" class="form-control @error('password') is-invalid @enderror" name="password" />
+                                                <input placeholder="Masukkan Password" style="height: 41px" type="password" id="password" value="{{ old('password') }}" class="form-control @error('password') is-invalid @enderror" name="password" />
                                             </div>
                                             <div class="align-self-center mx-2">
                                                 <label for="">
