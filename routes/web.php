@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
 use App\Http\Controllers\NasabahController;
@@ -42,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
             // kode induk
             Route::resource('kode-induk',KodeIndukController::class);
             // kode rekening
-            // Route::resource('kode-akun',KodeAkun);
+            Route::resource('kode-akun',KodeAkunController::class);
         });
         // nasabah
         Route::prefix('customer-service')->group(function () {

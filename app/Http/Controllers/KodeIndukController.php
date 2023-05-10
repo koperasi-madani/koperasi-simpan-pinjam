@@ -129,7 +129,6 @@ class KodeIndukController extends Controller
             return redirect()->route('kode-induk.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
             return redirect()->route('kode-induk.index')->withError('Terjadi kesalahan.');
-
         }
     }
 }

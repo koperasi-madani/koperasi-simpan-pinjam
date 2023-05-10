@@ -23,7 +23,7 @@
                 <div class="submenu">
                     <a href="{{ route('kode-ledger.index') }}">Kode Ledger</a>
                     <a href="{{ route('kode-induk.index') }}">Kode Induk</a>
-                    <a href="">Kode Akun</a>
+                    <a href="{{ route('kode-akun.index') }}">Kode Akun</a>
                     <a href="">Kunci Transaksi</a>
                 </div>
             </li>
