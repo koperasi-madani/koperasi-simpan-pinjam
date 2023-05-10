@@ -15,13 +15,14 @@
                     <span class="text">Dashboard</span>
                 </a>
             </li>
-            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'master-akuntansi' ? 'active' : '' }}">
                 <a class="menu-link" href="page-form-product-1.html">
                     <i class="icon material-icons md-add_box"></i>
                     <span class="text">Master Akuntasi</span>
                 </a>
                 <div class="submenu">
-                    <a href="">Kode Induk</a>
+                    <a href="{{ route('kode-ledger.index') }}">Kode Ledger</a>
+                    <a href="{{ route('kode-induk.index') }}">Kode Induk</a>
                     <a href="">Kode Akun</a>
                     <a href="">Kunci Transaksi</a>
                 </div>
