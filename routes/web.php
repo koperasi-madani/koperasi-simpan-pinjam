@@ -8,6 +8,7 @@ use App\Http\Controllers\PembukaanRekeningController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetorTunaiController;
+use App\Http\Controllers\SukuBungaController;
 use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
 use Illuminate\Support\Facades\Route;
@@ -62,7 +63,10 @@ Route::middleware(['auth'])->group(function () {
         // setting
         Route::prefix('setting')->group(function()
         {
+            // akun
             Route::resource('akun', UserController::class);
+            // suku bunga
+            Route::resource('suku-bunga-koperasi', SukuBungaController::class);
         });
     });
 });
