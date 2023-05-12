@@ -12,6 +12,7 @@ class PembukaanRekening extends Model
     protected $fillable = [
         'nasabah_id',
         'id_kode_akun',
+        'id_suku_bunga',
         'no_rekening',
         'tgl_transaksi',
         'tgl',
@@ -22,5 +23,9 @@ class PembukaanRekening extends Model
     public function nasabah()
     {
        return $this->belongsTo(NasabahModel::class,'nasabah_id','id');
+    }
+    public function sukuBunga()
+    {
+       return $this->belongsTo(SukuBunga::class,'id_suku_bunga','id');
     }
 }

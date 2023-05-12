@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DataAdministrasiController;
 use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
@@ -52,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
             // pembukaan rekening
             Route::get('cetak/{id}',[PembukaanRekeningController::class,'cetak'])->name('cetak-rekening.pembukaan-rekening');
             Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
+
+            // Perubahan data administrasi
+            Route::resource('perubahan-data-administrasi', DataAdministrasiController::class);
         });
         // Teller
         Route::prefix('teller')->group(function () {

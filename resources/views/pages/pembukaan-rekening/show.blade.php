@@ -69,6 +69,24 @@
                                     <td >Rp. {{ number_format($data->saldo_awal,2, ",", ".") }}</td>
                                 </tr>
                             </table>
+                            <hr>
+                            <table class="table table-bordered table-responsive-sm">
+                                <tr>
+                                    <td width="20%">Nama</td>
+                                    <td width="1%">:</td>
+                                    <td >{{ $data->sukuBunga->nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Suku Bunga</td>
+                                    <td width="1%">:</td>
+                                    <td >{{ $data->sukuBunga->suku_bunga }}%</td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">Jenis</td>
+                                    <td width="1%">:</td>
+                                    <td >{{ ucwords($data->sukuBunga->jenis) }}</td>
+                                </tr>
+                            </table>
                         </div>
 
                     </div>

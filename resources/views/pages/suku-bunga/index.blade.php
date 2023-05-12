@@ -164,6 +164,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th scope="col">Kode Suku</th>
                                         <th scope="col">Nama </th>
                                         <th scope="col">Suku Bunga</th>
                                         <th scope="col">Jenis</th>
@@ -175,6 +176,7 @@
                                     @forelse ($data as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->kode_suku }}</td>
                                             <td>{{ $item->nama }}</td>
                                             <td>{{ $item->suku_bunga }}</td>
                                             <td>{{ ucwords($item->jenis) }}</td>

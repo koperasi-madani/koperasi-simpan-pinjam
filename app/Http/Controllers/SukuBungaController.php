@@ -46,12 +46,38 @@ class SukuBungaController extends Controller
             $suku->suku_bunga = $request->get('suku');
             $suku->keterangan = $request->get('keterangan');
             $suku->jenis = $request->get('jenis');
+            $suku->kode_suku = $this->kode($request->get('jenis'));
             $suku->save();
             return redirect()->route('suku-bunga-koperasi.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
             return redirect()->route('suku-bunga-koperasi.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
             return redirect()->route('suku-bunga-koperasi.index')->withError('Terjadi kesalahan.');
+        }
+    }
+
+    public function kode($params)
+    {
+
+        $kodeSuku = SukuBunga::where('jenis',$params)->orderBy('created_at', 'DESC')->get();
+        if (count($kodeSuku) > 0) {
+            $lastIncrement = substr($kodeSuku[0]->kode_suku, 4);
+            $noAkun = str_pad($lastIncrement + 1, 3, 0, STR_PAD_LEFT);
+            if ($params == 'pinjaman') {
+                return 'PI'.$noAkun;
+            }else{
+                return 'TA'.$noAkun;
+
+            }
+        }else{
+            if ($params == 'pinjaman') {
+                return 'PI001';
+            }else{
+                return 'TA001';
+
+            }
+
+
         }
     }
 

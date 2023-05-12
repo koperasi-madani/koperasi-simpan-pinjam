@@ -65,6 +65,7 @@
     <script>
         $(document).ready(function () {
             $('#kode').select2();
+            $('#suku').select2();
             $('#id_nasabah').select2();
             $('#example').DataTable();
         })
@@ -181,7 +182,22 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Kode Suku Bunga</label>
+                                    <select name="suku" id="suku" class="form-control">
+                                        @foreach ($sukuBunga as $item)
+                                            <option value="{{ $item->id }}" {{ old('suku') == $item->id ? 'selected' : '' }}>{{ $item->kode_suku }}--{{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('suku')
+                                        <small class="text-danger">
+                                            {{$message}}.
+                                        </small>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Saldo Awal</label>
                                     <input placeholder="Masukkan saldo awal" value="{{ old('saldo_awal') }}" type="text" value="{{ old('saldo_awal') }}" class="form-control @error('saldo_awal') is-invalid @enderror" name="saldo_awal" id="saldo_awal" />

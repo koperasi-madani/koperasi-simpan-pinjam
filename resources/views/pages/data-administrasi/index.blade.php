@@ -21,9 +21,6 @@
     <section class="content-main">
         <div class="content-header">
             <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2>
-            <div>
-                <a href="{{ route('nasabah.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Data</a>
-            </div>
         </div>
         @include('components.notification')
 
@@ -44,7 +41,7 @@
                                 <th scope="col">Alamat</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="text-start">Action</th> --}}
+                                <th scope="col" class="text-start">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,21 +71,21 @@
                                             <span class="badge rounded-pill alert-danger">Tidak Aktif</span>
                                         @endif
                                     </td>
-                                    {{-- <td class="text-start">
+                                    <td class="text-start">
                                         <div class="d-flex justify-content-start">
                                             <div>
-                                                <a href="{{ route('nasabah.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
+                                                <a href="{{ route('perubahan-data-administrasi.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Perubahan Data </a>
                                             </div>
-                                            <div class="mx-2">
-                                                <form action="{{ route('nasabah.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
+                                            {{-- <div class="mx-2">
+                                                <form action="{{ route('perubahan-data-administrasi.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
                                                     @method('delete')
                                                     @csrf
                                                     <button  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </button>
                                                 </form>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                         <!-- dropdown //end -->
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

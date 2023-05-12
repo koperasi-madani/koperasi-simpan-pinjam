@@ -6,6 +6,7 @@ use App\Models\BukuTabungan;
 use App\Models\KodeAkun;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
+use App\Models\SukuBunga;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class PembukaanRekeningController extends Controller
     {
         $data = PembukaanRekening::with('nasabah')->get();
         $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
+        $sukuBunga = SukuBunga::where('jenis','tabungan')->get();
         $nasabah = NasabahModel::all();
         $date = date('Yd');
 
@@ -39,7 +41,12 @@ class PembukaanRekeningController extends Controller
             $noRekening = $date."0001";
 
         }
-        return view('pages.pembukaan-rekening.index',compact('data','nasabah','noRekening','kode'));
+        return view('pages.pembukaan-rekening.index',compact(
+            'data',
+            'nasabah',
+            'noRekening',
+            'kode',
+            'sukuBunga'));
     }
 
     /**
@@ -76,6 +83,7 @@ class PembukaanRekeningController extends Controller
             $rekening->no_rekening = $request->get('no_rekening');
             $rekening->id_kode_akun = $request->get('kode');
             $rekening->tgl = $nasabah->tgl;
+            $rekening->id_suku_bunga = $request->get('suku');
             $rekening->tgl_transaksi = $request->get('tgl');
             $rekening->saldo_awal = $this->formatNumber($request->saldo_awal);
             $rekening->ket = $request->get('ket');
@@ -112,7 +120,7 @@ class PembukaanRekeningController extends Controller
      */
     public function show(string $id)
     {
-        $data = PembukaanRekening::with('nasabah')->find($id);
+        $data = PembukaanRekening::with('nasabah','sukuBunga')->find($id);
         return view('pages.pembukaan-rekening.show',compact('data'));
     }
 

@@ -83,7 +83,7 @@
                 <div class="submenu">
                     <a href="{{ route('nasabah.index') }}">Pembukaan Nasabah Baru</a>
                     <a href="{{ route('pembukaan-rekening.index') }}">Pembukaan Rekening Baru</a>
-                    <a href="">Perubahan Data Administrasi</a>
+                    <a href="{{ route('perubahan-data-administrasi.index') }}">Perubahan Data Administrasi</a>
                     <a href="">Pemblokiran Saldo Retail</a>
                     <a href="">Cetak Buku Tabungan</a>
                 </div>
