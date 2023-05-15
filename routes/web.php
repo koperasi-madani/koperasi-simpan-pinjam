@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\DataAdministrasiController;
+use App\Http\Controllers\InformasiCustomerServiceController;
 use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
 use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\OtorisasiCustomerServiceController;
 use App\Http\Controllers\PembukaanRekeningController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\ProfileController;
@@ -46,6 +48,19 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('kode-induk',KodeIndukController::class);
             // kode rekening
             Route::resource('kode-akun',KodeAkunController::class);
+        });
+        // informasi customer service
+        Route::prefix('informasi-customer-service')->group(function () {
+            Route::get('informasi-data-nasabah',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('informasi.nasabah');
+            Route::get('informasi-data-rekening',[InformasiCustomerServiceController::class,'informasiRekening'])->name('informasi.rekening');
+
+        });
+        // otorisasi customer service
+        Route::prefix('otorisasi-customer-service')->group(function () {
+            Route::post('otorisasi-data-nasabah/ganti-status/post',[OtorisasiCustomerServiceController::class,'postNasabah'])->name('otorisasi.post.nasabah');
+            Route::get('otorisasi-data-nasabah/ganti-status',[OtorisasiCustomerServiceController::class,'getNasabah'])->name('otorisasi.get.nasabah');
+            Route::get('otorisasi-data-nasabah',[OtorisasiCustomerServiceController::class,'nasabah'])->name('otorisasi.nasabah');
+            Route::get('otorisasi-data-rekening',[OtorisasiCustomerServiceController::class,'rekening'])->name('otorisasi.rekening');
         });
         // nasabah
         Route::prefix('customer-service')->group(function () {

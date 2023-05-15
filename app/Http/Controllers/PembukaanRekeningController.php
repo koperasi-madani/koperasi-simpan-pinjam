@@ -22,7 +22,7 @@ class PembukaanRekeningController extends Controller
         $data = PembukaanRekening::with('nasabah')->get();
         $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
         $sukuBunga = SukuBunga::where('jenis','tabungan')->get();
-        $nasabah = NasabahModel::all();
+        $nasabah = NasabahModel::where('status','aktif')->get();
         $date = date('Yd');
 
         /* generate no anggota  */
@@ -92,6 +92,7 @@ class PembukaanRekeningController extends Controller
 
             $buku  = new BukuTabungan;
             $buku->id_rekening_tabungan = $rekening->id;
+            $buku->id_kode_akun = $request->get('kode');
             $buku->tgl_transaksi = $request->get('tgl');
             $buku->nominal_transaksi = $rekening->saldo_awal;
             $buku->saldo = $rekening->saldo_awal;
@@ -99,8 +100,10 @@ class PembukaanRekeningController extends Controller
             $buku->save();
             return redirect()->route('pembukaan-rekening.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            return $e;
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
         }
     }

@@ -25,7 +25,7 @@ class SetorTunaiController extends Controller
             'rekening_tabungan.saldo_awal',
             'nasabah.no_anggota',
             'nasabah.nama'
-        )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->get();
+        )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->where('nasabah.status','aktif')->get();
 
 
         /* generate no setoran  */

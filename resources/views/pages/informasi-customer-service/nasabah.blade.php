@@ -39,9 +39,8 @@
                                 <th scope="col">Jenis Kelamin</th>
                                 <th scope="col">Pekerjaan</th>
                                 <th scope="col">Alamat</th>
-                                <th scope="col">Tanggal</th>
                                 <th scope="col">Status</th>
-                                <th scope="col" class="text-start">Action</th>
+                                <th scope="col">Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,7 +62,6 @@
                                         {{ $item->pekerjaan }} <br>
                                     </td>
                                     <td><b>{{ $item->alamat }}</b></td>
-                                    <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
                                     <td>
                                         @if ($item->status == 'aktif')
                                             <span class="badge rounded-pill alert-success">Aktif</span>
@@ -71,14 +69,8 @@
                                             <span class="badge rounded-pill alert-danger">Tidak Aktif</span>
                                         @endif
                                     </td>
-                                    <td class="text-start">
-                                        <div class="d-flex justify-content-start">
-                                            <div>
-                                                <a href="{{ route('perubahan-data-administrasi.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Perubahan Data </a>
-                                            </div>
-                                        </div>
-                                        <!-- dropdown //end -->
-                                    </td>
+                                    <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
+
                                 </tr>
                             @empty
                                 <tr>

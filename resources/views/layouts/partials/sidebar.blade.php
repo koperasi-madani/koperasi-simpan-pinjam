@@ -27,17 +27,17 @@
                     <a href="">Kunci Transaksi</a>
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'informasi-customer-service' ? 'active' : '' }} ">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-ballot"></i>
                     <span class="text ">Informasi Customer Service</span>
                 </a>
                 <div class="submenu">
-                    <a href="">Informasi Data Nasabah</a>
-                    <a href="">Informasi Rekening</a>
+                    <a href="{{ route('informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+                    <a href="{{ route('informasi.rekening') }}" class="{{ Request::segment(3) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }}">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-assignment"></i>
                     <span class="text ">Laporan Customer Service</span>
@@ -46,14 +46,14 @@
                     <a href="">Laporan Pembukaan Rekening</a>
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'otorisasi-customer-service' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-sync"></i>
                     <span class="text ">Otorisasi Customer Service</span>
                 </a>
                 <div class="submenu">
-                    <a href="">Otorisasi Data Nasabah</a>
-                    <a href="">Otorisasi Data Rekening</a>
+                    <a href="{{ route('otorisasi.nasabah') }}" class="{{ Request::segment(3) == 'otorisasi-data-nasabah' ? 'active' : '' }}">Otorisasi Data Nasabah</a>
+                    <a href="{{ route('otorisasi.rekening') }}" class="{{ Request::segment(3) == 'otorisasi-data-rekening' ? 'active' : '' }}">Otorisasi Data Rekening</a>
                 </div>
             </li>
             <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
@@ -81,8 +81,8 @@
                     <span class="text ">Transaksi Customer Service</span>
                 </a>
                 <div class="submenu">
-                    <a href="{{ route('nasabah.index') }}">Pembukaan Nasabah Baru</a>
-                    <a href="{{ route('pembukaan-rekening.index') }}">Pembukaan Rekening Baru</a>
+                    <a href="{{ route('nasabah.index') }}" class="{{ Request::segment(3) == 'nasabah' ? 'active' : '' }}">Pembukaan Nasabah Baru</a>
+                    <a href="{{ route('pembukaan-rekening.index') }}" class="{{ Request::segment(3) == 'pembukaan-rekening' ? 'active' : '' }}">Pembukaan Rekening Baru</a>
                     <a href="{{ route('perubahan-data-administrasi.index') }}">Perubahan Data Administrasi</a>
                     <a href="">Pemblokiran Saldo Retail</a>
                     <a href="">Cetak Buku Tabungan</a>

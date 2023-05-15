@@ -34,55 +34,39 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th scope="col">NIK</th>
                                 <th scope="col">Nama Nasabah</th>
-                                <th scope="col">Jenis Kelamin</th>
-                                <th scope="col">Pekerjaan</th>
-                                <th scope="col">Alamat</th>
+                                <th scope="col">No Rekening</th>
+                                <th scope="col">Saldo Awal</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Status</th>
-                                <th scope="col" class="text-start">Action</th>
+                                <th scope="col">Suku Bunga</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nik }}</td>
                                     <td>
-                                        {{ $item->nama }} <br>
+                                        {{ $item->nasabah->nama }} <br>
+                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                     </td>
-                                    <td><b>
-                                        @if ($item->jenis_kelamin == '0')
-                                            Laki-Laki
-                                        @else
-                                            Perempuan
-                                        @endif
-                                        </b></td>
-                                    <td>
-                                        {{ $item->pekerjaan }} <br>
-                                    </td>
-                                    <td><b>{{ $item->alamat }}</b></td>
-                                    <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
+                                    <td>{{ $item->no_rekening }}</td>
+                                    <td><b>Rp. {{ number_format($item->saldo_awal,2, ",", ".") }}</b></td>
+                                    <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
                                     <td>
                                         @if ($item->status == 'aktif')
-                                            <span class="badge rounded-pill alert-success">Aktif</span>
+                                        <span class="badge rounded-pill alert-success">Aktif</span>
                                         @else
-                                            <span class="badge rounded-pill alert-danger">Tidak Aktif</span>
+                                        <span class="badge rounded-pill alert-danger">Tidak Aktif</span>
                                         @endif
                                     </td>
-                                    <td class="text-start">
-                                        <div class="d-flex justify-content-start">
-                                            <div>
-                                                <a href="{{ route('perubahan-data-administrasi.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Perubahan Data </a>
-                                            </div>
-                                        </div>
-                                        <!-- dropdown //end -->
+                                    <td><b>{{ $item->sukuBunga->nama }}</b>
+                                        <br><small class="text-muted">{{ $item->sukuBunga->suku_bunga }}%</small>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td>Tidak ada data</td>
+                                    <td colspan="7">Tidak ada data</td>
                                 </tr>
                             @endforelse
 

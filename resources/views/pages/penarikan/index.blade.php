@@ -127,6 +127,7 @@
                             id: id
                         },
                         success: function (data) {
+                            console.log(data);
                             var total_saldo = document.getElementById("total_saldo");
                             total_saldo.value = formatRupiah(data);
                             total_saldo.addEventListener("keyup", function(e) {
