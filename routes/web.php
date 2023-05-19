@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CadanganBukuController;
 use App\Http\Controllers\DataAdministrasiController;
 use App\Http\Controllers\InformasiCustomerServiceController;
 use App\Http\Controllers\KodeAkunController;
@@ -31,6 +32,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('test',[CadanganBukuController::class,'cadangSuku']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

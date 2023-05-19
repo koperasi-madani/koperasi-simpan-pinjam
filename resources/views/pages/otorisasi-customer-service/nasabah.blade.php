@@ -31,6 +31,7 @@
                     success: function(data) {
                         $.each(data, function (key, value) {
                             console.log(value);
+
                             $('#no_anggota').val(value.no_anggota);
                             $('#nama').val(value.nama)
                             if (value.status == 'aktif') {

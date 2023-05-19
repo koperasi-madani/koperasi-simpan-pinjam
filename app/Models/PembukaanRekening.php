@@ -19,6 +19,7 @@ class PembukaanRekening extends Model
         'saldo_awal',
         'status',
         'ket',
+        'saldo_bunga',
     ];
     public function nasabah()
     {

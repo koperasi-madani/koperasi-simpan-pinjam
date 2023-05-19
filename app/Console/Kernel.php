@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CadanganBukuSuku;
+use App\Console\Commands\CadanganTotalBukuSuku;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -10,9 +12,18 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
+    protected $commands = [
+        CadanganBukuSuku::class,
+        CadanganTotalBukuSuku::class,
+    ];
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('suku:cron')
+                 ->daily()
+                 ->appendOutputTo(storage_path('logs/inspire.log'));
+        $schedule->command('totalsuku:cron')
+                 ->monthly()
+                 ->appendOutputTo(storage_path('logs/inspire.log'));
     }
 
     /**

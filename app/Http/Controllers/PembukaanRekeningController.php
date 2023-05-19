@@ -19,7 +19,21 @@ class PembukaanRekeningController extends Controller
      */
     public function index()
     {
-        $data = PembukaanRekening::with('nasabah')->get();
+        $data = PembukaanRekening::select('rekening_tabungan.*',
+                            'nasabah.no_anggota',
+                            'nasabah.nik',
+                            'nasabah.nama',
+                            'nasabah.alamat',
+                            'nasabah.pekerjaan',
+                            'nasabah.tgl',
+                            'nasabah.status',
+                            'nasabah.jenis_kelamin',
+                            'suku_bunga_koperasi.nama',
+                            'suku_bunga_koperasi.suku_bunga')
+                            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+                            ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
+                            ->get();
+        return $data;
         $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
         $sukuBunga = SukuBunga::where('jenis','tabungan')->get();
         $nasabah = NasabahModel::where('status','aktif')->get();
