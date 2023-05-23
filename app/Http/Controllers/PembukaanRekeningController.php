@@ -33,7 +33,6 @@ class PembukaanRekeningController extends Controller
                             ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
                             ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
                             ->get();
-        return $data;
         $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
         $sukuBunga = SukuBunga::where('jenis','tabungan')->get();
         $nasabah = NasabahModel::where('status','aktif')->get();

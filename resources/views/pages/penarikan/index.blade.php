@@ -315,7 +315,7 @@
                                                 @elseif ($item->otorisasi_penarikan == 'pending')
                                                     <span class="badge rounded-pill alert-warning">Menunggu Persetujuan</span>
                                                 @else
-                                                    <span class="badge rounded-pill alert-danger">Menunggu Persetujuan</span>
+                                                    <span class="badge rounded-pill alert-danger">Ditolak</span>
                                                 @endif
                                             </td>
                                             <td><b>{{ $item->kode_user }}</b></td>

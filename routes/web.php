@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CadanganBukuController;
 use App\Http\Controllers\DataAdministrasiController;
+use App\Http\Controllers\InformasiAdminKreditController;
 use App\Http\Controllers\InformasiCustomerServiceController;
 use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
@@ -51,6 +52,12 @@ Route::middleware(['auth'])->group(function () {
             // kode rekening
             Route::resource('kode-akun',KodeAkunController::class);
         });
+        Route::prefix('admin-kredit')->group(function () {
+            Route::prefix('informasi-pinjaman')->group(function () {
+                Route::get('informasi-data-nasabah',[InformasiAdminKreditController::class,'informasiNasabah'])->name('informasi.nasabah.admin-kredit');
+                Route::get('informasi-data-rekening',[InformasiAdminKreditController::class,'informasiRekening'])->name('informasi.rekening.admin-kredit');
+            });
+        });
         // informasi customer service
         Route::prefix('informasi-customer-service')->group(function () {
             Route::get('informasi-data-nasabah',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('informasi.nasabah');
@@ -59,9 +66,13 @@ Route::middleware(['auth'])->group(function () {
         });
         // otorisasi customer service
         Route::prefix('otorisasi-customer-service')->group(function () {
+            // otorisasi data nasabah
             Route::post('otorisasi-data-nasabah/ganti-status/post',[OtorisasiCustomerServiceController::class,'postNasabah'])->name('otorisasi.post.nasabah');
             Route::get('otorisasi-data-nasabah/ganti-status',[OtorisasiCustomerServiceController::class,'getNasabah'])->name('otorisasi.get.nasabah');
             Route::get('otorisasi-data-nasabah',[OtorisasiCustomerServiceController::class,'nasabah'])->name('otorisasi.nasabah');
+            // otorisasi rekening
+            Route::post('otorisasi-data-rekening/ganti-status/post',[OtorisasiCustomerServiceController::class,'postRekening'])->name('otorisasi.post.rekening');
+            Route::get('otorisasi-data-rekening/ganti-status',[OtorisasiCustomerServiceController::class,'getRekening'])->name('otorisasi.get.rekening');
             Route::get('otorisasi-data-rekening',[OtorisasiCustomerServiceController::class,'rekening'])->name('otorisasi.rekening');
         });
         // nasabah

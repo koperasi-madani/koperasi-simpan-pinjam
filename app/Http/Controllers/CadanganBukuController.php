@@ -37,6 +37,7 @@ class CadanganBukuController extends Controller
         foreach ($data as $item) {
             $sukuBunga = $item->suku_bunga;
             $hitung =  $item->saldo * $sukuBunga;
+            // 80 persen dari pajak (pph)
             $result = $hitung * 80 / 100 / 365;
             $saldo = new CadanganBuku;
             $saldo->tgl = date(now());
