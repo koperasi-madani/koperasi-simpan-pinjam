@@ -71,62 +71,67 @@
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Otorisasi Pinjaman</button>
                     </li>
                 </ul>
-
             </div>
         </div>
         <div class="card mb-4">
-            <header class="card-header">
-                <h4>List Nasabah</h4>
-            </header>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="example">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th scope="col">Nama Nasabah</th>
-                                <th scope="col">No Rekening</th>
-                                <th scope="col">Nominal Penarikan </th>
-                                <th scope="col">Keterangan</th>
-                                <th scope="col">Status Otorisasi</th>
-                                <th scope="col">Validasi</th>
-                                <th scope="col">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($data as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $item->nama }} <br>
-                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
-                                    </td>
-                                    <td>{{ $item->no_rekening }}</td>
-                                    <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
-                                    <td><b>{{ $item->validasi }}</b></td>
-                                    <td>
-                                        @if ($item->otorisasi_penarikan == 'setuju')
-                                            <span class="badge rounded-pill alert-success">Disetujui</span>
-                                        @elseif ($item->otorisasi_penarikan == 'pending')
-                                            <span class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</span>
-                                        @else
-                                            <span class="badge rounded-pill alert-danger">Ditolak</span>
-                                        @endif
-                                    </td>
-                                    <td><b>{{ $item->kode_user }}</b></td>
-                                    <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <header class="card-header">
+                        <h4>List Nasabah</h4>
+                    </header>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="example">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th scope="col">Nama Nasabah</th>
+                                        <th scope="col">No Rekening</th>
+                                        <th scope="col">Nominal Penarikan </th>
+                                        <th scope="col">Keterangan</th>
+                                        <th scope="col">Status Otorisasi</th>
+                                        <th scope="col">Validasi</th>
+                                        <th scope="col">Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($data as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                {{ $item->nama }} <br>
+                                                <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                            </td>
+                                            <td>{{ $item->no_rekening }}</td>
+                                            <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
+                                            <td><b>{{ $item->validasi }}</b></td>
+                                            <td>
+                                                @if ($item->otorisasi_penarikan == 'setuju')
+                                                    <span class="badge rounded-pill alert-success">Disetujui</span>
+                                                @elseif ($item->otorisasi_penarikan == 'pending')
+                                                    <span class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</span>
+                                                @else
+                                                    <span class="badge rounded-pill alert-danger">Ditolak</span>
+                                                @endif
+                                            </td>
+                                            <td><b>{{ $item->kode_user }}</b></td>
+                                            <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
 
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7">Tidak ada data</td>
-                                </tr>
-                            @endforelse
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7">Tidak ada data</td>
+                                        </tr>
+                                    @endforelse
 
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                    </div>
                 </div>
-                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
+                </div>
             </div>
         </div>
         <!-- card end// -->

@@ -110,7 +110,7 @@ class OtorisasiCustomerServiceController extends Controller
         if ($request->status == 'setuju') {
             $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
             $saldo_akhir = $tabungan->first()->saldo;
-            $result_saldo =  $saldo_akhir - $this->formatNumber($penarikan->total_penarikan);
+            $result_saldo =  $saldo_akhir - $penarikan->nominal_setor;
             $tabungan->update([
                 'saldo' => $result_saldo,
             ]);

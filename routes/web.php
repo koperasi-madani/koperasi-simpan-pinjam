@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\CadanganBukuController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataAdministrasiController;
 use App\Http\Controllers\InformasiAdminKreditController;
 use App\Http\Controllers\InformasiCustomerServiceController;
+use App\Http\Controllers\InformasiHeadTellerController;
+use App\Http\Controllers\InformasiNasabahTellerController;
 use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
@@ -29,19 +32,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('test',[CadanganBukuController::class,'cadangSuku']);
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 // cek tabungan
 Route::get('penarikan/cek',[PenarikanController::class,'cekTabungan'])->name('cek.tabungan');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/',[DashboardController::class,'index'])->name('dashboard');
     Route::prefix('dashboard')->group(function () {
         // Master Akuntansi
         Route::prefix('master-akuntansi')->group(function () {
@@ -81,7 +80,6 @@ Route::middleware(['auth'])->group(function () {
             // pembukaan rekening
             Route::get('cetak/{id}',[PembukaanRekeningController::class,'cetak'])->name('cetak-rekening.pembukaan-rekening');
             Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
-
             // Perubahan data administrasi
             Route::resource('perubahan-data-administrasi', DataAdministrasiController::class);
         });
@@ -90,7 +88,13 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('transaksi-teller')->group(function () {
                 Route::resource('setor-tunai', SetorTunaiController::class);
                 Route::resource('penarikan',PenarikanController::class);
+                Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
+                Route::get('informasi-tabungan-nasabah/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
+                Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
             });
+        });
+        Route::prefix('informasi-head-teller')->group(function () {
+            Route::get('informasi-tabungan-nasabah',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
         });
         // setting
         Route::prefix('setting')->group(function()

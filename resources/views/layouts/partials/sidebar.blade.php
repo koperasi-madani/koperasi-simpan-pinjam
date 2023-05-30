@@ -67,7 +67,7 @@
                     <a href="{{ route('otorisasi.rekening') }}" class="{{ Request::segment(3) == 'otorisasi-data-rekening' ? 'active' : '' }}">Otorisasi Data Rekening</a>
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'informasi-head-teller' ? 'active' : '' }}">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-ballot"></i>
                     <span class="text ">Informasi Head Teller</span>
@@ -75,6 +75,7 @@
                 <div class="submenu">
                     <a href="">Informasi Semua Saldo Teller</a>
                     <a href="">Saldo Teller</a>
+                    <a href="{{ route('informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-tabungan-nasabah' ? 'active' : '' }}">Informasi Tabungan Nasabah</a>
                 </div>
             </li>
             <li class="menu-item has-submenu {{ Request::segment(2) == 'kategori-biaya-tetap' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
@@ -109,6 +110,7 @@
                     <a href="{{ route('penarikan.index') }}">Penarikan Tunai</a>
                     <a href="">Pembayaran Kas Teller</a>
                     <a href="">Penerimaan Kas Teller</a>
+                    <a href="{{ route('teller.informasi.nasabah') }}" class="{{ Request::segment(4) == 'informasi-tabungan-nasabah' ? 'active' : '' }}">Informasi Tabungan Nasabah</a>
                 </div>
             </li>
             <li class="menu-item has-submenu {{ Request::segment(2) == 'setting' ? 'active' : '' }}">

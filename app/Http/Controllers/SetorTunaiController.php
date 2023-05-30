@@ -19,13 +19,16 @@ class SetorTunaiController extends Controller
     public function index()
     {
         $data = PembukaanRekening::select(
-            'rekening_tabungan.id',
-            'rekening_tabungan.nasabah_id',
-            'rekening_tabungan.no_rekening',
-            'rekening_tabungan.saldo_awal',
-            'nasabah.no_anggota',
-            'nasabah.nama'
-        )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->where('nasabah.status','aktif')->get();
+                                    'rekening_tabungan.id',
+                                    'rekening_tabungan.nasabah_id',
+                                    'rekening_tabungan.no_rekening',
+                                    'rekening_tabungan.saldo_awal',
+                                    'nasabah.no_anggota',
+                                    'nasabah.nama'
+                                )
+                                ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+                                ->where('nasabah.status','aktif')
+                                ->get();
 
 
         /* generate no setoran  */
