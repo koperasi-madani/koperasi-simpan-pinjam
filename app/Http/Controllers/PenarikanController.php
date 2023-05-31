@@ -46,28 +46,28 @@ class PenarikanController extends Controller
         }
 
         $penarikan = Penarikan::select(
-            'penarikan.id',
-            'penarikan.id_rekening_tabungan',
-            'penarikan.kode_penarikan',
-            'penarikan.tgl_setor',
-            'penarikan.nominal_setor',
-            'penarikan.validasi',
-            'penarikan.otorisasi_penarikan',
-            'rekening_tabungan.nasabah_id',
-            'rekening_tabungan.no_rekening',
-            'nasabah.id as id_nasabah',
-            'nasabah.nama',
-            'nasabah.nik',
-            'users.id as id_user',
-            'users.kode_user'
-            )->join(
-                'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
-            )->join(
-                'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-            )
-            ->join(
-                'users', 'users.id', 'penarikan.id_user'
-            )->get();
+                                'penarikan.id',
+                                'penarikan.id_rekening_tabungan',
+                                'penarikan.kode_penarikan',
+                                'penarikan.tgl_setor',
+                                'penarikan.nominal_setor',
+                                'penarikan.validasi',
+                                'penarikan.otorisasi_penarikan',
+                                'rekening_tabungan.nasabah_id',
+                                'rekening_tabungan.no_rekening',
+                                'nasabah.id as id_nasabah',
+                                'nasabah.nama',
+                                'nasabah.nik',
+                                'users.id as id_user',
+                                'users.kode_user'
+                                )->join(
+                                    'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
+                                )->join(
+                                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+                                )
+                                ->join(
+                                    'users', 'users.id', 'penarikan.id_user'
+                                )->get();
         return view('pages.penarikan.index',compact('data','noPenarikan','penarikan'));
     }
 
