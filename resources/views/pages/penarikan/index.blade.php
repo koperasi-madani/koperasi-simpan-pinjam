@@ -306,13 +306,13 @@
                                                 <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
                                             </td>
                                             <td>{{ $item->no_rekening }}</td>
-                                            <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
+                                            <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
-                                            <td><b>{{ $item->validasi }}</b></td>
+                                            <td><b>{{ $item->kode_user }}</b></td>
                                             <td>
-                                                @if ($item->otorisasi_penarikan == 'setuju')
+                                                @if ($item->status == 'setuju')
                                                     <span class="badge rounded-pill alert-success">Disetujui</span>
-                                                @elseif ($item->otorisasi_penarikan == 'pending')
+                                                @elseif ($item->status == 'pending')
                                                     <span class="badge rounded-pill alert-warning">Menunggu Persetujuan</span>
                                                 @else
                                                     <span class="badge rounded-pill alert-danger">Ditolak</span>

@@ -222,13 +222,13 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
-                                                {{ $item->nasabah->nama }} <br>
-                                                <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
+                                                {{ $item->nama }} <br>
+                                                <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
                                             </td>
-                                            <td>{{ $item->kode_setoran }}</td>
-                                            <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
-                                            <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
-                                            <td><b>{{ $item->validasi }}</b></td>
+                                            <td>{{ $item->no_rekening }}</td>
+                                            <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
+                                            <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
+                                            <td><b>{{ $item->ket }}</b></td>
                                             <td><b>{{ $item->kode_user }}</b></td>
                                             <td class="text-start">
                                                 <div class="d-flex justify-content-start">

@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('transaksi-teller')->group(function () {
                 Route::resource('setor-tunai', SetorTunaiController::class);
                 Route::resource('penarikan',PenarikanController::class);
+                // informasi nasabah
                 Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
                 Route::get('informasi-tabungan-nasabah/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
                 Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');

@@ -89,7 +89,7 @@
                             <div class="col-md-6">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Kode Setoran</label>
-                                    <input placeholder="Masukkan kode setoran" disabled value="{{ old('kode_setoran',$data->kode_setoran) }}" type="text"  class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
+                                    <input placeholder="Masukkan kode setoran" disabled value="{{ old('kode_setoran',$data->kode) }}" type="text"  class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
                                     @error('kode_setoran')
                                         <div class="invalid-feedback">
                                             {{$message}}.
@@ -100,7 +100,7 @@
                             <div class="col-md-12">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Tanggal</label>
-                                    <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl',$data->tgl_setor) is-invalid @enderror" name="tgl"/>
+                                    <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl',$data->tgl) is-invalid @enderror" name="tgl"/>
                                     @error('tgl')
                                         <div class="invalid-feedback">
                                             {{$message}}.
@@ -121,7 +121,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Keterangan</label>
-                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">{{ $data->validasi }}</textarea>
+                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">{{ $data->ket }}</textarea>
                                 @error('ket')
                                     <div class="invalid-feedback">
                                         {{$message}}.

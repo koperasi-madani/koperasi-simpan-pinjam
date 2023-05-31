@@ -124,7 +124,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Kode Penarikan</label>
-                                        <input placeholder="Masukkan kode penarikan" readonly value="{{ old('kode_penarikan',$data->kode_penarikan) }}" type="text" class="form-control @error('kode_penarikan') is-invalid @enderror" name="kode_penarikan" />
+                                        <input placeholder="Masukkan kode penarikan" readonly value="{{ old('kode_penarikan',$data->kode) }}" type="text" class="form-control @error('kode_penarikan') is-invalid @enderror" name="kode_penarikan" />
                                         @error('kode_penarikan')
                                             <div class="invalid-feedback">
                                                 {{$message}}.
@@ -135,7 +135,7 @@
                                 <div class="col-md-12">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Tanggal</label>
-                                        <input placeholder="Tanggal" type="text"  value="{{ old('tgl',$data->tgl_setor) }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
+                                        <input placeholder="Tanggal" type="text"  value="{{ old('tgl',$data->tgl) }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
                                         @error('tgl')
                                             <div class="invalid-feedback">
                                                 {{$message}}.
@@ -147,7 +147,7 @@
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Nominal Penarikan</label>
                                         <input type="text" name="" value="0" id="rupiah" hidden>
-                                        <input placeholder="Masukkan nominal penarikan" value="{{ old('nominal_penarikan',$data->nominal_setor) }}" type="text"  class="form-control @error('nominal_penarikan') is-invalid @enderror" name="nominal_penarikan" id="nominal_penarikan" />
+                                        <input placeholder="Masukkan nominal penarikan" value="{{ old('nominal_penarikan',$data->nominal) }}" type="text"  class="form-control @error('nominal_penarikan') is-invalid @enderror" name="nominal_penarikan" id="nominal_penarikan" />
                                         @error('nominal_penarikan')
                                             <div class="invalid-feedback">
                                                 {{$message}}.
@@ -159,7 +159,7 @@
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Total Saldo</label>
                                         @php
-                                            $current_saldo  = $data->saldo + (int)$data->nominal_setor;
+                                            $current_saldo  = $data->saldo + (int)$data->nominal;
                                         @endphp
                                         <input placeholder="Masukkan nominal penarikan" readonly value="{{ old('total_saldo',$current_saldo) }}" type="text"  class="form-control @error('total_saldo') is-invalid @enderror" name="total_saldo" id="total_saldo" />
                                         @error('total_saldo')
@@ -185,7 +185,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Keterangan</label>
-                                    <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">{{ $data->validasi }}</textarea>
+                                    <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">{{ $data->ket }}</textarea>
                                     @error('ket')
                                         <div class="invalid-feedback">
                                             {{$message}}.

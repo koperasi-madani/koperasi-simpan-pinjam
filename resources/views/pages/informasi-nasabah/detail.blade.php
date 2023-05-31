@@ -101,6 +101,7 @@
                                         <th>Kode Setoran</th>
                                         <th>Nominal</th>
                                         <th>Tanggal</th>
+                                        <th>Validasi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -109,6 +110,7 @@
                                             <td>{{ $itemS->kode_setoran }}</td>
                                             <td>Rp. {{ number_format($itemS->nominal_setor,2, ",", ".") }}</td>
                                             <td >{{ \Carbon\Carbon::parse($itemS->tgl_setor)->translatedFormat('d-F-Y') }}</td>
+                                            <td>{{ $itemS->kode_user }}</td>
                                         </tr>
                                     @empty
                                         <tr>

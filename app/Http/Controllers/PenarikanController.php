@@ -6,6 +6,7 @@ use App\Models\BukuTabungan;
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
 use App\Models\Setoran;
+use App\Models\TransaksiTabungan;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -30,14 +31,13 @@ class PenarikanController extends Controller
 
         /* generate no penarikan  */
         $noPenarikan = null;
-        $penarikan = Penarikan::orderBy('created_at', 'DESC')->get();
+        $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
 
         if($penarikan->count() > 0) {
-            $noPenarikan = $penarikan[0]->kode_penarikan;
+            $noPenarikan = $penarikan[0]->kode;
 
-            $lastIncrement = substr($noPenarikan, 6);
-
-            $noPenarikan = str_pad($lastIncrement + 1, 4, 0, STR_PAD_LEFT);
+            $lastIncrement = substr($noPenarikan, 7);
+            $noPenarikan = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
             $noPenarikan = 'TRK'.$noPenarikan;
         }
         else {
@@ -45,14 +45,7 @@ class PenarikanController extends Controller
 
         }
 
-        $penarikan = Penarikan::select(
-                                'penarikan.id',
-                                'penarikan.id_rekening_tabungan',
-                                'penarikan.kode_penarikan',
-                                'penarikan.tgl_setor',
-                                'penarikan.nominal_setor',
-                                'penarikan.validasi',
-                                'penarikan.otorisasi_penarikan',
+        $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
                                 'rekening_tabungan.nasabah_id',
                                 'rekening_tabungan.no_rekening',
                                 'nasabah.id as id_nasabah',
@@ -61,13 +54,15 @@ class PenarikanController extends Controller
                                 'users.id as id_user',
                                 'users.kode_user'
                                 )->join(
-                                    'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
+                                    'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
                                 )->join(
                                     'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                 )
                                 ->join(
-                                    'users', 'users.id', 'penarikan.id_user'
-                                )->get();
+                                    'users', 'users.id', 'transaksi_tabungan.id_user'
+                                )
+                                ->where('transaksi_tabungan.jenis','keluar')
+                                ->get();
         return view('pages.penarikan.index',compact('data','noPenarikan','penarikan'));
     }
 
@@ -113,35 +108,38 @@ class PenarikanController extends Controller
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
         }
         try {
-            $penarikan = new Penarikan;
-            $penarikan->kode_penarikan = $request->get('kode_penarikan');
-            $penarikan->id_rekening_tabungan = $request->get('id_nasabah');
-            $penarikan->tgl_setor = $request->get('tgl');
-            $penarikan->nominal_setor = $this->formatNumber($request->get('nominal_penarikan'));
-            $penarikan->validasi = $request->get('ket');
+            $penarikan = new TransaksiTabungan;
+            $penarikan->kode = $request->get('kode_penarikan');
+            $penarikan->id_nasabah = $request->get('id_nasabah');
+            $penarikan->tgl = $request->get('tgl');
+            $penarikan->nominal = $this->formatNumber($request->get('nominal_penarikan'));
+            $penarikan->ket = $request->get('ket');
             $penarikan->jenis = 'keluar';
             $penarikan->id_user = auth()->user()->id;
             if ($this->formatNumber($request->get('nominal_penarikan')) > 1000000) {
-                $penarikan->otorisasi_penarikan = 'pending';
+                $penarikan->status = 'pending';
             }else{
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
-                $result_saldo =  $saldo_akhir - $penarikan->nominal_setor;
+                $result_saldo =  $saldo_akhir - $penarikan->nominal;
                 if ($result_saldo < 20000 ) {
                     return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
                 }
                 $tabungan->update([
                     'saldo' => $result_saldo,
                 ]);
-                $penarikan->otorisasi_penarikan = 'setuju';
+                $penarikan->saldo = $result_saldo;
+                $penarikan->status = 'setuju';
             }
             $penarikan->save();
 
             return redirect()->route('penarikan.index')->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e) {
+            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         }
     }
@@ -163,31 +161,25 @@ class PenarikanController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Penarikan::select(
-            'penarikan.id',
-            'penarikan.id_rekening_tabungan',
-            'penarikan.kode_penarikan',
-            'penarikan.tgl_setor',
-            'penarikan.nominal_setor',
-            'penarikan.validasi',
-            'rekening_tabungan.id as rekening_tabungan_id',
-            'rekening_tabungan.nasabah_id',
-            'rekening_tabungan.no_rekening',
-            'nasabah.id as id_nasabah',
-            'nasabah.nama',
-            'buku_tabungan.id as id_tabungan',
-            'buku_tabungan.saldo'
-            )->join(
-                'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
-            )
-            ->join(
-                'buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id'
-            )
-            ->join(
-                'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-            )
-            ->where('penarikan.id',$id)
-            ->first();
+        $data = TransaksiTabungan::select('transaksi_tabungan.*',
+                                        'rekening_tabungan.id as rekening_tabungan_id',
+                                        'rekening_tabungan.nasabah_id',
+                                        'rekening_tabungan.no_rekening',
+                                        'nasabah.id as id_nasabah',
+                                        'nasabah.nama',
+                                        'buku_tabungan.id as id_tabungan',
+                                        'buku_tabungan.saldo'
+                                        )->join(
+                                            'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_nasabah'
+                                        )
+                                        ->join(
+                                            'buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id'
+                                        )
+                                        ->join(
+                                            'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+                                        )
+                                        ->where('transaksi_tabungan.id',$id)
+                                        ->first();
         return view('pages.penarikan.edit',compact('data'));
     }
 
@@ -200,28 +192,28 @@ class PenarikanController extends Controller
             'tgl' => 'required',
             'nominal_penarikan' => 'required',
         ]);
-        $penarikan = Penarikan::find($id);
-        $tabungan = BukuTabungan::where('id_rekening_tabungan',$penarikan->id_rekening_tabungan);
-        $saldo_akhir = $tabungan->first()->saldo + $penarikan->nominal_setor;
+        $penarikan = TransaksiTabungan::find($id);
+        $tabungan = BukuTabungan::where('id_rekening_tabungan',$penarikan->id_nasabah);
+        $saldo_akhir = $tabungan->first()->saldo + $penarikan->nominal;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
         }
         try {
-            $penarikan = Penarikan::find($id);
-            $penarikan->tgl_setor = $request->get('tgl');
-            $penarikan->nominal_setor = $this->formatNumber($request->get('nominal_penarikan'));
-            $penarikan->validasi = $request->get('ket');
+            $penarikan = TransaksiTabungan::find($id);
+            $penarikan->tgl = $request->get('tgl');
+            $penarikan->nominal = $this->formatNumber($request->get('nominal_penarikan'));
+            $penarikan->ket = $request->get('ket');
             $penarikan->jenis = 'keluar';
             $penarikan->id_user = auth()->user()->id;
             if ($this->formatNumber($request->get('nominal_penarikan')) > 1000000) {
-                $penarikan->otorisasi_penarikan = 'pending';
+                $penarikan->status = 'pending';
             }else{
-                $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_rekening_tabungan);
+                $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_nasabah);
 
                 $tabungan->update([
                     'saldo' => $this->formatNumber($request->get('sisa_saldo')),
                 ]);
-                $penarikan->otorisasi_penarikan = 'setuju';
+                $penarikan->status = 'setuju';
             }
             $penarikan->update();
 
@@ -240,10 +232,10 @@ class PenarikanController extends Controller
     public function destroy(string $id)
     {
         try{
-            $penarikan = Penarikan::find($id);
-            $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_rekening_tabungan);
+            $penarikan = TransaksiTabungan::find($id);
+            $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_nasabah);
             $saldo_akhir = $tabungan->first()->saldo;
-            $result_saldo =  $saldo_akhir + $penarikan->nominal_setor;
+            $result_saldo =  $saldo_akhir + $penarikan->nominal;
             $tabungan->update([
                 'saldo' => $result_saldo,
             ]);
