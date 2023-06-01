@@ -3,6 +3,7 @@
 use App\Http\Controllers\CadanganBukuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataAdministrasiController;
+use App\Http\Controllers\DataInformasiPinjamanController;
 use App\Http\Controllers\InformasiAdminKreditController;
 use App\Http\Controllers\InformasiCustomerServiceController;
 use App\Http\Controllers\InformasiHeadTellerController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\InformasiNasabahTellerController;
 use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
+use App\Http\Controllers\LaporanCustomerServiceController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\OtorisasiCustomerServiceController;
 use App\Http\Controllers\PembukaanRekeningController;
@@ -57,9 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('admin-kredit')->group(function () {
             Route::prefix('informasi-pinjaman')->group(function () {
                 // informasi pinjaman
-                Route::get('data-informasi-pinjaman', function () {
-                    return view('tampilan');
-                })->name('informasi.pinjaman');
+                Route::get('data-informasi-pinjaman',[DataInformasiPinjamanController::class,'index'])->name('informasi.pinjaman');
                 // informasi data nasabah
                 Route::get('informasi-data-nasabah',[InformasiAdminKreditController::class,'informasiNasabah'])->name('informasi.nasabah.admin-kredit');
                 // informasi data rekening
@@ -137,9 +137,8 @@ Route::middleware(['auth'])->group(function () {
         // laporan customer service
         Route::prefix('laporan-customer-service')->group(function () {
             // laporan pembukaan rekening
-            Route::get('laporan-pembukaan-rekening', function () {
-                return view('tampilan');
-            })->name('laporan.pembukaan-rekening');
+            Route::get('laporan-pembukaan-rekening/pdf',[LaporanCustomerServiceController::class,'laporanBukaRekeningPdf'])->name('laporan.pembukaan-rekening.pdf');
+            Route::get('laporan-pembukaan-rekening',[LaporanCustomerServiceController::class,'laporanBukaRekening'])->name('laporan.pembukaan-rekening');
         });
         // otorisasi transaksi per operator
         Route::prefix('otorisasi-head-teller')->group(function () {
