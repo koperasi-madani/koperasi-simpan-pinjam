@@ -98,7 +98,7 @@ class SetorTunaiController extends Controller
             $setor->jenis = 'masuk';
             $setor->status = 'setuju';
             $setor->id_user = Auth::user()->id;
-            $setor->save();
+
 
             $cek_setor = TransaksiTabungan::where('id_nasabah',$request->get('id_nasabah'))->get();
             if (count($cek_setor) > 0) {
@@ -120,6 +120,7 @@ class SetorTunaiController extends Controller
                 ]);
                 $setor->saldo = $result_saldo;
             }
+            $setor->save();
             return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
 
 

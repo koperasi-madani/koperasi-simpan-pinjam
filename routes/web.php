@@ -19,6 +19,7 @@ use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\SukuBungaController;
 use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
+use App\Models\Penarikan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,7 +36,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('test',[CadanganBukuController::class,'cadangSuku']);
-
+Route::get('tampilan', function () {
+    return view('tampilan');
+});
 // cek tabungan
 Route::get('penarikan/cek',[PenarikanController::class,'cekTabungan'])->name('cek.tabungan');
 
@@ -53,7 +56,13 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::prefix('admin-kredit')->group(function () {
             Route::prefix('informasi-pinjaman')->group(function () {
+                // informasi pinjaman
+                Route::get('data-informasi-pinjaman', function () {
+                    return view('tampilan');
+                })->name('informasi.pinjaman');
+                // informasi data nasabah
                 Route::get('informasi-data-nasabah',[InformasiAdminKreditController::class,'informasiNasabah'])->name('informasi.nasabah.admin-kredit');
+                // informasi data rekening
                 Route::get('informasi-data-rekening',[InformasiAdminKreditController::class,'informasiRekening'])->name('informasi.rekening.admin-kredit');
             });
         });
@@ -82,20 +91,62 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('pembukaan-rekening',PembukaanRekeningController::class);
             // Perubahan data administrasi
             Route::resource('perubahan-data-administrasi', DataAdministrasiController::class);
+            // pemblokiran saldo retail
+            Route::get('pemblokiran-saldo-retail', function () {
+                return view('tampilan');
+            })->name('pemblokiran.saldo-retail');
+            // cetak buku tabungan
+            Route::get('cetak-buku-tabungan', function () {
+                return view('tampilan');
+            })->name('cetak.tabungan');
         });
         // Teller
         Route::prefix('teller')->group(function () {
             Route::prefix('transaksi-teller')->group(function () {
+                // setor tunai
                 Route::resource('setor-tunai', SetorTunaiController::class);
+                // Penarikan
                 Route::resource('penarikan',PenarikanController::class);
+                // pembayaran kas
+                Route::get('pembayaran-kas-teller', function () {
+                    return view('tampilan');
+                })->name('pembayaran.kas-teller');
+                // penerimaan kas teller
+                Route::get('penerimaan-kas-teller', function () {
+                    return view('tampilan');
+                })->name('penerimaan.kas-teller');
                 // informasi nasabah
                 Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
                 Route::get('informasi-tabungan-nasabah/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
                 Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
             });
         });
+        // informasi head teller
         Route::prefix('informasi-head-teller')->group(function () {
+            // informasi semua saldo teller
+            Route::get('informasi-semua-saldo-teller', function () {
+                return view('tampilan');
+            })->name('informasi.semua-saldo');
+            // saldo teller
+            Route::get('saldo-teller', function () {
+                return view('tampilan');
+            })->name('informasi.saldo-teller');
+            // informasi tabungan nasabah
             Route::get('informasi-tabungan-nasabah',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
+        });
+        // laporan customer service
+        Route::prefix('laporan-customer-service')->group(function () {
+            // laporan pembukaan rekening
+            Route::get('laporan-pembukaan-rekening', function () {
+                return view('tampilan');
+            })->name('laporan.pembukaan-rekening');
+        });
+        // otorisasi transaksi per operator
+        Route::prefix('otorisasi-head-teller')->group(function () {
+            // otorisasi transaksi per operator
+            Route::get('otorisasi-transaksi-per-operator', function () {
+                return view('tampilan');
+            })->name('otorisasi.transaksi-operator');
         });
         // setting
         Route::prefix('setting')->group(function()

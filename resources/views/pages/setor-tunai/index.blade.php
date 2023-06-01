@@ -116,7 +116,7 @@
     @section('content')
     <section class="content-main">
         <div class="content-header">
-            <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2>
+            <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h2>
 
         </div>
         @include('components.notification')

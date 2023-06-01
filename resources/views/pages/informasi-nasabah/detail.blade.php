@@ -31,7 +31,7 @@
                                     <tr>
                                         <td width="20%">NIK</td>
                                         <td width="1%">:</td>
-                                        <td >{{ ucwords($data->nasabah->nik) }}</td>
+                                        <td >{{ ucwords($data->nik) }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">No Rekening</td>
@@ -41,17 +41,17 @@
                                     <tr>
                                         <td width="20%">Nama Nasabah</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->nasabah->nama }}</td>
+                                        <td >{{ $data->nama_nasabah }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Jenis Kelamin</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->nasabah->jenis_kelamin == '0' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                        <td >{{ $data->jenis_kelamin == '0' ? 'Laki-Laki' : 'Perempuan' }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Alamat</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->nasabah->alamat != null ? $data->nasabah->alamat : '-'  }}</td>
+                                        <td >{{ $data->alamat != null ? $data->alamat : '-'  }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Tanggal</td>
@@ -63,14 +63,7 @@
                             </table>
                             <hr>
                             @php
-                                $setoran = \App\Models\Setoran::select(
-                                            'setoran.id',
-                                            'setoran.id_rekening_tabungan',
-                                            'setoran.kode_setoran',
-                                            'setoran.tgl_setor',
-                                            'setoran.nominal_setor',
-                                            'setoran.validasi',
-                                            'setoran.saldo',
+                                $data_tabungan = \App\Models\TransaksiTabungan::select('transaksi_tabungan.*',
                                             'rekening_tabungan.nasabah_id',
                                             'rekening_tabungan.no_rekening',
                                             'nasabah.id as id_nasabah',
@@ -80,36 +73,42 @@
                                             'users.kode_user'
                                             )
                                             ->join(
-                                                'rekening_tabungan','rekening_tabungan.id','setoran.id_rekening_tabungan'
+                                                'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_nasabah'
                                             )->join(
                                                 'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                             )
                                             ->join(
-                                                'users', 'users.id', 'setoran.id_user'
+                                                'users', 'users.id', 'transaksi_tabungan.id_user'
                                             )
                                             ->where(
                                                 'rekening_tabungan.nasabah_id',$data->nasabah_id
                                             )
                                             ->where(
-                                                'setoran.id_user',auth()->user()->id
+                                                'transaksi_tabungan.id_user',auth()->user()->id
                                             )
                                             ->get()
                             @endphp
                             <table class="table table-bordered table-responsive-sm">
                                 <thead>
                                     <tr>
-                                        <th>Kode Setoran</th>
-                                        <th>Nominal</th>
+                                        <th>Kode</th>
+                                        <th>No Rekening</th>
+                                        <th>Masuk</th>
+                                        <th>Keluar</th>
+                                        <th>Saldo</th>
                                         <th>Tanggal</th>
                                         <th>Validasi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($setoran as $itemS)
+                                    @forelse ($data_tabungan as $itemS)
                                         <tr>
-                                            <td>{{ $itemS->kode_setoran }}</td>
-                                            <td>Rp. {{ number_format($itemS->nominal_setor,2, ",", ".") }}</td>
-                                            <td >{{ \Carbon\Carbon::parse($itemS->tgl_setor)->translatedFormat('d-F-Y') }}</td>
+                                            <td>{{ $itemS->kode }}</td>
+                                            <td>{{ $itemS->no_rekening }}</td>
+                                            <td> {{ $itemS->jenis == 'masuk' ?  'Rp.'.number_format($itemS->nominal,2, ",", ".") : '-'}}</td>
+                                            <td> {{ $itemS->jenis == 'keluar' ?  'Rp.'.number_format($itemS->nominal,2, ",", ".") : '-'}}</td>
+                                            <td>{{ number_format($itemS->saldo,2, ",", ".") }}</td>
+                                            <td >{{ \Carbon\Carbon::parse($itemS->tgl)->translatedFormat('d-F-Y') }}</td>
                                             <td>{{ $itemS->kode_user }}</td>
                                         </tr>
                                     @empty
