@@ -35,7 +35,7 @@
                     <span class="text ">Informasi Customer Service</span>
                 </a>
                 <div class="submenu">
-                    <a href="{{ route('informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+                    <a href="{{ route('customer.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
                     <a href="{{ route('informasi.rekening') }}" class="{{ Request::segment(3) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
                 </div>
             </li>

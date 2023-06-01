@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
         });
         // informasi customer service
         Route::prefix('informasi-customer-service')->group(function () {
-            Route::get('informasi-data-nasabah',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('informasi.nasabah');
+            Route::get('informasi-data-nasabah',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('customer.informasi.nasabah');
             Route::get('informasi-data-rekening',[InformasiCustomerServiceController::class,'informasiRekening'])->name('informasi.rekening');
 
         });
