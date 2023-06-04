@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
+use App\Models\SaldoTeller;
 use App\Models\Setoran;
 use App\Models\TransaksiTabungan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InformasiHeadTellerController extends Controller
@@ -49,5 +51,20 @@ class InformasiHeadTellerController extends Controller
                                     ->where('transaksi_tabungan.jenis','keluar')
                                     ->get();
         return view('pages.informasi-head-teller.informasi-nasabah',compact('setoran','penarikan'));
+    }
+
+    public function informasiSemuaSaldo()
+    {
+        $currentDate = Carbon::now()->toDateString();
+
+        $pembayaran = SaldoTeller::where('status','pembayaran')->where('tanggal',$currentDate)->sum('pembayaran');
+        $penerimaan = SaldoTeller::where('tanggal',$currentDate)->sum('penerimaan');
+
+        $data_pembayaran = SaldoTeller::select('saldo_teller.*','users.name')
+                                            ->join('users','users.id','saldo_teller.id_user')
+                                            ->get();
+        return view('pages.informasi-head-teller.informasi-semua-saldo-teller',
+            compact('penerimaan','pembayaran','data_pembayaran'));
+
     }
 }

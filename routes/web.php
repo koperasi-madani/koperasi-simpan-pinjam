@@ -14,8 +14,10 @@ use App\Http\Controllers\KodeLedgerController;
 use App\Http\Controllers\LaporanCustomerServiceController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\OtorisasiCustomerServiceController;
+use App\Http\Controllers\PembayaranKasTellerController;
 use App\Http\Controllers\PembukaanRekeningController;
 use App\Http\Controllers\PenarikanController;
+use App\Http\Controllers\PenerimaanKasTellerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\SukuBungaController;
@@ -108,13 +110,11 @@ Route::middleware(['auth'])->group(function () {
                 // Penarikan
                 Route::resource('penarikan',PenarikanController::class);
                 // pembayaran kas
-                Route::get('pembayaran-kas-teller', function () {
-                    return view('tampilan');
-                })->name('pembayaran.kas-teller');
+                Route::post('pembayaran-kas-teller/post', [PembayaranKasTellerController::class,'post'])->name('pembayaran.kas-teller.post');
+                Route::get('pembayaran-kas-teller', [PembayaranKasTellerController::class,'index'])->name('pembayaran.kas-teller');
                 // penerimaan kas teller
-                Route::get('penerimaan-kas-teller', function () {
-                    return view('tampilan');
-                })->name('penerimaan.kas-teller');
+                Route::post('penerimaan-kas-teller/post',[PenerimaanKasTellerController::class,'post'])->name('penerimaan.kas-teller.post');
+                Route::get('penerimaan-kas-teller',[PenerimaanKasTellerController::class,'index'])->name('penerimaan.kas-teller');
                 // informasi nasabah
                 Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
                 Route::get('informasi-tabungan-nasabah/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
@@ -124,9 +124,7 @@ Route::middleware(['auth'])->group(function () {
         // informasi head teller
         Route::prefix('informasi-head-teller')->group(function () {
             // informasi semua saldo teller
-            Route::get('informasi-semua-saldo-teller', function () {
-                return view('tampilan');
-            })->name('informasi.semua-saldo');
+            Route::get('informasi-semua-saldo-teller',[InformasiHeadTellerController::class,'informasiSemuaSaldo'])->name('informasi.semua-saldo');
             // saldo teller
             Route::get('saldo-teller', function () {
                 return view('tampilan');

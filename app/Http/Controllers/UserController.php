@@ -44,7 +44,8 @@ class UserController extends Controller
             $user->name = $request->get('nama');
             $user->username = $request->get('username');
             $user->email = $request->get('email');
-            $user->password = Hash::make('password');
+            $user->password = Hash::make($request->get('password'));
+            $user->no_hp = $request->get('no_hp');
 
             $current_user = User::role($request->get('role'))->get();
             $noAkun = null;
@@ -131,7 +132,6 @@ class UserController extends Controller
             $user->name = $request->get('nama');
             $user->username = $request->get('username');
             $user->email = $request->get('email');
-            $user->password = Hash::make('password');
             $user->update();
             if ($request->has('role') && $request->get('role') != null)  {
                 DB::table('model_has_roles')->where('model_id',$id)->delete();
@@ -144,8 +144,10 @@ class UserController extends Controller
             return redirect()->route('akun.index')->withStatus('Berhasil mengganti data');
 
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('akun.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            return $e;
             return redirect()->route('akun.index')->withError('Terjadi kesalahan.');
         }
 

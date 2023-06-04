@@ -90,7 +90,7 @@
                                             <option value="{{ $item->id }}" {{ old('id_akun') == $item->id ? 'selected' : '' }}>{{ $item->kode_akun }} -- {{ $item->nama_akun }}</option>
                                         @endforeach
                                     </select>
-                                    @error('id_induk')
+                                    @error('id_akun')
                                         <small class="text-danger">
                                             {{$message}}.
                                         </small>
