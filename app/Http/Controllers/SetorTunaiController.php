@@ -11,7 +11,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use PDF;
 class SetorTunaiController extends Controller
 {
     /**
@@ -39,7 +39,7 @@ class SetorTunaiController extends Controller
         if($setoran->count() > 0) {
             $noSetoran = $setoran[0]->kode;
 
-            $lastIncrement = substr($noSetoran, 7);
+            $lastIncrement = substr($noSetoran, 6);
 
             $noSetoran = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
             $noSetoran = 'STR'.$noSetoran;
@@ -48,6 +48,7 @@ class SetorTunaiController extends Controller
             $noSetoran = 'STR'."00001";
 
         }
+
 
         $setoran = TransaksiTabungan::select('transaksi_tabungan.*',
                                     'rekening_tabungan.nasabah_id',
@@ -66,6 +67,8 @@ class SetorTunaiController extends Controller
                                         'users', 'users.id', 'transaksi_tabungan.id_user'
                                     )
                                     ->where('transaksi_tabungan.jenis','masuk')
+                                    ->orderByDesc('transaksi_tabungan.created_at')
+                                    ->take(10)
                                     ->get();
         return view('pages.setor-tunai.index',compact('data','noSetoran','setoran'));
     }
@@ -120,9 +123,21 @@ class SetorTunaiController extends Controller
                 ]);
                 $setor->saldo = $result_saldo;
             }
-            $setor->save();
-            return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
 
+            $setor->save();
+
+            $no_rekening = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first()->no_rekening;
+            $validasi = Auth::user()->kode_user;
+            $transaction =[
+                'nominal' => $setor->nominal,
+                'tgl' => $setor->tgl,
+                'kode' => $setor->kode,
+                'no_rekening' => $no_rekening,
+                'validasi' => $validasi
+
+            ];
+            // return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
+            return response()->json(['transaction' => $transaction]);
 
         } catch (Exception $e) {
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
@@ -218,5 +233,21 @@ class SetorTunaiController extends Controller
         } catch (QueryException $e){
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         }
+    }
+    public function pdf(Request $request)
+    {
+        $transaction = $request->input('transaction');
+
+        // Buat tampilan HTML untuk transaksi setor tunai menggunakan Blade Template
+        $html = view('pages.setor-tunai.pdf', compact('transaction'))->render();
+
+        $pdf = PDF::loadHTML($html);
+        $pdf->setPaper('A4', 'portrait');
+        $filename = $transaction['kode'].'.'.'pdf';
+        $file_path = public_path('pdf/setor/') .$filename;
+        $pdf->save($file_path);
+
+        return response()->json(['file_path' => asset('pdf/setor/'.$filename)]);
+
     }
 }

@@ -218,7 +218,6 @@
                             <div class="text">
                                 <h6 class="mb-1 card-title">Waktu</h6>
                                 <span id="waktu"></span>
-
                             </div>
                         </article>
                     </div>

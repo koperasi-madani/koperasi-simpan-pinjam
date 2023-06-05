@@ -64,6 +64,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function () {
+
             $("#pesan").hide();
             $("#nominal_penarikan").attr("readonly", true);
             // const valueWithoutCurrency = nominal_penarikan.value.replace(/[^\d.-]/g, "");
@@ -178,7 +179,7 @@
                     <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
                 <div class="card-body">
-                    <form action="{{ route('penarikan.store') }}" method="POST">
+                    <form id="submitForm" action="{{ route('penarikan.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">

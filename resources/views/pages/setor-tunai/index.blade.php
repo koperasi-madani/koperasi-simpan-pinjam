@@ -72,6 +72,63 @@
     </script>
     <script>
         $(document).ready(function() {
+            $('#submitForm').submit(function(e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                        headers:{
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                });
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Panggil fungsi pencetakan setelah formulir berhasil dikirim
+                        printDocument(response);
+                        // redirectToPage('/berhasil');
+                    },
+                    error: function(xhr, status, error) {
+                        // Tangani kesalahan jika terjadi
+                        console.log(error);
+                    }
+                });
+            })
+            function printDocument(response) {
+                // Kirim HTML ke server untuk menghasilkan file PDF
+                $.ajaxSetup({
+                        headers:{
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                });
+                $.ajax({
+                url:`{{ route('setor-tunai.pdf') }}`,
+                method: 'POST',
+                data: {transaction: response.transaction},
+                success: function(response) {
+                    var receiptUrl = response.file_path;
+                    var link = document.createElement('a');
+                    link.href = receiptUrl;
+                    link.download = 'receipt.pdf';
+                    link.target = '_blank'; // Untuk membuka tautan unduhan dalam tab baru
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(redirectToPage(`{{ route('teller.informasi.nasabah') }}`), 50000);
+
+
+                    // window.open(response.file_path, '_blank');
+
+                },
+                error: function(xhr, status, error) {
+                    // Tangani kesalahan jika terjadi
+                    console.log(error);
+                }
+                });
+            }
+            function redirectToPage(url) {
+                window.location.href = url;
+            }
             var saldo_awal = document.getElementById("saldo_awal");
             saldo_awal.value = formatRupiah(saldo_awal.value);
             saldo_awal.addEventListener("keyup", function(e) {
@@ -126,7 +183,7 @@
                     <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
                 <div class="card-body">
-                    <form action="{{ route('setor-tunai.store') }}" method="POST">
+                    <form id="submitForm" action="{{ route('setor-tunai.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
