@@ -106,6 +106,7 @@
                 method: 'POST',
                 data: {transaction: response.transaction},
                 success: function(response) {
+                    console.log(response);
                     var receiptUrl = response.file_path;
                     var link = document.createElement('a');
                     link.href = receiptUrl;
