@@ -84,6 +84,7 @@
                     method: $(this).attr('method'),
                     data: $(this).serialize(),
                     success: function(response) {
+                    console.log(response);
                         // Panggil fungsi pencetakan setelah formulir berhasil dikirim
                         printDocument(response);
                         // redirectToPage('/berhasil');
