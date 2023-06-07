@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\BukuTabungan;
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
+use App\Models\SaldoTeller;
 use App\Models\Setoran;
 use App\Models\TransaksiTabungan;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -129,6 +131,16 @@ class PenarikanController extends Controller
                     'saldo' => $result_saldo,
                 ]);
                 $penarikan->saldo = $result_saldo;
+                // update penerimaan
+                $currentDate = Carbon::now()->toDateString();
+                $pembayaran = SaldoTeller::where('status','pembayaran')
+                    ->where('id_user',auth()->user()->id)
+                    ->where('tanggal',$currentDate)
+                    // ->sum('pembayaran');
+                    ->first();
+                $penerimaan = $pembayaran->penerimaan - $penarikan->nominal;
+                $pembayaran->penerimaan = $penerimaan;
+                $pembayaran->update();
                 $penarikan->status = 'setuju';
             }
             $penarikan->save();
@@ -210,6 +222,15 @@ class PenarikanController extends Controller
             }else{
                 $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_nasabah);
 
+                // update penerimaan
+                $currentDate = Carbon::now()->toDateString();
+                $pembayaran = SaldoTeller::where('status','pembayaran')
+                    ->where('id_user',auth()->user()->id)
+                    ->where('tanggal',$currentDate)
+                    // ->sum('pembayaran');
+                    ->first();
+                $penerimaan = $pembayaran->pembayaran - $this->formatNumber($request->get('nominal_penarikan'));
+                $pembayaran->penerimaan = $penerimaan;
                 $tabungan->update([
                     'saldo' => $this->formatNumber($request->get('sisa_saldo')),
                 ]);

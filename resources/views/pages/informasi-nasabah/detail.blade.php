@@ -34,6 +34,11 @@
                                         <td >{{ ucwords($data->nik) }}</td>
                                     </tr>
                                     <tr>
+                                        <td width="20%">No Anggota</td>
+                                        <td width="1%">:</td>
+                                        <td >{{ $data->no_anggota }}</td>
+                                    </tr>
+                                    <tr>
                                         <td width="20%">No Rekening</td>
                                         <td width="1%">:</td>
                                         <td >{{ $data->no_rekening }}</td>

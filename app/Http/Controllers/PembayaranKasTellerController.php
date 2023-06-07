@@ -30,6 +30,7 @@ class PembayaranKasTellerController extends Controller
             $pembayaran->id_user = $request->get('id_akun');
             $pembayaran->status = 'pembayaran';
             $pembayaran->pembayaran = $this->formatNumber($request->get('nominal'));
+            $pembayaran->penerimaan = $this->formatNumber($request->get('nominal'));
             $pembayaran->tanggal = date('Y-m-d');
             $pembayaran->save();
             return redirect()->route('pembayaran.kas-teller')->withStatus('Berhasil menambahkan data');

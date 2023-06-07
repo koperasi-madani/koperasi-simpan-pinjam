@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BukuTabungan;
 use App\Models\NasabahModel;
 use App\Models\Penarikan;
+use App\Models\SaldoTeller;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -111,6 +113,16 @@ class OtorisasiCustomerServiceController extends Controller
             $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
             $saldo_akhir = $tabungan->first()->saldo;
             $result_saldo =  $saldo_akhir - $penarikan->nominal_setor;
+            // update penerimaan
+            $currentDate = Carbon::now()->toDateString();
+            $pembayaran = SaldoTeller::where('status','pembayaran')
+                ->where('id_user',auth()->user()->id)
+                ->where('tanggal',$currentDate)
+                // ->sum('pembayaran');
+                ->first();
+            $penerimaan = $pembayaran->penerimaan - $penarikan->nominal_setor;
+            $pembayaran->penerimaan = $penerimaan;
+            $pembayaran->update();
             $tabungan->update([
                 'saldo' => $result_saldo,
             ]);

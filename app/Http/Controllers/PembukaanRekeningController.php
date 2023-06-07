@@ -6,7 +6,9 @@ use App\Models\BukuTabungan;
 use App\Models\KodeAkun;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
+use App\Models\SaldoTeller;
 use App\Models\SukuBunga;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -91,6 +93,8 @@ class PembukaanRekeningController extends Controller
         ]);
 
         try {
+
+            // nambah nasabah
             $nasabah = NasabahModel::find($request->get('id_nasabah'));
             $rekening = new PembukaanRekening;
             $rekening->no_rekening = $request->get('no_rekening');
@@ -98,6 +102,18 @@ class PembukaanRekeningController extends Controller
             $rekening->tgl = $nasabah->tgl;
             $rekening->id_suku_bunga = $request->get('suku');
             $rekening->tgl_transaksi = $request->get('tgl');
+
+            // update penerimaan
+            $currentDate = Carbon::now()->toDateString();
+            $pembayaran = SaldoTeller::where('status','pembayaran')
+                ->where('id_user',auth()->user()->id)
+                ->where('tanggal',$currentDate)
+                // ->sum('pembayaran');
+                ->first();
+            $penerimaan = $pembayaran->pembayaran != 0 ? $pembayaran->pembayaran + $this->formatNumber($request->saldo_awal) : $pembayaran->pembayaran + 0;
+            $pembayaran->penerimaan = $penerimaan;
+            $pembayaran->update();
+
             $rekening->saldo_awal = $this->formatNumber($request->saldo_awal);
             $rekening->ket = $request->get('ket');
             $rekening->nasabah_id = $request->get('id_nasabah');

@@ -232,7 +232,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Keterangan</label>
-                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror"></textarea>
+                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">Setor Tunai</textarea>
                                 @error('ket')
                                     <div class="invalid-feedback">
                                         {{$message}}.
@@ -244,7 +244,7 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-end">
                         <button type="reset" class="btn btn-outline-danger">Batal</button>
-                        <button type="submit" class="btn btn-primary mx-2">Simpan</button>
+                        <button type="submit" class="btn btn-primary mx-2">Setor</button>
                     </form>
 
                     </div>

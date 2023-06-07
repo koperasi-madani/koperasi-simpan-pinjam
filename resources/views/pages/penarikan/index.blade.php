@@ -271,7 +271,7 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-end">
                         <button type="reset" class="btn btn-outline-danger">Batal</button>
-                        <button type="submit" class="btn btn-primary mx-2">Simpan</button>
+                        <button type="submit" class="btn btn-primary mx-2">Tarik</button>
                     </form>
 
                     </div>

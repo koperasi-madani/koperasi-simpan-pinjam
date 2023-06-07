@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\BukuTabungan;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
+use App\Models\SaldoTeller;
 use App\Models\Setoran;
 use App\Models\TransaksiTabungan;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -104,6 +106,14 @@ class SetorTunaiController extends Controller
 
 
             $cek_setor = TransaksiTabungan::where('id_nasabah',$request->get('id_nasabah'))->get();
+
+            // update penerimaan
+            $currentDate = Carbon::now()->toDateString();
+            $pembayaran = SaldoTeller::where('status','pembayaran')
+                ->where('id_user',auth()->user()->id)
+                ->where('tanggal',$currentDate)
+                // ->sum('pembayaran');
+                ->first();
             if (count($cek_setor) > 0) {
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
@@ -112,11 +122,18 @@ class SetorTunaiController extends Controller
                 $tabungan->update([
                     'saldo' => $result_saldo,
                 ]);
+                $penerimaan = $pembayaran->penerimaan + $setor->nominal;
+                $pembayaran->penerimaan = $penerimaan;
+                $pembayaran->update();
                 $setor->saldo = $result_saldo;
             }else{
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_awal = $tabungan->first()->saldo_awal;
                 $result_saldo = $saldo_awal + $setor->nominal;
+
+                $penerimaan = $pembayaran->penerimaan + $setor->nominal;
+                $pembayaran->penerimaan = $penerimaan;
+                $pembayaran->update();
 
                 $tabungan->update([
                     'saldo' => $result_saldo,
@@ -192,7 +209,22 @@ class SetorTunaiController extends Controller
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$rekening->id_nasabah);
                 $current_tabungan = $tabungan->first()->saldo;
                 $current_saldo = $current_tabungan - $rekening->nominal;
+                // update penerimaan
+                $currentDate = Carbon::now()->toDateString();
+                $pembayaran = SaldoTeller::where('status','pembayaran')
+                    ->where('id_user',auth()->user()->id)
+                    ->where('tanggal',$currentDate)
+                    // ->sum('pembayaran');
+                    ->first();
+                $penerimaan = $pembayaran->penerimaan != 0 ? $pembayaran->penerimaan - $rekening->nominal : 0 + $rekening->nominal;
+                $pembayaran->penerimaan = $penerimaan;
+                $pembayaran->update();
+
                 $result_saldo = $current_saldo + $this->formatNumber($request->get('nominal_setor'));
+                $penerimaan = $pembayaran->penerimaan != 0 ? $pembayaran->penerimaan +  $this->formatNumber($request->get('nominal_setor')) : 0 + $rekening->nominal;
+                $pembayaran->penerimaan = $penerimaan;
+                $pembayaran->update();
+
                 $tabungan->update([
                     'saldo' => $result_saldo
                 ]);

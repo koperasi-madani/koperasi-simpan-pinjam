@@ -18,7 +18,8 @@ class PenerimaanKasTellerController extends Controller
         $hour = $currentTime->hour;
         // Batasi akses ke form hanya pada pagi (06:00 - 11:59) dan sore (12:00 - 17:59)
         $pembayaran = null;
-        if ($hour >= 6 && $hour <= 17) {
+        // if ($hour >= 6 && $hour <= 17) {
+        if ($hour <= 6) {
             $currentDate = Carbon::now()->toDateString();
             $pembayaran = SaldoTeller::where('status','pembayaran')
                                     ->where('id_user',auth()->user()->id)
@@ -32,7 +33,18 @@ class PenerimaanKasTellerController extends Controller
                         ->count();
             return view('pages.penerimaan.index',compact('pembayaran','penerimaan'));
         } else {
-            return view('pages.penerimaan.index',compact('pembayaran'));
+            $currentDate = Carbon::now()->toDateString();
+            $penerimaan = SaldoTeller::where('penerimaan','!=',0)
+                        ->where('id_user',auth()->user()->id)
+                        ->where('tanggal',$currentDate)
+                        // ->sum('pembayaran');
+                        ->count();
+            $pembayaran = SaldoTeller::where('status','pembayaran')
+                ->where('id_user',auth()->user()->id)
+                ->where('tanggal',$currentDate)
+                // ->sum('pembayaran');
+                ->first();
+            return view('pages.penerimaan.index',compact('pembayaran','penerimaan'));
         }
     }
 

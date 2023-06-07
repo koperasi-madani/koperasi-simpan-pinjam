@@ -51,6 +51,7 @@ class NasabahController extends Controller
     {
         $request->validate([
             'nama' => 'required',
+            'nik' => 'required|unique:nasabah,nik',
             'no_anggota' => 'required',
             'ket' => 'required',
             'nik' => 'required',
