@@ -46,9 +46,9 @@ class PembukaanRekeningController extends Controller
             $noRekening = $rekening[0]->no_rekening;
 
             $lastIncrement = substr($noRekening, 9);
-            return $lastIncrement;
             $noRekening = str_pad($lastIncrement + 1, 6, 0, STR_PAD_LEFT);
             $noRekening = '001'.$noRekening;
+            return $noRekening;
         }
         else {
             $noRekening = "001"."0000001";
@@ -75,6 +75,7 @@ class PembukaanRekeningController extends Controller
      */
     public function store(Request $request)
     {
+        return $request;
         $count = PembukaanRekening::count();
         if ($count > 0) {
             $nasabah = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first();
