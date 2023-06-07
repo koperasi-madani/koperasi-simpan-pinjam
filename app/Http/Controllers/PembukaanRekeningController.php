@@ -46,6 +46,7 @@ class PembukaanRekeningController extends Controller
             $noRekening = $rekening[0]->no_rekening;
 
             $lastIncrement = substr($noRekening, 9);
+            return $lastIncrement;
             $noRekening = str_pad($lastIncrement + 1, 6, 0, STR_PAD_LEFT);
             $noRekening = '001'.$noRekening;
         }
