@@ -45,13 +45,12 @@ class PembukaanRekeningController extends Controller
         if($rekening->count() > 0) {
             $noRekening = $rekening[0]->no_rekening;
 
-            $lastIncrement = substr($noRekening, 6);
-
-            $noRekening = str_pad($lastIncrement + 1, 4, 0, STR_PAD_LEFT);
-            $noRekening = $date.$noRekening;
+            $lastIncrement = substr($noRekening, 9);
+            $noRekening = str_pad($lastIncrement + 1, 6, 0, STR_PAD_LEFT);
+            $noRekening = '001'.$noRekening;
         }
         else {
-            $noRekening = $date."0001";
+            $noRekening = "001"."0000001";
 
         }
         return view('pages.pembukaan-rekening.index',compact(
