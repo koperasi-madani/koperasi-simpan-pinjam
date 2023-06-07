@@ -127,9 +127,7 @@ Route::middleware(['auth'])->group(function () {
             // informasi semua saldo teller
             Route::get('informasi-semua-saldo-teller',[InformasiHeadTellerController::class,'informasiSemuaSaldo'])->name('informasi.semua-saldo');
             // saldo teller
-            Route::get('saldo-teller', function () {
-                return view('tampilan');
-            })->name('informasi.saldo-teller');
+            Route::get('saldo-teller',[InformasiHeadTellerController::class,'informasiSaldoTeller'])->name('informasi.saldo-teller');
             // informasi tabungan nasabah
             Route::get('informasi-tabungan-nasabah',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
         });

@@ -67,4 +67,13 @@ class InformasiHeadTellerController extends Controller
             compact('penerimaan','pembayaran','data_pembayaran'));
 
     }
+    public function informasiSaldoTeller()
+    {
+        $data_pembayaran = SaldoTeller::select('saldo_teller.*','users.name')
+                            ->join('users','users.id','saldo_teller.id_user')
+                            ->orderBy('saldo_teller.created_at')
+                            ->get();
+        return view('pages.informasi-head-teller.informasi-saldo-teller',
+                            compact('data_pembayaran'));
+    }
 }
