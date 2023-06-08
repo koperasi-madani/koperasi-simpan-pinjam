@@ -86,7 +86,7 @@
                     success: function(response) {
                         console.log(response);
                         // Panggil fungsi pencetakan setelah formulir berhasil dikirim
-                        // printDocument(response);
+                        printDocument(response);
                         // redirectToPage('/berhasil');
                     },
                     error: function(xhr, status, error) {
