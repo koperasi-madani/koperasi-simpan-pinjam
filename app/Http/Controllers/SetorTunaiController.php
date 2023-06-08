@@ -278,7 +278,7 @@ class SetorTunaiController extends Controller
         $filename = $transaction['kode'].'.'.'pdf';
         $file_path = public_path('pdf/setor/') .$filename;
         $pdf->save($file_path);
-
+        return asset('pdf/setor/'.$filename);
         return response()->json(['file_path' => asset('pdf/setor/'.$filename)]);
 
     }
