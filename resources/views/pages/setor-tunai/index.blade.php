@@ -107,8 +107,8 @@
                 method: 'POST',
                 data: {transaction: response.transaction},
                 success: function(response) {
-                    console.log(response);
-                    // var receiptUrl = response.file_path;
+                    var receiptUrl = response.file_path;
+                    console.log(receiptUrl);
                     // var link = document.createElement('a');
                     // link.href = receiptUrl;
                     // link.download = 'receipt.pdf';
