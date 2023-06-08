@@ -269,6 +269,7 @@ class SetorTunaiController extends Controller
     public function pdf(Request $request)
     {
         $transaction = $request->input('transaction');
+        return $transaction;
 
         // Buat tampilan HTML untuk transaksi setor tunai menggunakan Blade Template
         $html = view('pages.setor-tunai.pdf', compact('transaction'))->render();
@@ -276,7 +277,6 @@ class SetorTunaiController extends Controller
         $pdf = PDF::loadHTML($html);
         $pdf->setPaper('A4', 'portrait');
         $filename = $transaction['kode'].'.'.'pdf';
-        return $filename;
         $file_path = public_path('pdf/setor/').$filename;
         $pdf->save($file_path);
         return response()->json(['file_path' => asset('laravel/public/pdf/setor/'.$filename)]);
