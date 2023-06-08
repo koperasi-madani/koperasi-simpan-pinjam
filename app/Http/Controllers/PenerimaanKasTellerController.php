@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Denominasi;
 use App\Models\SaldoTeller;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,56 +15,49 @@ class PenerimaanKasTellerController extends Controller
 {
     public function index()
     {
-        $currentTime = Carbon::now();
-        $hour = $currentTime->hour;
-        // Batasi akses ke form hanya pada pagi (06:00 - 11:59) dan sore (12:00 - 17:59)
-        $pembayaran = null;
-        // if ($hour >= 6 && $hour <= 17) {
-        if ($hour <= 6) {
-            $currentDate = Carbon::now()->toDateString();
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                                    ->where('id_user',auth()->user()->id)
-                                    ->where('tanggal',$currentDate)
-                                    // ->sum('pembayaran');
-                                    ->first();
-            $penerimaan = SaldoTeller::where('penerimaan','!=',0)
-                        ->where('id_user',auth()->user()->id)
-                        ->where('tanggal',$currentDate)
-                        // ->sum('pembayaran');
-                        ->count();
-            return view('pages.penerimaan.index',compact('pembayaran','penerimaan'));
-        } else {
-            $currentDate = Carbon::now()->toDateString();
-            $penerimaan = SaldoTeller::where('penerimaan','!=',0)
-                        ->where('id_user',auth()->user()->id)
-                        ->where('tanggal',$currentDate)
-                        // ->sum('pembayaran');
-                        ->count();
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                ->where('id_user',auth()->user()->id)
-                ->where('tanggal',$currentDate)
-                // ->sum('pembayaran');
-                ->first();
-            return view('pages.penerimaan.index',compact('pembayaran','penerimaan'));
-        }
+        $currentDate = Carbon::now()->toDateString();
+        $pembayaran = SaldoTeller::where('status','pembayaran')
+                                ->where('id_user',auth()->user()->id)
+                                ->where('tanggal',$currentDate)
+                                // ->sum('pembayaran');
+                                ->first();
+        $penerimaan = SaldoTeller::where('penerimaan','!=',0)
+                    ->where('id_user',auth()->user()->id)
+                    ->where('tanggal',$currentDate)
+                    // ->sum('pembayaran');
+                    ->count();
+
+        $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
+        return view('pages.penerimaan.index',compact('pembayaran','penerimaan','denominasi'));
     }
 
     public function post(Request $request)
     {
+
         $request->validate([
-            'nominal' => 'required'
-        ]);
+            'nominal.*' => 'required',
+            'jumlah.*' => 'required'
+            ]);
 
         try {
             $currentDate = Carbon::now()->toDateString();
-            SaldoTeller::where('status','pembayaran')
-                                ->where('id_user',auth()->user()->id)
-                                ->where('tanggal',$currentDate)
-                                ->where('id',$request->get('id_saldo'))
-                                ->update([
-                                    'penerimaan' => $this->formatNumber($request->get('nominal'))
-                                ]);
-            return redirect()->route('pembayaran.kas-teller')->withStatus('Berhasil menambahkan data dengan nominal'.$request->get('nominal'));
+            $current_penerimaan = SaldoTeller::where('status','pembayaran')
+                                    ->where('id_user',auth()->user()->id)
+                                    ->where('tanggal',$currentDate)
+                                    ->first()->penerimaan;
+            $denominasi = (int) $request->get('penerimaan_total');
+            if ($current_penerimaan != $denominasi) {
+                return redirect()->back()->withError('Data tidak sesuai.');
+            }
+            for ($i=0; $i < count($request->get('nominal')); $i++) {
+                $denominasi = new Denominasi;
+                $denominasi->id_user = auth()->user()->id;
+                $denominasi->nominal = (int) $request->get('nominal')[$i];
+                $denominasi->jumlah = (int) $request->get('jumlah')[$i];
+                $denominasi->total = (int) $request->get('jumlah')[$i] * (int) $request->get('nominal')[$i];
+                $denominasi->save();
+            }
+            return redirect()->route('penerimaan.kas-teller')->withStatus('Berhasil menambahkan data dengan nominal'.$request->get('penerimaan_total'));
         } catch (Exception $e) {
             return redirect()->back()->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
