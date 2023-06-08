@@ -106,15 +106,16 @@
                 method: 'POST',
                 data: {transaction: response.transaction},
                 success: function(response) {
-                    var receiptUrl = response.file_path;
-                    var link = document.createElement('a');
-                    link.href = receiptUrl;
-                    link.download = 'receipt.pdf';
-                    link.target = '_blank'; // Untuk membuka tautan unduhan dalam tab baru
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(redirectToPage(`{{ route('teller.informasi.nasabah') }}`), 50000);
+                    console.log(response);
+                    // var receiptUrl = response.file_path;
+                    // var link = document.createElement('a');
+                    // link.href = receiptUrl;
+                    // link.download = 'receipt.pdf';
+                    // link.target = '_blank'; // Untuk membuka tautan unduhan dalam tab baru
+                    // document.body.appendChild(link);
+                    // link.click();
+                    // document.body.removeChild(link);
+                    // setTimeout(redirectToPage(`{{ route('teller.informasi.nasabah') }}`), 50000);
                 },
                 error: function(xhr, status, error) {
                     // Tangani kesalahan jika terjadi
