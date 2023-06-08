@@ -268,6 +268,7 @@ class SetorTunaiController extends Controller
     }
     public function pdf(Request $request)
     {
+        return public_path('pdf/setor/');
         $transaction = $request->input('transaction');
 
         // Buat tampilan HTML untuk transaksi setor tunai menggunakan Blade Template
