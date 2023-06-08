@@ -153,6 +153,7 @@ class SetorTunaiController extends Controller
                 'validasi' => $validasi
 
             ];
+            return $transaction;
             // return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
             return response()->json(['transaction' => $transaction]);
 
