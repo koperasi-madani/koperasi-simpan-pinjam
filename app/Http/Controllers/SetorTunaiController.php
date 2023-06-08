@@ -114,7 +114,7 @@ class SetorTunaiController extends Controller
                 ->where('tanggal',$currentDate)
                 // ->sum('pembayaran');
                 ->first();
-            return $pembayaran;
+            return 'jembut';
             if (count($cek_setor) > 0) {
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
