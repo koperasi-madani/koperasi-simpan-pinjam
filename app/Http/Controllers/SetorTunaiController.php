@@ -122,13 +122,11 @@ class SetorTunaiController extends Controller
                 $tabungan->update([
                     'saldo' => $result_saldo,
                 ]);
-                return $pembayaran;
                 $penerimaan = $pembayaran->penerimaan + $setor->nominal;
                 $pembayaran->penerimaan = $penerimaan;
                 $pembayaran->update();
                 $setor->saldo = $result_saldo;
             }else{
-                return $pembayaran;
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_awal = $tabungan->first()->saldo_awal;
                 $result_saldo = $saldo_awal + $setor->nominal;
@@ -155,7 +153,6 @@ class SetorTunaiController extends Controller
                 'validasi' => $validasi
 
             ];
-            return $transaction;
             // return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
             return response()->json(['transaction' => $transaction]);
 
@@ -272,7 +269,6 @@ class SetorTunaiController extends Controller
     public function pdf(Request $request)
     {
         $transaction = $request->input('transaction');
-        return $transaction;
 
         // Buat tampilan HTML untuk transaksi setor tunai menggunakan Blade Template
         $html = view('pages.setor-tunai.pdf', compact('transaction'))->render();
@@ -280,8 +276,10 @@ class SetorTunaiController extends Controller
         $pdf = PDF::loadHTML($html);
         $pdf->setPaper('A4', 'portrait');
         $filename = $transaction['kode'].'.'.'pdf';
-        $file_path = public_path('pdf/setor/').$filename;
+        $file_path = public_path('pdf/setor/') .$filename;
         $pdf->save($file_path);
-        return response()->json(['file_path' => asset('laravel/public/pdf/setor/'.$filename)]);
+
+        return response()->json(['file_path' => asset('pdf/setor/'.$filename)]);
+
     }
 }
