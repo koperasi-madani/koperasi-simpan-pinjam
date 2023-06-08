@@ -122,11 +122,13 @@ class SetorTunaiController extends Controller
                 $tabungan->update([
                     'saldo' => $result_saldo,
                 ]);
+                return $pembayaran;
                 $penerimaan = $pembayaran->penerimaan + $setor->nominal;
                 $pembayaran->penerimaan = $penerimaan;
                 $pembayaran->update();
                 $setor->saldo = $result_saldo;
             }else{
+                return $pembayaran;
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_awal = $tabungan->first()->saldo_awal;
                 $result_saldo = $saldo_awal + $setor->nominal;
