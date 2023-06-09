@@ -216,8 +216,8 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Total Penerimaan</h6>
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $pembayaran->penerimaan != null ? $pembayaran->penerimaan : 0 }}" hidden>
-                            <span>Rp. {{ number_format($pembayaran->penerimaan != null ? $pembayaran->penerimaan : 0 ,2, ",", ".") }}</span>
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $pembayaran->penerimaan != 0 ? $pembayaran->penerimaan : 0 }}" hidden>
+                            <span>Rp. {{ number_format($pembayaran->penerimaan != 0 ? $pembayaran->penerimaan : 0 ,2, ",", ".") }}</span>
                         </div>
                     </article>
                     <hr>
