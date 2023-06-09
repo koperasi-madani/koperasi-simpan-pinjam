@@ -110,8 +110,8 @@
                 <div class="submenu">
                     <a href="{{ route('setor-tunai.index') }}" class="{{ Request::segment(4) == 'setor-tunai' ? 'active' : '' }}">Setor Tunai</a>
                     <a href="{{ route('penarikan.index') }}" class="{{ Request::segment(4) == 'penarikan' ? 'active' : '' }}">Penarikan Tunai</a>
-                    <a href="{{ route('pembayaran.kas-teller') }}" class="{{ Request::segment(4) == 'pembayaran-kas-teller' ? 'active' : '' }}">Pembayaran Kas Teller</a>
-                    <a href="{{ route('penerimaan.kas-teller') }}" class="{{ Request::segment(4) == 'penerimaan-kas-teller' ? 'active' : '' }}">Penerimaan Kas Teller</a>
+                    <a href="{{ route('pembayaran.kas-teller') }}" class="{{ Request::segment(4) == 'pembayaran-kas-teller' ? 'active' : '' }}">Transaksi Kas Pagi</a>
+                    <a href="{{ route('penerimaan.kas-teller') }}" class="{{ Request::segment(4) == 'penerimaan-kas-teller' ? 'active' : '' }}">Transaksi Kasi Sore</a>
                     <a href="{{ route('teller.informasi.nasabah') }}" class="{{ Request::segment(4) == 'informasi-tabungan-nasabah' ? 'active' : '' }}">Informasi Tabungan Nasabah</a>
                 </div>
             </li>
