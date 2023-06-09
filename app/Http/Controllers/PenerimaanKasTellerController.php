@@ -26,7 +26,6 @@ class PenerimaanKasTellerController extends Controller
                     ->where('tanggal',$currentDate)
                     // ->sum('pembayaran');
                     ->count();
-        return gettype($penerimaan);
 
         $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
         return view('pages.penerimaan.index',compact('pembayaran','penerimaan','denominasi'));
