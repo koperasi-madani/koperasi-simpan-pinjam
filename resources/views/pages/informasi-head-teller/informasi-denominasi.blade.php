@@ -202,7 +202,7 @@
     <section class="content-main mb-5">
         <div class="content-header">
             <div>
-                <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h2>
+                <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2>
                 <p>Pembayaran kas dilakukan oleh head teller ketika di pagi hari untuk semua teller</p>
             </div>
         </div>
@@ -216,8 +216,8 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Total Saldo</h6>
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran->penerimaan : 0 }}" hidden>
-                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran->penerimaan : 0 ,2, ",", ".") }}</span>
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran : 0 }}" hidden>
+                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran : 0 ,2, ",", ".") }}</span>
                         </div>
                     </article>
                     <hr>
@@ -255,7 +255,7 @@
                     </div>
                     @else
                     <div class="card-body">
-                        <form action="{{ route('penerimaan.kas-teller.post') }}" method="POST">
+                        <form action="{{ route('informasi.denominasi.post') }}" method="POST">
                         @csrf
                             <div id="formContainer">
                                 <div class="row form-row my-3 item-row">

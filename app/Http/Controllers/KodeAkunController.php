@@ -70,7 +70,7 @@ class KodeAkunController extends Controller
             $noAkun = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
             return $noAkun;
         }else{
-            $lastIncrement = substr($ledger->kode_akun, 0);
+            $lastIncrement = substr($ledger->kode_induk, 0);
             $noAkun = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
             return $noAkun;
 

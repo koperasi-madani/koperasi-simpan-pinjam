@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KodeAkun;
+use App\Models\PPeminjamanKas;
 use App\Models\SaldoTeller;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -14,7 +17,12 @@ class PembayaranKasTellerController extends Controller
     {
         $teller = User::role('teller')->get();
         $kode = $this->generate();
-        return view('pages.pembayaran.index',compact('teller','kode'));
+        $kode_akun = KodeAkun::where('nama_akun','like','%Kas%')->get();
+
+        $currentDate = Carbon::now()->toDateString();
+        $peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->sum('nominal');
+
+        return view('pages.pembayaran.index',compact('teller','kode','kode_akun','peminjaman'));
     }
 
     public function post(Request $request)
@@ -25,14 +33,46 @@ class PembayaranKasTellerController extends Controller
             'nominal' => 'required',
         ]);
         try {
-            $pembayaran = new SaldoTeller;
-            $pembayaran->kode = $request->get('kode_pembayaran');
-            $pembayaran->id_user = $request->get('id_akun');
-            $pembayaran->status = 'pembayaran';
-            $pembayaran->pembayaran = $this->formatNumber($request->get('nominal'));
-            $pembayaran->penerimaan = $this->formatNumber($request->get('nominal'));
-            $pembayaran->tanggal = date('Y-m-d');
-            $pembayaran->save();
+            $nominal =  $this->formatNumber($request->get('nominal'));
+            $peminjaman = (int) $request->get('peminjaman');
+            $result = $peminjaman - $nominal;
+            if ($result < 0) {
+                return redirect()->back()->withError('saldo tidak mencukupi.');
+            }
+            // peminjaman
+            $currentDate = Carbon::now()->toDateString();
+            $peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->first();
+            $peminjaman->nominal = $result;
+            $peminjaman->update();
+
+            $dataUser = User::role('head-teller')->where('id',auth()->user()->id)->first();
+
+            $current_head_pembayaran = SaldoTeller::where('tanggal',$currentDate)->where('id_user',$dataUser->id)->first();
+            $current_head_pembayaran->pembayaran = $result;
+            $current_head_pembayaran->penerimaan = $result;
+            $current_head_pembayaran->update();
+
+            $current_saldo = SaldoTeller::where('tanggal',$currentDate)->where('id_user',$request->get('id_akun'))->get();
+
+            if (count($current_saldo) > 0) {
+                $current_pembayaran = SaldoTeller::where('tanggal',$currentDate)->where('id_user',$request->get('id_akun'))->first();
+                $current_pembayaran->kode = $request->get('kode_pembayaran');
+                $current_pembayaran->id_user = $request->get('id_akun');
+                $current_pembayaran->status = 'pembayaran';
+                $current_pembayaran->pembayaran = $current_pembayaran->pembayaran + $this->formatNumber($request->get('nominal'));
+                $current_pembayaran->penerimaan = $current_pembayaran->penerimaan + $this->formatNumber($request->get('nominal'));
+                $current_pembayaran->tanggal = date('Y-m-d');
+                $current_pembayaran->update();
+            }else{
+                $pembayaran = new SaldoTeller;
+                $pembayaran->kode = $request->get('kode_pembayaran');
+                $pembayaran->id_user = $request->get('id_akun');
+                $pembayaran->status = 'pembayaran';
+                $pembayaran->pembayaran = $this->formatNumber($request->get('nominal'));
+                $pembayaran->penerimaan = $this->formatNumber($request->get('nominal'));
+                $pembayaran->tanggal = date('Y-m-d');
+                $pembayaran->save();
+            }
             return redirect()->route('pembayaran.kas-teller')->withStatus('Berhasil menambahkan data');
         } catch (Exception $e) {
             return redirect()->back()->withError('Terjadi Kesalahan');

@@ -64,6 +64,9 @@
         $('#id_akun').select2({
             placeholder: "Pilih Akun"
         });
+        $('#id_rek').select2({
+            placeholder: "Pilih Rekening"
+        });
     </script>
     <script>
         $(function() {
@@ -99,6 +102,11 @@
             nominal.value = formatRupiah(nominal.value);
             nominal.addEventListener("keyup", function(e) {
                 nominal.value = formatRupiah(this.value);
+            });
+            var nominal_peminjaman = document.getElementById("nominal_peminjaman");
+            nominal_peminjaman.value = formatRupiah(nominal_peminjaman.value);
+            nominal_peminjaman.addEventListener("keyup", function(e) {
+                nominal_peminjaman.value = formatRupiah(this.value);
             });
 
             function convertToTerbilang(number) {
@@ -178,9 +186,51 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <header class="card-header">
+                        <h4>Peminjaman Kas Hari Ini</h4>
+                    </header>
+                    <div class="card-body">
+                        <form action="{{ route('peminjaman-kas.post') }}" method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="product_name" class="form-label">Kode Akun</label>
+                                    <select name="id_rek" id="id_rek" class="form-control">
+                                        @foreach ($kode_akun as $item)
+                                            <option value="{{ $item->id }}" {{ old('id_rek') == $item->id ? 'selected' : '' }}>{{ $item->kode_akun }} -- {{ $item->nama_akun }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_rek')
+                                        <small class="text-danger">
+                                            {{$message}}.
+                                        </small>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="product_name" class="form-label">Nominal</label>
+                                    <input placeholder="Nominal" value="0" id="nominal_peminjaman" type="text" value="{{ old('nominal') }}" class="form-control @error('nominal') is-invalid @enderror" name="nominal" />
+                                    @error('nominal')
+                                        <div class="invalid-feedback">
+                                            {{$message}}.
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-end mb-5">
+                            <button type="reset" class="btn btn-outline-danger">Batal</button>
+                            <button type="submit" class="btn btn-primary mx-2">Simpan</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <header class="card-header">
                         <div class="d-flex justify-content-between">
                             <h4>Tambah Data Pembayaran</h4>
-
+                            <h6>Total Peminjaman : Rp.{{ number_format($peminjaman,2, ",", ".") }}</h6>
                         </div>
                     </header>
                     <div class="card-body">
@@ -224,6 +274,7 @@
                                             </div>
                                         @enderror
                                     </div>
+                                    <input type="text" name="peminjaman" value="{{ $peminjaman }}" readonly hidden>
                                 </div>
                                 <hr>
                                 <span id="terbilang_nominal">Terbilang : </span>

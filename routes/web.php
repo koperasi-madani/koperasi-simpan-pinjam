@@ -4,6 +4,7 @@ use App\Http\Controllers\CadanganBukuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataAdministrasiController;
 use App\Http\Controllers\DataInformasiPinjamanController;
+use App\Http\Controllers\DenominasiController;
 use App\Http\Controllers\InformasiAdminKreditController;
 use App\Http\Controllers\InformasiCustomerServiceController;
 use App\Http\Controllers\InformasiHeadTellerController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\OtorisasiCustomerServiceController;
 use App\Http\Controllers\PembayaranKasTellerController;
 use App\Http\Controllers\PembukaanRekeningController;
+use App\Http\Controllers\PeminjamanKasTellerController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\PenerimaanKasTellerController;
 use App\Http\Controllers\ProfileController;
@@ -110,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::resource('setor-tunai', SetorTunaiController::class);
                 // Penarikan
                 Route::resource('penarikan',PenarikanController::class);
+                // peminjaman kas teller (head teller)
+                Route::post('pembayaran-kas-teller/peminjaman-kas',[PeminjamanKasTellerController::class,'post'])->name('peminjaman-kas.post');
                 // pembayaran kas
                 Route::post('pembayaran-kas-teller/post', [PembayaranKasTellerController::class,'post'])->name('pembayaran.kas-teller.post');
                 Route::get('pembayaran-kas-teller', [PembayaranKasTellerController::class,'index'])->name('pembayaran.kas-teller');
@@ -130,6 +134,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('saldo-teller',[InformasiHeadTellerController::class,'informasiSaldoTeller'])->name('informasi.saldo-teller');
             // informasi tabungan nasabah
             Route::get('informasi-tabungan-nasabah',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
+            // denominasi
+            Route::post('informasi-denominasi/post',[DenominasiController::class,'post'])->name('informasi.denominasi.post');
+            Route::get('informasi-denominasi',[DenominasiController::class,'index'])->name('informasi.denominasi');
         });
         // laporan customer service
         Route::prefix('laporan-customer-service')->group(function () {
