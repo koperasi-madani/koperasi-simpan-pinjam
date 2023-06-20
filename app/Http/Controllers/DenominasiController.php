@@ -17,9 +17,22 @@ class DenominasiController extends Controller
                                 ->where('tanggal',$currentDate)
                                 // ->sum('pembayaran');
                                 ->sum('penerimaan');
+        $data_pembayaran = SaldoTeller::select('saldo_teller.*','users.id as id_user', 'users.name')
+                                ->join('users','users.id','saldo_teller.id_user')
+                                ->where('saldo_teller.status','pembayaran')
+                                ->where('saldo_teller.tanggal',$currentDate)
+                                ->get();
 
         $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
-        return view('pages.informasi-head-teller.informasi-denominasi',compact('pembayaran','denominasi'));
+
+        $nominal_denominasi = Denominasi::whereDate('denominasi.created_at','=',$currentDate)
+                            ->groupBy('denominasi.id_user')
+                            ->get()
+                            ->map(function ($item) {
+                                $item->hasil_perkalian = $item->nominal * (int)$item->jumlah;
+                                return $item;
+                            });
+        return view('pages.informasi-head-teller.informasi-denominasi',compact('pembayaran','denominasi','data_pembayaran','nominal_denominasi'));
     }
 
     public function post(Request $request){

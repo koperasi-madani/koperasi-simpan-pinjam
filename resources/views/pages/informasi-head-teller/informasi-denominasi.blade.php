@@ -214,10 +214,24 @@
                 <div class="card card-body mb-4">
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
-                        <div class="text">
+                        <div class="text w-100">
                             <h6 class="mb-1 card-title">Total Saldo</h6>
                             <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran : 0 }}" hidden>
                             <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran : 0 ,2, ",", ".") }}</span>
+                            <table class="table table-bordered table-responsive-sm">
+                                <tbody>
+                                    @forelse ($data_pembayaran as $item)
+                                        <tr>
+                                            <td width="9%">{{ ucwords($item->name) }}</td>
+                                            <td width="1%">:</td>
+                                            <td width="50%">Rp. {{ number_format($item->penerimaan,2, ",", ".") }}</td>
+                                        </tr>
+                                    @empty
+
+                                    @endforelse
+
+                                </tbody>
+                            </table>
                         </div>
                     </article>
                     <hr>
@@ -227,10 +241,30 @@
             <div class="col-md-6">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-timer"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Waktu</h6>
-                            <span id="waktu"></span>
+                        <div class="text w-100">
+                            <table class="table table-bondered" id="example">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Total Donimasi</th>
+                                        <th scope="col">Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($nominal_denominasi as $item)
+                                        @php
+                                            $user = \App\Models\User::find($item->id_user);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>Rp {{ number_format($item->hasil_perkalian,2, ",", ".") }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d-F-Y') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </article>
                 </div>

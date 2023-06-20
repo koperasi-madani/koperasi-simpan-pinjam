@@ -215,9 +215,13 @@
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Total Saldo</h6>
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran->penerimaan : 0 }}" hidden>
-                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran->penerimaan : 0 ,2, ",", ".") }}</span>
+                            <h6 class="mb-1 card-title">Saldo Teller</h6>
+                            @php
+                                $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
+                                $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi[0]->hasil_perkalian;
+                            @endphp
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
+                            <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
                         </div>
                     </article>
                     <hr>
@@ -249,7 +253,7 @@
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                             <div>
-                                <strong>Perhatina!</strong> Data sudah tersedia.
+                                <strong>Perhatian!</strong> Data sudah tersedia.
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BukuTabungan;
+use App\Models\Denominasi;
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
 use App\Models\SaldoTeller;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PenarikanController extends Controller
 {
@@ -64,6 +66,7 @@ class PenarikanController extends Controller
                                     'users', 'users.id', 'transaksi_tabungan.id_user'
                                 )
                                 ->where('transaksi_tabungan.jenis','keluar')
+                                ->orderByDesc('transaksi_tabungan.created_at')
                                 ->get();
         return view('pages.penarikan.index',compact('data','noPenarikan','penarikan'));
     }
@@ -108,6 +111,21 @@ class PenarikanController extends Controller
         $saldo_akhir = $tabungan->first()->saldo;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
+        }
+        if (Auth::user()->hasRole('teller')) {
+            $currentDate = Carbon::now()->toDateString();
+            // cek denominasi
+            $nominal_denominasi = Denominasi::where('id_user',auth()->user()->id)
+                    ->whereDate('created_at','=',$currentDate)
+                    ->get()
+                    ->map(function ($item) {
+                        $item->hasil_perkalian = $item->nominal * (int)$item->jumlah;
+                        return $item;
+                    });
+            $nominal = (int) $nominal_denominasi[0]->hasil_perkalian;
+            if ($nominal > 0) {
+                return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan sudah melakukan denominasi');
+            }
         }
         try {
             $penarikan = new TransaksiTabungan;

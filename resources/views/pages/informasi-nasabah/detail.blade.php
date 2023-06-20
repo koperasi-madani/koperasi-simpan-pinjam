@@ -58,6 +58,18 @@
                                         <td width="1%">:</td>
                                         <td >{{ $data->alamat != null ? $data->alamat : '-'  }}</td>
                                     </tr>
+                                    {{-- @php
+                                        $sukuBunga = $data->suku_bunga;
+                                        $hitung =  $data->saldo * $sukuBunga;
+                                        // 80 persen dari pajak (pph)
+                                        $result = $hitung * 80 / 100 / 365;
+                                    @endphp
+                                    {{ ceil($result) }} --}}
+                                    <tr>
+                                        <td width="20%">Suku Bunga Dicadangkan</td>
+                                        <td width="1%">:</td>
+                                        <td >Rp.  {{ number_format($data->saldo_bunga,2, ",", ".") }}</td>
+                                    </tr>
                                     <tr>
                                         <td width="20%">Tanggal</td>
                                         <td width="1%">:</td>

@@ -49,9 +49,11 @@ class InformasiNasabahTellerController extends Controller
                             'nasabah.status',
                             'nasabah.jenis_kelamin',
                             'suku_bunga_koperasi.nama',
-                            'suku_bunga_koperasi.suku_bunga')
+                            'suku_bunga_koperasi.suku_bunga',
+                            'buku_tabungan.saldo',)
                             ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
                             ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
+                            ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
                             ->where('rekening_tabungan.nasabah_id',$id)
                             ->first();
         return view('pages.informasi-nasabah.detail',compact('data'));
