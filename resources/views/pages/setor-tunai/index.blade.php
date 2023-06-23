@@ -180,77 +180,90 @@
                 <header class="card-header">
                     <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
-                <div class="card-body">
-                    <form id="submitForm" action="{{ route('setor-tunai.store') }}" method="POST">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Kode Rekening</label>
-                                    <select name="id_nasabah" id="id_nasabah" class="form-control">
-                                        @foreach ($data as $item)
-                                            <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('id_nasabah')
-                                        <small class="text-danger">
-                                            {{$message}}.
-                                        </small>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Kode Setoran</label>
-                                    <input placeholder="Masukkan kode setoran" value="{{ old('kode_setoran',$noSetoran) }}" type="text" class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
-                                    @error('kode_setoran')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
+                @if (Session::has('status_tutup'))
+                    @if (Session::get('status_tutup') == 'buka')
+                        <div class="card-body">
+                            <form id="submitForm" action="{{ route('setor-tunai.store') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Kode Rekening</label>
+                                            <select name="id_nasabah" id="id_nasabah" class="form-control">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('id_nasabah')
+                                                <small class="text-danger">
+                                                    {{$message}}.
+                                                </small>
+                                            @enderror
                                         </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Tanggal</label>
-                                    <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
-                                    @error('tgl')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Nominal Setor</label>
-                                    <input placeholder="Masukkan nominal setor" value="{{ old('nominal_setor',) }}" type="text"  class="form-control @error('nominal_setor') is-invalid @enderror" name="nominal_setor" id="saldo_awal" />
-                                    @error('nominal_setor')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="product_name" class="form-label">Keterangan</label>
-                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">Setor Tunai</textarea>
-                                @error('ket')
-                                    <div class="invalid-feedback">
-                                        {{$message}}.
                                     </div>
-                                @enderror
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Kode Setoran</label>
+                                            <input placeholder="Masukkan kode setoran" value="{{ old('kode_setoran',$noSetoran) }}" type="text" class="form-control @error('kode_setoran') is-invalid @enderror" name="kode_setoran" />
+                                            @error('kode_setoran')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Tanggal</label>
+                                            <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
+                                            @error('tgl')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Nominal Setor</label>
+                                            <input placeholder="Masukkan nominal setor" value="{{ old('nominal_setor',) }}" type="text"  class="form-control @error('nominal_setor') is-invalid @enderror" name="nominal_setor" id="saldo_awal" />
+                                            @error('nominal_setor')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Keterangan</label>
+                                        <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror">Setor Tunai</textarea>
+                                        @error('ket')
+                                            <div class="invalid-feedback">
+                                                {{$message}}.
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-end">
+                                <button type="reset" class="btn btn-outline-danger">Batal</button>
+                                <button type="submit" class="btn btn-primary mx-2">Setor</button>
+                            </form>
+
                             </div>
                         </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-end">
-                        <button type="reset" class="btn btn-outline-danger">Batal</button>
-                        <button type="submit" class="btn btn-primary mx-2">Setor</button>
-                    </form>
-
-                    </div>
-                </div>
+                    @else
+                        <div class="card-body">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div>
+                                    <strong>Perhatian!</strong> form belum bisa diakses.
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
             </div>
             <div class="col-md-12">
                 <div class="card mb-4">

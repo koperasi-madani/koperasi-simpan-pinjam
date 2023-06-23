@@ -178,104 +178,117 @@
                 <header class="card-header">
                     <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
-                <div class="card-body">
-                    <form id="submitForm" action="{{ route('penarikan.store') }}" method="POST">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Kode Rekening</label>
-                                    <select name="id_nasabah" id="id_nasabah" class="form-control">
-                                        <option value="">Pilik Rekening</option>
-                                        @foreach ($data as $item)
-                                            <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('id_nasabah')
-                                        <small class="text-danger">
-                                            {{$message}}.
-                                        </small>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Kode Penarikan</label>
-                                    <input placeholder="Masukkan kode penarikan" value="{{ old('kode_penarikan',$noPenarikan) }}" type="text" class="form-control @error('kode_penarikan') is-invalid @enderror" name="kode_penarikan" />
-                                    @error('kode_penarikan')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
+                @if (Session::has('status_tutup'))
+                    @if (Session::get('status_tutup') == 'buka')
+                        <div class="card-body">
+                            <form id="submitForm" action="{{ route('penarikan.store') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Kode Rekening</label>
+                                            <select name="id_nasabah" id="id_nasabah" class="form-control">
+                                                <option value="">Pilik Rekening</option>
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('id_nasabah')
+                                                <small class="text-danger">
+                                                    {{$message}}.
+                                                </small>
+                                            @enderror
                                         </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Tanggal</label>
-                                    <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
-                                    @error('tgl')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Nominal Penarikan</label>
-                                    <input type="text" name="" value="0" id="rupiah" hidden>
-                                    <input placeholder="Masukkan nominal penarikan" value="{{ old('nominal_penarikan') }}" type="text"  class="form-control @error('nominal_penarikan') is-invalid @enderror" name="nominal_penarikan" id="nominal_penarikan" />
-                                    @error('nominal_penarikan')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Total Saldo</label>
-                                    <input placeholder="Masukkan nominal penarikan" readonly value="{{ old('total_saldo',) }}" type="text"  class="form-control @error('total_saldo') is-invalid @enderror" name="total_saldo" id="total_saldo" />
-                                    @error('total_saldo')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Sisa Saldo</label>
-                                    <input placeholder="0" readonly value="{{ old('sisa_saldo',) }}" type="text"  class="form-control @error('sisa_saldo') is-invalid @enderror" name="sisa_saldo" id="sisa_saldo" />
-                                    <div id="pesan">
-                                        <small class="text-danger">Maaf saldo anda tidak mencukupi</small>
                                     </div>
-                                    @error('sisa_saldo')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Kode Penarikan</label>
+                                            <input placeholder="Masukkan kode penarikan" value="{{ old('kode_penarikan',$noPenarikan) }}" type="text" class="form-control @error('kode_penarikan') is-invalid @enderror" name="kode_penarikan" />
+                                            @error('kode_penarikan')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
                                         </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="product_name" class="form-label">Keterangan</label>
-                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror"></textarea>
-                                @error('ket')
-                                    <div class="invalid-feedback">
-                                        {{$message}}.
                                     </div>
-                                @enderror
+                                    <div class="col-md-12">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Tanggal</label>
+                                            <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
+                                            @error('tgl')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Nominal Penarikan</label>
+                                            <input type="text" name="" value="0" id="rupiah" hidden>
+                                            <input placeholder="Masukkan nominal penarikan" value="{{ old('nominal_penarikan') }}" type="text"  class="form-control @error('nominal_penarikan') is-invalid @enderror" name="nominal_penarikan" id="nominal_penarikan" />
+                                            @error('nominal_penarikan')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Total Saldo</label>
+                                            <input placeholder="Masukkan nominal penarikan" readonly value="{{ old('total_saldo',) }}" type="text"  class="form-control @error('total_saldo') is-invalid @enderror" name="total_saldo" id="total_saldo" />
+                                            @error('total_saldo')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Sisa Saldo</label>
+                                            <input placeholder="0" readonly value="{{ old('sisa_saldo',) }}" type="text"  class="form-control @error('sisa_saldo') is-invalid @enderror" name="sisa_saldo" id="sisa_saldo" />
+                                            <div id="pesan">
+                                                <small class="text-danger">Maaf saldo anda tidak mencukupi</small>
+                                            </div>
+                                            @error('sisa_saldo')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Keterangan</label>
+                                        <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror"></textarea>
+                                        @error('ket')
+                                            <div class="invalid-feedback">
+                                                {{$message}}.
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-end">
+                                <button type="reset" class="btn btn-outline-danger">Batal</button>
+                                <button type="submit" class="btn btn-primary mx-2">Tarik</button>
+                            </form>
+
                             </div>
                         </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-end">
-                        <button type="reset" class="btn btn-outline-danger">Batal</button>
-                        <button type="submit" class="btn btn-primary mx-2">Tarik</button>
-                    </form>
-
-                    </div>
-                </div>
+                    @else
+                        <div class="card-body">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div>
+                                    <strong>Perhatian!</strong> form belum bisa diakses.
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
             </div>
             <div class="col-md-12">
                 <div class="card mb-4">

@@ -216,12 +216,16 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Saldo Teller</h6>
-                            @php
-                                $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
-                                $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi[0]->hasil_perkalian;
-                            @endphp
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
-                            <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
+                            @if (count($nominal_denominasi) != 0)
+                                @php
+                                    $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
+                                    $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi[0]->hasil_perkalian;
+                                @endphp
+                                <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
+                                <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
+                            @else
+                                <span class="text-danger">Belum ada saldo </span>
+                            @endif
                         </div>
                     </article>
                     <hr>
@@ -246,69 +250,79 @@
                     <div class="header card-header d-flex justify-content-between">
                         <h4>DENOMINASI</h4>
                         <button type="button" class="btn btn-primary " id="addBtn">Tambah </button>
-
                     </div>
-                    @if (count($denominasi) > 0)
-                    <div class="card-body">
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                    @if (count($nominal_denominasi) != 0)
+                        @if (count($denominasi) > 0)
+                        <div class="card-body">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div>
+                                    <strong>Perhatian!</strong> Data sudah tersedia.
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                        <div class="card-body">
+                            <form action="{{ route('penerimaan.kas-teller.post') }}" method="POST">
+                            @csrf
+                                <div id="formContainer">
+                                    <div class="row form-row my-3 item-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="nominal">Nominal</label>
+                                            <input type="number" class="form-control @error('nominal') is-invalid @enderror nominal-input" name="nominal[]" required min="1" placeholder="Masukkan nominal">
+                                            @error('nominal')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="jumlah">Jumlah</label>
+                                            <input type="number" class="form-control @error('jumlah') is-invalid @enderror jumlah-input" name="jumlah[]" required min="1" placeholder="Masukkan Jumlah">
+                                            @error('jumlah')
+                                                <div class="invalid-feedback">
+                                                    {{$message}}.
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="harga">Total</label>
+                                            <input type="number" class="form-control total-input" placeholder="Total Nominal" readonly name="total[]">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <button type="button" class="btn btn-danger remove-btn">Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="card-footer">
+                            <hr>
                             <div>
-                                <strong>Perhatian!</strong> Data sudah tersedia.
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input type="text" readonly hidden class="penerimaan_total" name="penerimaan_total" id="penerimaan_total">
+                                        <h4 id="grandtotal">Total Penerimaan : 0</h4>
+                                        <hr>
+                                        <small id="terbilang_penerimaan">Terbilang : </small>
+                                    </div>
+                                    <div class="col-md-2 align-self-center">
+                                        <button type="reset" class="btn btn-outline-danger mx-2">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        @endif
                     @else
-                    <div class="card-body">
-                        <form action="{{ route('penerimaan.kas-teller.post') }}" method="POST">
-                        @csrf
-                            <div id="formContainer">
-                                <div class="row form-row my-3 item-row">
-                                    <div class="form-group col-md-4">
-                                        <label for="nominal">Nominal</label>
-                                        <input type="number" class="form-control @error('nominal') is-invalid @enderror nominal-input" name="nominal[]" required min="1" placeholder="Masukkan nominal">
-                                        @error('nominal')
-                                            <div class="invalid-feedback">
-                                                {{$message}}.
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label for="jumlah">Jumlah</label>
-                                        <input type="number" class="form-control @error('jumlah') is-invalid @enderror jumlah-input" name="jumlah[]" required min="1" placeholder="Masukkan Jumlah">
-                                        @error('jumlah')
-                                            <div class="invalid-feedback">
-                                                {{$message}}.
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label for="harga">Total</label>
-                                        <input type="number" class="form-control total-input" placeholder="Total Nominal" readonly name="total[]">
-                                    </div>
-                                    <div class="form-group col-md-2">
-                                        <button type="button" class="btn btn-danger remove-btn">Hapus</button>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                    <div class="card-footer">
-                        <hr>
-                        <div>
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <input type="text" readonly hidden class="penerimaan_total" name="penerimaan_total" id="penerimaan_total">
-                                    <h4 id="grandtotal">Total Penerimaan : 0</h4>
-                                    <hr>
-                                    <small id="terbilang_penerimaan">Terbilang : </small>
-                                </div>
-                                <div class="col-md-2 align-self-center">
-                                    <button type="reset" class="btn btn-outline-danger mx-2">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </form>
+                        <div class="card-body">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div>
+                                    <strong>Perhatian!</strong> form belum bisa diakses.
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endif
                 </div>
             </div>

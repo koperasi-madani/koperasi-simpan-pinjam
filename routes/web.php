@@ -23,6 +23,7 @@ use App\Http\Controllers\PenerimaanKasTellerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\SukuBungaController;
+use App\Http\Controllers\TutupCabangController;
 use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
 use App\Models\Penarikan;
@@ -158,6 +159,9 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('akun', UserController::class);
             // suku bunga
             Route::resource('suku-bunga-koperasi', SukuBungaController::class);
+            // tutup cabang
+            Route::post('tutup-cabang/post',[TutupCabangController::class,'post'])->name('tutup-cabang.post');
+            Route::get('tutup-cabang',[TutupCabangController::class,'index'])->name('tutup-cabang.index');
         });
     });
 });

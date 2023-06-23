@@ -51,7 +51,6 @@ class SetorTunaiController extends Controller
 
         }
 
-
         $setoran = TransaksiTabungan::select('transaksi_tabungan.*',
                                     'rekening_tabungan.nasabah_id',
                                     'rekening_tabungan.no_rekening',

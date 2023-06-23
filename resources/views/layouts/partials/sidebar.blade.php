@@ -130,6 +130,7 @@
                 </a>
                 <div class="submenu">
                     <a href="{{ route('akun.index') }}">Data Pengguna/Akun</a>
+                    <a href="{{ route('tutup-cabang.index') }}">Tutup Cabang</a>
                     <a href="{{ route('suku-bunga-koperasi.index') }}">Suku Bunga Koperasi</a>
                 </div>
             </li>
