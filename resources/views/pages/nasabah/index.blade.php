@@ -22,7 +22,13 @@
         <div class="content-header">
             <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2>
             <div>
-                <a href="{{ route('nasabah.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Data</a>
+                @if (Session::has('status_tutup'))
+                    @if (Session::get('status_tutup') == 'buka')
+                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Data</a>
+                    @else
+                        <small><strong>Perhatian!</strong> form belum bisa diakses.</small>
+                    @endif
+                @endif
             </div>
         </div>
         @include('components.notification')
