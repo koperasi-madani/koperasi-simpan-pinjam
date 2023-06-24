@@ -35,9 +35,7 @@ class PenerimaanKasTellerController extends Controller
                                 $item->hasil_perkalian = $item->nominal * (int)$item->jumlah;
                                 return $item;
                             });
-        if ($nominal_denominasi != null) {
-            # code...
-        }
+
         return view('pages.penerimaan.index',compact('pembayaran','penerimaan','denominasi','nominal_denominasi'));
     }
 

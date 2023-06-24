@@ -56,7 +56,7 @@ class NasabahController extends Controller
             'ket' => 'required',
             'nik' => 'required',
             'jenis_kelamin' => 'required',
-            'pekerjaan',
+            'pekerjaan' => 'required',
         ]);
         try {
             $anggota = new NasabahModel;

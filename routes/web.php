@@ -13,6 +13,7 @@ use App\Http\Controllers\KodeAkunController;
 use App\Http\Controllers\KodeIndukController;
 use App\Http\Controllers\KodeLedgerController;
 use App\Http\Controllers\LaporanCustomerServiceController;
+use App\Http\Controllers\LaporanNeracaController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\OtorisasiCustomerServiceController;
 use App\Http\Controllers\PembayaranKasTellerController;
@@ -151,6 +152,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('otorisasi-transaksi-per-operator', function () {
                 return view('tampilan');
             })->name('otorisasi.transaksi-operator');
+        });
+        //laporan
+        Route::prefix('laporan')->group(function () {
+            // neraca
+            Route::get('neraca',[LaporanNeracaController::class,'neraca'])->name('neraca.index');
         });
         // setting
         Route::prefix('setting')->group(function()

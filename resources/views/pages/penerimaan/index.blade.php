@@ -216,16 +216,17 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Saldo Teller</h6>
-                            @if (count($nominal_denominasi) != 0)
-                                @php
-                                    $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
+                            @php
+                                $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
+                                if (count($nominal_denominasi) != 0) {
                                     $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi[0]->hasil_perkalian;
-                                @endphp
-                                <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
-                                <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
-                            @else
-                                <span class="text-danger">Belum ada saldo </span>
-                            @endif
+                                } else {
+                                    $nominal =  (int) $nominal_pembayaran;
+                                }
+                            @endphp
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
+                            <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
+
                         </div>
                     </article>
                     <hr>
@@ -251,8 +252,7 @@
                         <h4>DENOMINASI</h4>
                         <button type="button" class="btn btn-primary " id="addBtn">Tambah </button>
                     </div>
-                    @if (count($nominal_denominasi) != 0)
-                        @if (count($denominasi) > 0)
+                    @if (count($denominasi) > 0)
                         <div class="card-body">
                             <div class="alert alert-danger d-flex align-items-center" role="alert">
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
@@ -261,7 +261,7 @@
                                 </div>
                             </div>
                         </div>
-                        @else
+                    @else
                         <div class="card-body">
                             <form action="{{ route('penerimaan.kas-teller.post') }}" method="POST">
                             @csrf
@@ -313,17 +313,8 @@
                                 </div>
                             </div>
                         </div>
-                        @endif
-                    @else
-                        <div class="card-body">
-                            <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                                <div>
-                                    <strong>Perhatian!</strong> form belum bisa diakses.
-                                </div>
-                            </div>
-                        </div>
                     @endif
+
                 </div>
             </div>
         </div>

@@ -123,6 +123,16 @@
                     @endrole
                 </div>
             </li>
+            <li class="menu-item has-submenu {{ Request::segment(2) == 'laporan' ? 'active' : '' }}">
+                <a class="menu-link " href="page-form-product-1.html">
+                    <i class="icon material-icons md-assignment"></i>
+                    <span class="text ">Laporan</span>
+                </a>
+                <div class="submenu">
+                    <a href="{{ route('neraca.index') }}">Neraca</a>
+                    <a href="{{ route('tutup-cabang.index') }}">Tabungan</a>
+                </div>
+            </li>
             <li class="menu-item has-submenu {{ Request::segment(2) == 'setting' ? 'active' : '' }}">
                 <a class="menu-link " href="page-form-product-1.html">
                     <i class="icon material-icons md-admin_panel_settings"></i>
