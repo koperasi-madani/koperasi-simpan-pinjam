@@ -74,32 +74,38 @@
                                             <td class="align-top">DR</td>
                                             @if ($item_akun->nama_akun == 'TABUNGAN MUDHARABAH')
                                                 @php
+                                                    $current_date = \Carbon\Carbon::now()->toDateString();
                                                     $data_tabungan = \App\Models\TransaksiTabungan::select('transaksi_tabungan.*')
+                                                                    ->whereDate('created_at','=',$current_date)
                                                                     ->get()
                                                 @endphp
                                                 <td class="p-0">
                                                     <table class="table">
-                                                        @foreach ($data_tabungan as $itemS)
+                                                        @forelse ($data_tabungan as $itemS)
                                                         <tr>
                                                             <td class="w-100" style="border-right: none !important; border-left: none !important;"> {{ $itemS->jenis == 'keluar' ?  'Rp.'.number_format($itemS->nominal,2, ",", ".") : '-'}}</td>
                                                         </tr>
                                                             {{-- <td> {{ $itemS->jenis == 'keluar' ?  'Rp.'.number_format($itemS->nominal,2, ",", ".") : '-'}}</td> --}}
                                                         {{-- </tr> --}}
-
-                                                        @endforeach
+                                                        @empty
+                                                            <tr>
+                                                                <td class="w-100" style="border-right: none !important; border-left: none !important;">-</td>
+                                                            </tr>
+                                                        @endforelse
 
                                                     </table>
                                                 </td>
                                                 <td class="p-0">
                                                     <table class="table">
-                                                        @foreach ($data_tabungan as $itemS)
+                                                        @forelse ($data_tabungan as $itemS)
                                                         <tr>
                                                             <td class="w-100" style="border-right: none !important; border-left: none !important;"> {{ $itemS->jenis == 'masuk' ?  'Rp.'.number_format($itemS->nominal,2, ",", ".") : '-'}}</td>
                                                         </tr>
-                                                        {{-- </tr> --}}
-
-                                                        @endforeach
-
+                                                        @empty
+                                                            <tr>
+                                                                <td class="w-100" style="border-right: none !important; border-left: none !important;">-</td>
+                                                            </tr>
+                                                        @endforelse
                                                     </table>
                                                 </td>
 
