@@ -181,7 +181,7 @@
                     <h4>Tambah {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                 </header>
                 @if (Session::has('status_tutup'))
-                    @if (Session::get('status_tutup') == 'buka')
+                    @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
                         <div class="card-body">
                             <form id="submitForm" action="{{ route('setor-tunai.store') }}" method="POST">
                                 @csrf

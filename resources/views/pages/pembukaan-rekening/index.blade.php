@@ -127,7 +127,7 @@
                     <h4>Tambah Pembukaan Rekening</h4>
                 </header>
                 @if (Session::has('status_tutup'))
-                    @if (Session::get('status_tutup') == 'buka')
+                    @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
                         <div class="card-body">
                             <form action="{{ route('pembukaan-rekening.store') }}" method="POST">
                                 @csrf
@@ -280,7 +280,7 @@
                                             </td>
                                             <td class="text-start">
                                                 @if (Session::has('status_tutup'))
-                                                        @if (Session::get('status_tutup') == 'buka')
+                                                        @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
                                                             <div class="d-flex justify-content-start">
                                                                 <form action="{{ route('pembukaan-rekening.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
                                                                     @method('delete')
