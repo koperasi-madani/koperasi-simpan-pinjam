@@ -30,11 +30,11 @@ class PenerimaanKasTellerController extends Controller
         $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
         $nominal_denominasi = Denominasi::where('id_user',auth()->user()->id)
                             ->whereDate('created_at','=',$currentDate)
-                            ->get()
-                            ->map(function ($item) {
-                                $item->hasil_perkalian = $item->nominal * (int)$item->jumlah;
-                                return $item;
-                            });
+                            ->sum('total');
+                            // ->map(function ($item) {
+                            //     $item->hasil_perkalian = $item->total + (int)$item->total;
+                            //     return $item;
+                            // });
 
         return view('pages.penerimaan.index',compact('pembayaran','penerimaan','denominasi','nominal_denominasi'));
     }
@@ -53,7 +53,13 @@ class PenerimaanKasTellerController extends Controller
                                     ->where('id_user',auth()->user()->id)
                                     ->where('tanggal',$currentDate)
                                     ->first()->penerimaan;
+            $nominal_denominasi = Denominasi::where('id_user',auth()->user()->id)
+                                    ->whereDate('created_at','=',$currentDate)
+                                    ->sum('total');
+            if ($nominal_denominasi > 0) {
+                $current_penerimaan =  $current_penerimaan - $nominal_denominasi;
 
+            }
             $denominasi = (int) $request->get('penerimaan_total');
             if ($current_penerimaan != $denominasi) {
                 return redirect()->back()->withError('Data tidak sesuai.');

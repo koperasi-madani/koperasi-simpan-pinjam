@@ -218,8 +218,8 @@
                             <h6 class="mb-1 card-title">Saldo Teller</h6>
                             @php
                                 $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
-                                if (count($nominal_denominasi) != 0) {
-                                    $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi[0]->hasil_perkalian;
+                                if ($nominal_denominasi != 0) {
+                                    $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi;
                                 } else {
                                     $nominal =  (int) $nominal_pembayaran;
                                 }
@@ -252,16 +252,16 @@
                         <h4>DENOMINASI</h4>
                         <button type="button" class="btn btn-primary " id="addBtn">Tambah </button>
                     </div>
-                    @if (count($denominasi) > 0)
-                        <div class="card-body">
+                    {{-- @if (count($denominasi) > 0) --}}
+                        {{-- <div class="card-body">
                             <div class="alert alert-danger d-flex align-items-center" role="alert">
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                                 <div>
                                     <strong>Perhatian!</strong> Data sudah tersedia.
                                 </div>
                             </div>
-                        </div>
-                    @else
+                        </div> --}}
+                    {{-- @else --}}
                         <div class="card-body">
                             <form action="{{ route('penerimaan.kas-teller.post') }}" method="POST">
                             @csrf
@@ -313,7 +313,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    {{-- @endif --}}
 
                 </div>
             </div>

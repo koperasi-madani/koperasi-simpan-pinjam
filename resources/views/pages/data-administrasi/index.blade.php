@@ -73,9 +73,17 @@
                                     </td>
                                     <td class="text-start">
                                         <div class="d-flex justify-content-start">
-                                            <div>
-                                                <a href="{{ route('perubahan-data-administrasi.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Perubahan Data </a>
-                                            </div>
+                                            @if (Session::has('status_tutup'))
+                                                @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
+                                                    <div>
+                                                        <a href="{{ route('perubahan-data-administrasi.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Perubahan Data </a>
+                                                    </div>
+                                                @else
+                                                    <div>
+                                                        <small><strong>Perhatian!</strong> form belum bisa diakses.</small>
+                                                    </div>
+                                                @endif
+                                            @endif
                                         </div>
                                         <!-- dropdown //end -->
                                     </td>
