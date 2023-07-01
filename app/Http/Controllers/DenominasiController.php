@@ -26,12 +26,8 @@ class DenominasiController extends Controller
         $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
 
         $nominal_denominasi = Denominasi::whereDate('denominasi.created_at','=',$currentDate)
-                            ->groupBy('denominasi.id_user')
-                            ->get()
-                            ->map(function ($item) {
-                                $item->hasil_perkalian = $item->nominal * (int)$item->jumlah;
-                                return $item;
-                            });
+                            ->get();
+
         return view('pages.informasi-head-teller.informasi-denominasi',compact('pembayaran','denominasi','data_pembayaran','nominal_denominasi'));
     }
 

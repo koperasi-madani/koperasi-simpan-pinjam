@@ -247,7 +247,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th scope="col">Nama</th>
-                                        <th scope="col">Total Donimasi</th>
+                                        <th scope="col">Total Denominasi</th>
                                         <th scope="col">Tanggal</th>
                                     </tr>
                                 </thead>
@@ -259,8 +259,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
-                                            <td>Rp {{ number_format($item->hasil_perkalian,2, ",", ".") }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d-F-Y') }}</td>
+                                            <td>Rp {{ number_format($item->total,2, ",", ".") }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('H:i:s') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

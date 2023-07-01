@@ -107,6 +107,9 @@ class PenarikanController extends Controller
             'tgl' => 'required',
             'nominal_penarikan' => 'required',
         ]);
+        if ($this->formatNumber($request->get('nominal_penarikan')) < 20000) {
+            return redirect()->route('penarikan.index')->withError('Maaf batas penarikan sebesar Rp. 20.000');
+        }
         $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
         $saldo_akhir = $tabungan->first()->saldo;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
@@ -120,9 +123,18 @@ class PenarikanController extends Controller
                             ->sum('total');
             $nominal = (int) $nominal_denominasi;
             if ($nominal > 0) {
-                return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan sudah melakukan denominasi');
+                return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
             }
 
+        }
+        $currentDate = Carbon::now()->toDateString();
+        $pembayaran = SaldoTeller::where('status','pembayaran')
+            ->where('id_user',auth()->user()->id)
+            ->where('tanggal',$currentDate)
+            // ->sum('pembayaran');
+            ->first();
+        if ($pembayaran == null) {
+            return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
         }
         try {
             $penarikan = new TransaksiTabungan;
@@ -219,6 +231,7 @@ class PenarikanController extends Controller
             'tgl' => 'required',
             'nominal_penarikan' => 'required',
         ]);
+
         $penarikan = TransaksiTabungan::find($id);
         $tabungan = BukuTabungan::where('id_rekening_tabungan',$penarikan->id_nasabah);
         $saldo_akhir = $tabungan->first()->saldo + $penarikan->nominal;
