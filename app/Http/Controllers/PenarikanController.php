@@ -133,7 +133,7 @@ class PenarikanController extends Controller
             ->where('tanggal',$currentDate)
             // ->sum('pembayaran');
             ->first();
-        if ($pembayaran == null) {
+        if ($pembayaran == NULL) {
             return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
         }
         try {

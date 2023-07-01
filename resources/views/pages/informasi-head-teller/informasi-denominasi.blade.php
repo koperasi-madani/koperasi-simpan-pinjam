@@ -278,16 +278,6 @@
                         <button type="button" class="btn btn-primary " id="addBtn">Tambah </button>
 
                     </div>
-                    @if (count($denominasi) > 0)
-                    <div class="card-body">
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                            <div>
-                                <strong>Perhatina!</strong> Data sudah tersedia.
-                            </div>
-                        </div>
-                    </div>
-                    @else
                     <div class="card-body">
                         <form action="{{ route('informasi.denominasi.post') }}" method="POST">
                         @csrf
@@ -339,7 +329,17 @@
                             </div>
                         </div>
                     </div>
-                    @endif
+                    {{-- @if (count($denominasi) > 0)
+                    <div class="card-body">
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                            <div>
+                                <strong>Perhatian!</strong> Data sudah tersedia.
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    @endif --}}
                 </div>
             </div>
         </div>
