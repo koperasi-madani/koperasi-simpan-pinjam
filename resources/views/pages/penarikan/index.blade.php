@@ -308,7 +308,7 @@
                                         <th scope="col">Keterangan</th>
                                         <th scope="col">Status Otorisasi</th>
                                         <th scope="col">Validasi</th>
-                                        <th scope="col" class="text-start">Action</th>
+                                        {{-- <th scope="col" class="text-start">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -333,7 +333,7 @@
                                                 @endif
                                             </td>
                                             <td><b>{{ $item->kode_user }}</b></td>
-                                            <td class="text-start">
+                                            {{-- <td class="text-start">
                                                 <div class="d-flex justify-content-start">
                                                     <div class="mx-2">
                                                         <a href="{{ route('penarikan.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
@@ -346,7 +346,7 @@
 
                                                 </div>
                                                 <!-- dropdown //end -->
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @empty
                                         <tr>

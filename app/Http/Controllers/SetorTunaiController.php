@@ -93,6 +93,18 @@ class SetorTunaiController extends Controller
             'nominal_setor' => 'required',
         ]);
         try {
+            // update penerimaan
+            $currentDate = Carbon::now()->toDateString();
+            $pembayaran = SaldoTeller::where('status','pembayaran')
+                ->where('id_user',auth()->user()->id)
+                ->where('tanggal',$currentDate)
+                // ->sum('pembayaran');
+                ->first();
+            if (!isset($pembayaran)) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'Maaf tidak bisa melakukan setor tunai harap melakukan transaksi pagi.']);
+            }
             $setor = new TransaksiTabungan;
             $setor->id_nasabah = $request->get('id_nasabah');
             $setor->kode = $request->get('kode_setoran');
@@ -106,13 +118,7 @@ class SetorTunaiController extends Controller
 
             $cek_setor = TransaksiTabungan::where('id_nasabah',$request->get('id_nasabah'))->get();
 
-            // update penerimaan
-            $currentDate = Carbon::now()->toDateString();
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                ->where('id_user',auth()->user()->id)
-                ->where('tanggal',$currentDate)
-                // ->sum('pembayaran');
-                ->first();
+
             if (count($cek_setor) > 0) {
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
@@ -141,7 +147,6 @@ class SetorTunaiController extends Controller
             }
 
             $setor->save();
-
             $no_rekening = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first()->no_rekening;
             $validasi = Auth::user()->kode_user;
             $transaction =[

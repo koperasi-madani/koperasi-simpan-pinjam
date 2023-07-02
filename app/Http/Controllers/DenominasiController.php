@@ -8,10 +8,12 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DenominasiController extends Controller
 {
     public function index() {
+
         $currentDate = Carbon::now()->toDateString();
         $pembayaran = SaldoTeller::where('status','pembayaran')
                                 ->where('tanggal',$currentDate)
@@ -23,7 +25,10 @@ class DenominasiController extends Controller
                                 ->where('saldo_teller.tanggal',$currentDate)
                                 ->get();
 
-        $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
+        $denominasi = Denominasi::where('id_user',auth()->user()->id)
+                    ->where('status_akun','general')
+                    ->whereDate('created_at','=',$currentDate)
+                    ->sum('total');
 
         $nominal_denominasi = Denominasi::whereDate('denominasi.created_at','=',$currentDate)
                             ->get();
@@ -52,6 +57,7 @@ class DenominasiController extends Controller
                 $denominasi->nominal = (int) $request->get('nominal')[$i];
                 $denominasi->jumlah = (int) $request->get('jumlah')[$i];
                 $denominasi->total = (int) $request->get('jumlah')[$i] * (int) $request->get('nominal')[$i];
+                $denominasi->status_akun = 'general';
                 $denominasi->save();
             }
             return redirect()->route('informasi.denominasi')->withStatus('Berhasil menambahkan data dengan nominal'.$request->get('penerimaan_total'));

@@ -15,6 +15,7 @@ class PenerimaanKasTellerController extends Controller
 {
     public function index()
     {
+
         $currentDate = Carbon::now()->toDateString();
         $pembayaran = SaldoTeller::where('status','pembayaran')
                                 ->where('id_user',auth()->user()->id)
@@ -70,6 +71,7 @@ class PenerimaanKasTellerController extends Controller
                 $denominasi->nominal = (int) $request->get('nominal')[$i];
                 $denominasi->jumlah = (int) $request->get('jumlah')[$i];
                 $denominasi->total = (int) $request->get('jumlah')[$i] * (int) $request->get('nominal')[$i];
+                $denominasi->status_akun = 'non-general';
                 $denominasi->save();
             }
             return redirect()->route('penerimaan.kas-teller')->withStatus('Berhasil menambahkan data dengan nominal = '.$request->get('penerimaan_total'));

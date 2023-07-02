@@ -84,10 +84,15 @@
                     method: $(this).attr('method'),
                     data: $(this).serialize(),
                     success: function(response) {
-                        // console.log(response);
-                        // Panggil fungsi pencetakan setelah formulir berhasil dikirim
-                        printDocument(response);
-                        // redirectToPage('/berhasil');
+                        console.log(response.status);
+                        if (response.status == false) {
+                            showAlert(response.error);
+                        }else{
+                            // Panggil fungsi pencetakan setelah formulir berhasil dikirim
+                            printDocument(response);
+                            // redirectToPage('/berhasil');
+
+                        }
                     },
                     error: function(xhr, status, error) {
                         // Tangani kesalahan jika terjadi
@@ -95,6 +100,18 @@
                     }
                 });
             })
+            function showAlert(status) {
+                var alertHtml = ` <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                    <div>
+                                        <strong>Terjadi kesalahan!</strong> ${status}
+                                    </div>
+                                </div>`
+                var alertElement = $(alertHtml).appendTo("#pesan_error");
+                setTimeout(function() {
+                    alertElement.alert('close');
+                }, 3000);
+            }
             function printDocument(response) {
                 // Kirim HTML ke server untuk menghasilkan file PDF
                 $.ajaxSetup({
@@ -175,6 +192,9 @@
 
         </div>
         @include('components.notification')
+        <div id="pesan_error">
+
+        </div>
         <div class="row">
             <div class="card">
                 <header class="card-header">
@@ -282,7 +302,7 @@
                                         <th scope="col">Tanggal</th>
                                         <th scope="col">Keterangan</th>
                                         <th scope="col">Validasi</th>
-                                        <th scope="col" class="text-start">Action</th>
+                                        {{-- <th scope="col" class="text-start">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -298,7 +318,7 @@
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
                                             <td><b>{{ $item->ket }}</b></td>
                                             <td><b>{{ $item->kode_user }}</b></td>
-                                            <td class="text-start">
+                                            {{-- <td class="text-start">
                                                 <div class="d-flex justify-content-start">
                                                     <div class="mx-2">
                                                         <a href="{{ route('setor-tunai.edit',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
@@ -311,7 +331,7 @@
 
                                                 </div>
                                                 <!-- dropdown //end -->
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @empty
                                         <tr>

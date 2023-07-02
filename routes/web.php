@@ -63,6 +63,15 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('kode-akun',KodeAkunController::class);
         });
         Route::prefix('admin-kredit')->group(function () {
+            // PENCAIRAN FASILITAS PINJAMAN
+            Route::get('pencairan-fasilitas-pinjaman', function () {
+                return view('tampilan');
+            })->name('pencairan.fasilitas.pinjaman');
+            // PENUTUPAN FASILITAS PINJAMAN
+            Route::get('penutupan-fasilitas-pinjaman', function () {
+                return view('tampilan');
+            })->name('penutupan.fasilitas.pinjaman');
+            // informasi pinjaman
             Route::prefix('informasi-pinjaman')->group(function () {
                 // informasi pinjaman
                 Route::get('data-informasi-pinjaman',[DataInformasiPinjamanController::class,'index'])->name('informasi.pinjaman');
@@ -142,6 +151,10 @@ Route::middleware(['auth'])->group(function () {
         });
         // laporan customer service
         Route::prefix('laporan-customer-service')->group(function () {
+            // laporan deposito
+            Route::get('laporan-deposito', function () {
+                return view('tampilan');
+            })->name('laporan.deposito');
             // laporan pembukaan rekening
             Route::get('laporan-pembukaan-rekening/pdf',[LaporanCustomerServiceController::class,'laporanBukaRekeningPdf'])->name('laporan.pembukaan-rekening.pdf');
             Route::get('laporan-pembukaan-rekening',[LaporanCustomerServiceController::class,'laporanBukaRekening'])->name('laporan.pembukaan-rekening');
@@ -152,6 +165,60 @@ Route::middleware(['auth'])->group(function () {
             Route::get('otorisasi-transaksi-per-operator', function () {
                 return view('tampilan');
             })->name('otorisasi.transaksi-operator');
+        });
+        // transaksi back office
+        Route::prefix('transaksi-back-office')->group(function () {
+            // TRANSAKSI PEMINDAH BUKUAN ANTAR REKENING
+            Route::get('transaksi-pemindah-buku-antar-rekening', function () {
+                return view('tampilan');
+            })->name('transaksi.pemindah.buku.rekening');
+            // TRANSAKSI PENDEBETAN DENGAN KODE GL
+            Route::get('transaksi-pendebetan-dengan-kode-gl', function () {
+                return view('tampilan');
+            })->name('transaksi.debet.kode.gl');
+            // TRANSAKSI PENGKREDITAN DENGAN KODE GL
+            Route::get('transaksi-pengkreditan-dengan-dengan-kode-gl', function () {
+                return view('tampilan');
+            })->name('transaksi.kredit.kode.gl');
+            // TRANSAKSI MANY TO MANY
+            Route::get('transaksi-many-to-many', function () {
+                return view('tampilan');
+            })->name('transaksi.many.to.many');
+        });
+        // laporan back office
+        Route::prefix('laporan-back-office')->group(function () {
+            // LAPORAN TRANSAKSI SENDIRI
+            Route::get('laporan-transaksi-sendiri', function () {
+                return view('tampilan');
+            })->name('laporan.transaksi.sendiri');
+        });
+        // transaksi deposito
+        Route::prefix('transaksi-deposito')->group(function () {
+            // PENEMPATAN DEPOSITO BERJANGKA
+            Route::get('penempatan-deposito-berjangka', function () {
+                return view('tampilan');
+            })->name('penempatan.deposito-berjangka');
+            // PENCAIRAN DEPOSITO BERJANGKA
+            Route::get('pencairan-deposito-berjangka', function () {
+                return view('tampilan');
+            })->name('pencairan-deposito-berjangka');
+        });
+
+        // informasi gl
+        Route::prefix('informasi-gl')->group(function () {
+            // melihat g/l master
+            Route::get('melihat-gl-master', function () {
+                return view('tampilan');
+            })->name('melihat.gl.master');
+            // melihat transaksi g/l
+            Route::get('melihat-transaksi-gl', function () {
+                return view('tampilan');
+            })->name('melihat.transaksi.gl');
+            // melihat data rekening tabungan
+            Route::get('melihat-data-rekening-tabungan', function () {
+                return view('tampilan');
+            })->name('melihat.data.rekening.tabungan');
+
         });
         //laporan
         Route::prefix('laporan')->group(function () {

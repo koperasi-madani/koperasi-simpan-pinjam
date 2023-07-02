@@ -216,8 +216,8 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text w-100">
                             <h6 class="mb-1 card-title">Total Saldo</h6>
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran : 0 }}" hidden>
-                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran : 0 ,2, ",", ".") }}</span>
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran - $denominasi : 0 }}" hidden>
+                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran - $denominasi : 0 ,2, ",", ".") }}</span>
                             <table class="table table-bordered table-responsive-sm">
                                 <tbody>
                                     @forelse ($data_pembayaran as $item)
@@ -248,7 +248,8 @@
                                         <th>No</th>
                                         <th scope="col">Nama</th>
                                         <th scope="col">Total Denominasi</th>
-                                        <th scope="col">Tanggal</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Waktu</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -260,6 +261,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>Rp {{ number_format($item->total,2, ",", ".") }}</td>
+                                            <td>{{ ucwords($item->status_akun) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('H:i:s') }}</td>
                                         </tr>
                                     @endforeach
