@@ -24,6 +24,7 @@ use App\Http\Controllers\PenerimaanKasTellerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\SukuBungaController;
+use App\Http\Controllers\TransaksiManyToManyController;
 use App\Http\Controllers\TutupCabangController;
 use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
@@ -181,9 +182,7 @@ Route::middleware(['auth'])->group(function () {
                 return view('tampilan');
             })->name('transaksi.kredit.kode.gl');
             // TRANSAKSI MANY TO MANY
-            Route::get('transaksi-many-to-many', function () {
-                return view('tampilan');
-            })->name('transaksi.many.to.many');
+            Route::get('transaksi-many-to-many',[TransaksiManyToManyController::class,'index'])->name('transaksi.many.to.many');
         });
         // laporan back office
         Route::prefix('laporan-back-office')->group(function () {
