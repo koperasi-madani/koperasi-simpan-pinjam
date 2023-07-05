@@ -103,7 +103,7 @@ class SetorTunaiController extends Controller
             if (!isset($pembayaran)) {
                 return response()->json([
                     'status' => false,
-                    'error' => 'Maaf tidak bisa melakukan setor tunai harap melakukan transaksi pagi.']);
+                    'error' => 'Maaf tidak bisa melakukan setor tunai saldo tidak mencukupi.']);
             }
             $setor = new TransaksiTabungan;
             $setor->id_nasabah = $request->get('id_nasabah');

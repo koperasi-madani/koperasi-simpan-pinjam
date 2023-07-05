@@ -120,42 +120,17 @@ class PenarikanController extends Controller
         $query = Denominasi::
                         where('status_akun','non-general')
                         ->whereDate('created_at','=',$currentDate);
-        $id_head = User::role('head-teller')->first()->id;
-        if (Auth::user()->hasRole('head-teller')) {
-            // cek denominasi
-            $id_head = User::role('head-teller')->first()->id;
-            $nominal_denominasi = $query->where('id_user',$id_head)->sum('total');
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                            ->where('id_user',$id_head)
-                            ->where('tanggal',$currentDate)
-                            // ->sum('pembayaran');
-                            ->first();
-            $result = isset($pembayaran) ? (int) $pembayaran->penerimaan : 0;
-            $nominal = (int) $nominal_denominasi - $result;
-            if ($nominal == 0) {
-                return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
-            }
-        }else{
-            $nominal_denominasi = $query->where('id_user',auth()->user()->id)->sum('total');
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                            ->where('id_user',auth()->user()->id)
-                            ->where('tanggal',$currentDate)
-                            // ->sum('pembayaran');
-                            ->first();
-            $result = isset($pembayaran) ? (int) $pembayaran->penerimaan : 0;
-            $nominal = (int) $nominal_denominasi - $result;
-            if ($nominal == 0) {
-                $pembayaran = SaldoTeller::where('status','pembayaran')
-                        ->where('id_user',$id_head)
+        $nominal_denominasi = $query->where('id_user',auth()->user()->id)->sum('total');
+        $pembayaran = SaldoTeller::where('status','pembayaran')
+                        ->where('id_user',auth()->user()->id)
                         ->where('tanggal',$currentDate)
                         // ->sum('pembayaran');
                         ->first();
-                if ($pembayaran->penerimaan < $this->formatNumber($request->get('nominal_penarikan'))) {
-                    return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
-                }
-            }
+        $result = isset($pembayaran) ? (int) $pembayaran->penerimaan : 0;
+        $nominal = $result - (int) $nominal_denominasi;
+        if ($nominal <= 0) {
+            return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
         }
-        $currentDate = Carbon::now()->toDateString();
         $pembayaran = SaldoTeller::where('status','pembayaran')
             ->where('id_user',auth()->user()->id)
             ->where('tanggal',$currentDate)
@@ -191,7 +166,7 @@ class PenarikanController extends Controller
                 if ($nominal_denominasi > 0) {
                     $currentDate = Carbon::now()->toDateString();
                     $pembayaran = SaldoTeller::where('status','pembayaran')
-                        ->where('id_user',$id_head)
+                        ->where('id_user',auth()->user()->id)
                         ->where('tanggal',$currentDate)
                         // ->sum('pembayaran');
                         ->first();
@@ -217,8 +192,10 @@ class PenarikanController extends Controller
             return redirect()->route('penarikan.index')->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e) {
+            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         }
     }
