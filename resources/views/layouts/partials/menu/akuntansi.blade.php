@@ -18,7 +18,7 @@
         <a href="{{ route('transaksi.pemindah.buku.rekening') }}" class="{{ Request::segment(3) == 'transaksi-pemindah-buku-antar-rekening' ? 'active' : '' }}">Transaksi Pemindah Buku Antar Rekening</a>
         <a href="{{ route('transaksi.debet.kode.gl') }}" class="{{ Request::segment(3) == 'transaksi-pendebetan-dengan-kode-gl' ? 'active' : '' }}">Transaksi Pendebetan Kode GL</a>
         <a href="{{ route('transaksi.kredit.kode.gl') }}" class="{{ Request::segment(3) == 'transaksi-pengkreditan-dengan-dengan-kode-gl' ? 'active' : '' }}">Transaksi Pengkreditan Kode GL</a>
-        <a href="{{ route('transaksi.many.to.many') }}" class="{{ Request::segment(3) == 'transaksi-many-to-many' ? 'active' : '' }}">Transaksi Many To Many</a>
+        <a href="{{ route('transaksi-many-to-many.index') }}" class="{{ Request::segment(3) == 'transaksi-many-to-many' ? 'active' : '' }}">Transaksi Many To Many</a>
     </div>
 </li>
 <li class="menu-item has-submenu {{ Request::segment(2) == 'informasi-gl' ? 'active' : '' }} ">

@@ -182,7 +182,8 @@ Route::middleware(['auth'])->group(function () {
                 return view('tampilan');
             })->name('transaksi.kredit.kode.gl');
             // TRANSAKSI MANY TO MANY
-            Route::get('transaksi-many-to-many',[TransaksiManyToManyController::class,'index'])->name('transaksi.many.to.many');
+            Route::get('transaksi-many-to-many/akun',[TransaksiManyToManyController::class,'kodeAkun'])->name('transaksi.kodeAkun');
+            Route::resource('transaksi-many-to-many',TransaksiManyToManyController::class);
         });
         // laporan back office
         Route::prefix('laporan-back-office')->group(function () {

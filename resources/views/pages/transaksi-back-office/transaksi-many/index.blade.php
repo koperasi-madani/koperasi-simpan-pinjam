@@ -24,7 +24,7 @@
             <div>
                 @if (Session::has('status_tutup'))
                     @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
-                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Transaksi</a>
+                        <a href="{{ route('transaksi-many-to-many.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Transaksi</a>
                     @else
                         <small><strong>Perhatian!</strong> form belum bisa diakses.</small>
                     @endif
@@ -53,7 +53,30 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($data as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->kode_transaksi }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($item->tanggal)) }}</td>
+                                    <td>{{ $item->kode_akun }}</td>
+                                    <td>{{ $item->tipe }}</td>
+                                    <td>Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-start">
+                                            <div>
+                                                <a href="{{ route('transaksi-many-to-many.show',$item->id) }}" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-announcement"></i> Show </a>
+                                            </div>
+                                            <div class="mx-2">
+                                                <form action="{{ route('transaksi-many-to-many.destroy',$item->id) }}" class="p-0 m-0" method="POST" onsubmit="return confirm('Move data to trash? ')">
+                                                    @method('delete')
+                                                    @csrf
+                                                    <button  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
