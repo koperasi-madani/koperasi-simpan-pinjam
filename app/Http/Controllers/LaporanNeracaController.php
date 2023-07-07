@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KodeAkun;
 use App\Models\KodeInduk;
 use App\Models\KodeLedger;
+use App\Models\TransaksiManyToMany;
 use Illuminate\Http\Request;
 
 class LaporanNeracaController extends Controller

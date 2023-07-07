@@ -129,7 +129,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="obat">Lawan</label>
+                                <label for="obat">Kode Akun Kas</label>
                                 <select class="form-control @error('kode_akun') is-invalid @enderror kode_akun" name="kode_akun">
                                     <option value="">Pilih Akun</option>
                                     @foreach($KodeAkun as $item)

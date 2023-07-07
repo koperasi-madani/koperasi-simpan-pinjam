@@ -34,6 +34,7 @@ class TransaksiManyToManyController extends Controller
                     'kode_induk.id as kode_induk_id',
                     'kode_induk.kode_induk as nama_kode')
                     ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                    ->where('kode_akun.nama_akun','NOT LIKE', "%tabungan mudharabah%")
                     ->get();
         return view('pages.transaksi-back-office.transaksi-many.create',compact('KodeAkun'));
     }
@@ -106,9 +107,9 @@ class TransaksiManyToManyController extends Controller
                                     ->where('transaksi_many_to_many.id',$id)
                                     ->first();
         $detail = DTransaksiManyToMany::select('detail_transaksi_many_to_many.*','kode_akun.kode_akun')
-        ->join('kode_akun','kode_akun.id','detail_transaksi_many_to_many.kode_akun')
-        ->where('detail_transaksi_many_to_many.kode_transaksi',$data->kode_transaksi)
-        ->get();
+                                    ->join('kode_akun','kode_akun.id','detail_transaksi_many_to_many.kode_akun')
+                                    ->where('detail_transaksi_many_to_many.kode_transaksi',$data->kode_transaksi)
+                                    ->get();
         return view('pages.transaksi-back-office.transaksi-many.show',compact('data','detail'));
     }
 
@@ -145,6 +146,7 @@ class TransaksiManyToManyController extends Controller
                     'kode_induk.id as kode_induk_id',
                     'kode_induk.kode_induk as nama_kode')
                     ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                    ->where('kode_akun.nama_akun','NOT LIKE', "%tabungan mudharabah%")
                     ->get();
         return response()->json($data);
     }
