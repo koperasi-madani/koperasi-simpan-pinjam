@@ -43,7 +43,7 @@
                     <span class="text ">Laporan</span>
                 </a>
                 <div class="submenu">
-                    <a href="{{ route('neraca.index') }}">Neraca</a>
+                    <a href="{{ route('neraca.index') }}" class="{{ Request::segment(3) == 'neraca' ? 'active' : '' }}">Neraca</a>
                     <a href="{{ route('tutup-cabang.index') }}">Tabungan</a>
                 </div>
             </li>
