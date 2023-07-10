@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\BukuTabungan;
+use App\Models\DTransaksiManyToMany;
+use App\Models\Jurnal;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
 use App\Models\SaldoTeller;
 use App\Models\Setoran;
+use App\Models\TransaksiManyToMany;
 use App\Models\TransaksiTabungan;
 use Carbon\Carbon;
 use Exception;
@@ -145,6 +148,36 @@ class SetorTunaiController extends Controller
                 ]);
                 $setor->saldo = $result_saldo;
             }
+                // jurnal;
+                $kode_akun = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+
+                $transaksi = new TransaksiManyToMany;
+                $transaksi->kode_transaksi = $this->generateKode();
+                $transaksi->id_user = auth()->user()->id;
+                $transaksi->tanggal = $request->get('tgl');
+                $transaksi->kode_akun = $kode_akun;
+                $transaksi->tipe = 'debit';
+                $transaksi->total = $this->formatNumber($request->get('nominal_setor'));
+                $transaksi->keterangan = 'Transaksi Many To Many';
+                $transaksi->save();
+
+                $detailTransaksi = new DTransaksiManyToMany;
+                $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+                $detailTransaksi->kode_akun = $kode_akun;
+                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_setor'));
+                $detailTransaksi->keterangan = 'tabungan';
+                $detailTransaksi->save();
+
+                $jurnal = new Jurnal;
+                $jurnal->tanggal = $request->get('tgl');
+                $jurnal->kode_transaksi = $transaksi->kode_transaksi;
+                $jurnal->keterangan = 'tabungan';
+                $jurnal->kode_akun = $kode_akun;
+                $jurnal->kode_lawan = 0;
+                $jurnal->tipe = 'debit';
+                $jurnal->nominal =  $this->formatNumber($request->get('nominal_setor'));
+                $jurnal->id_detail = $detailTransaksi->id;
+                $jurnal->save();
 
             $setor->save();
             $no_rekening = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first()->no_rekening;
@@ -284,5 +317,22 @@ class SetorTunaiController extends Controller
 
         return response()->json(['file_path' => asset('laravel/public/pdf/setor/'.$filename)]);
 
+    }
+
+    function generateKode() {
+        $nosaldo = null;
+        $transaksi = TransaksiManyToMany::orderBy('created_at', 'DESC')->get();
+        $date = date('Ymd');
+        if($transaksi->count() > 0) {
+            $notransaksi = $transaksi[0]->kode_transaksi;
+
+            $lastIncrement = substr($notransaksi, 10);
+            $notransaksi = str_pad($lastIncrement + 1, 3, 0, STR_PAD_LEFT);
+            return $notransaksi = 'TM'.$date.$notransaksi;
+        }
+        else {
+            return $notransaksi = 'TM'.$date."001";
+
+        }
     }
 }

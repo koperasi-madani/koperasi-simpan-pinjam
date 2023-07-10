@@ -48,9 +48,9 @@ class TransaksiManyToManyController extends Controller
             'tanggal' => 'required',
             'tipe' => 'required|not_in:0',
             'kode_akun' => 'required|not_in:0',
-            'akun_lawan.*' => 'required',
-            'nominal.*' => 'required',
-            'ket.*' => 'required'
+            // 'akun_lawan.*' => 'required',
+            // 'nominal.*' => 'required',
+            // 'ket.*' => 'required'
         ]);
         DB::beginTransaction();
         try {
