@@ -131,6 +131,9 @@ class PenarikanController extends Controller
                         ->first();
         $result = isset($pembayaran) ? (int) $pembayaran->penerimaan : 0;
         $nominal = $result - (int) $nominal_denominasi;
+        if ($result < $this->formatNumber($request->get('nominal_penarikan'))) {
+            return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
+        }
         if ($nominal <= 0) {
             return redirect()->route('penarikan.index')->withError('Maaf tidak bisa melakukan penarikan saldo teller tidak mencukupi ');
         }

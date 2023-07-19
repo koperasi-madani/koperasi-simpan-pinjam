@@ -40,16 +40,16 @@
                             <tr>
                                 <th rowspan="2" style="vertical-align:middle">Kode Akun</th>
                                 <th rowspan="2" style="vertical-align:middle">Nama Akun</th>
-                                <th colspan="2" style="text-align: center;">Saldo Awal</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center">Saldo Awal</th>
                                 <th colspan="2" style="text-align: center;">Mutasi</th>
-                                <th colspan="2" style="text-align: center;">Saldo Akhir</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center">Saldo Akhir</th>
                                 <tr>
+
                                     <th style="text-align: center;">Debet</th>
                                     <th style="text-align: center;">Kredit</th>
-                                    <th style="text-align: center;">Debet</th>
-                                    <th style="text-align: center;">Kredit</th>
-                                    <th style="text-align: center;">Debet</th>
-                                    <th style="text-align: center;">Kredit</th>
+
+
+
                                 </tr>
                             </tr>
                         </thead>
@@ -205,12 +205,18 @@
                                     <tr class="bg-secondary text-white">
                                         <td>{{ $item_induk->kode_ledger }}</td>
                                         <td>{{ $item_induk->nama_ledger }}</td>
-                                        <td>{{ number_format($totalSaldoAwalDebetTotal, 2, ',', '.') }}</td>
-                                        <td>{{ number_format($totalSaldoAwalKreditTotal * -1, 2, ',', '.') }}</td>
+                                        @if ($item_ledger->jenis == 'debit')
+                                            <td>{{ number_format($totalSaldoAwalDebetTotal, 2, ',', '.') }}</td>
+                                        @else
+                                            <td>{{ number_format($totalSaldoAwalKreditTotal * -1, 2, ',', '.') }}</td>
+                                        @endif
                                         <td>{{ number_format($totalMutasiDebetTotal, 2, ',', '.') }}</td>
                                         <td>{{ number_format($totalMutasiKreditTotal, 2, ',', '.') }}</td>
-                                        <td>{{ number_format($totalSaldoAkhirDebetTotal, 2, ',', '.') }}</td>
-                                        <td>{{ number_format($totalSaldoAkhirKreditTotal * -1, 2, ',', '.') }}</td>
+                                        @if ($item_ledger->jenis == 'debit')
+                                            <td>{{ number_format($totalSaldoAkhirDebetTotal, 2, ',', '.') }}</td>
+                                        @else
+                                            <td>{{ number_format($totalSaldoAkhirKreditTotal * -1, 2, ',', '.') }}</td>
+                                        @endif
                                     </tr>
 
                                     @php
@@ -355,12 +361,18 @@
                                         <tr class="bg-primary text-white">
                                                 <td> {{ $tes->kode_induk }}</td>
                                                 <td> {{ $tes->nama }}</td>
-                                                <td>{{ number_format($totalSaldoAwalDebetDua, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($totalSaldoAwalKreditDua * -1, 2, ',', '.') }}</td>
+                                                @if ($item_ledger->jenis)
+                                                    <td>{{ number_format($totalSaldoAwalDebetDua, 2, ',', '.') }}</td>
+                                                @else
+                                                    <td>{{ number_format($totalSaldoAwalKreditDua * -1, 2, ',', '.') }}</td>
+                                                @endif
                                                 <td>{{ number_format($totalMutasiDebetDua, 2, ',', '.') }}</td>
                                                 <td>{{ number_format($totalMutasiKreditDua, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($totalSaldoAkhirDebetDua, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($totalSaldoAkhirKreditDua * -1, 2, ',', '.') }}</td>
+                                                @if ($item_ledger->jenis)
+                                                    <td>{{ number_format($totalSaldoAkhirDebetDua, 2, ',', '.') }}</td>
+                                                @else
+                                                    <td>{{ number_format($totalSaldoAkhirKreditDua * -1, 2, ',', '.') }}</td>
+                                                @endif
                                         </tr>
                                         @php
                                         $ledger = \App\Models\KodeAkun::select('kode_akun.*',
@@ -493,18 +505,14 @@
                                                 <td>{{ $item->nama_akun }}</td>
                                                 @if ($item->jenis == 'debit')
                                                     <td>{{ number_format($saldoAwal, 2, ',', '.') }}</td>
-                                                    <td>-</td>
                                                 @else
-                                                    <td>-</td>
                                                     <td>{{ number_format($saldoAwal * -1, 2, ',', '.') }}</td>
                                                 @endif
                                                 <td>{{ number_format($mutasiDebet, 2, ',', '.') }}</td>
                                                 <td>{{ number_format($mutasiKredit, 2, ',', '.') }}</td>
                                                 @if ($item->jenis == 'debit')
                                                     <td>{{ number_format($saldoAkhir, 2, ',', '.') }}</td>
-                                                    <td>-</td>
                                                 @else
-                                                    <td>-</td>
                                                     <td>{{ number_format($saldoAkhir * -1, 2, ',', '.') }}</td>
                                                 @endif
                                             </tr>

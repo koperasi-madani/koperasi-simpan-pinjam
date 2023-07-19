@@ -70,7 +70,19 @@
                     <div class="row form-row my-3 item-row">
                         <div class="form-group col-md-4">
                             <label for="nominal">Nominal</label>
-                            <input type="number" class="form-control nominal-input" name="nominal[]" required min="1" placeholder="Masukkan nominal">
+                            <select name="nominal[]" id="nominal" class="form-control nominal-input" required>
+                                <option value="100">Rp 100</option>
+                                <option value="200">Rp 200</option>
+                                <option value="500">Rp 500</option>
+                                <option value="1000">Rp 1.000</option>
+                                <option value="2000">Rp 2.000</option>
+                                <option value="5000">Rp 5.000</option>
+                                <option value="10000">Rp 10.000</option>
+                                <option value="20000">Rp 20.000</option>
+                                <option value="50000">Rp 50.000</option>
+                                <option value="75000">Rp 75.000</option>
+                                <option value="100000">Rp 100.000</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="jumlah">Jumlah</label>
@@ -92,6 +104,7 @@
                 $(this).closest('.form-row').remove();
                 kalkulasi();
             })
+
             $('#formContainer').on('input', '.nominal-input, .jumlah-input', function() {
                 var row = $(this).closest('.item-row');
                 var quantity = parseInt(row.find('.jumlah-input').val());
@@ -269,7 +282,20 @@
                                     <div class="row form-row my-3 item-row">
                                         <div class="form-group col-md-4">
                                             <label for="nominal">Nominal</label>
-                                            <input type="number" class="form-control @error('nominal') is-invalid @enderror nominal-input" name="nominal[]" required min="1" placeholder="Masukkan nominal">
+                                            <select name="nominal[]" id="nominal" class="form-control @error('nominal') is-invalid @enderror nominal-input" >
+                                                <option value="100">Rp 100</option>
+                                                <option value="200">Rp 200</option>
+                                                <option value="500">Rp 500</option>
+                                                <option value="1000">Rp 1.000</option>
+                                                <option value="2000">Rp 2.000</option>
+                                                <option value="5000">Rp 5.000</option>
+                                                <option value="10000">Rp 10.000</option>
+                                                <option value="20000">Rp 20.000</option>
+                                                <option value="50000">Rp 50.000</option>
+                                                <option value="75000">Rp 75.000</option>
+                                                <option value="100000">Rp 100.000</option>
+                                            </select>
+                                            {{-- <input type="number" class="form-control @error('nominal') is-invalid @enderror nominal-input" name="nominal[]" required min="1" placeholder="Masukkan nominal"> --}}
                                             @error('nominal')
                                                 <div class="invalid-feedback">
                                                     {{$message}}.
