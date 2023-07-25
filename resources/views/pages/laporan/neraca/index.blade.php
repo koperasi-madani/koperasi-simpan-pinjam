@@ -11,6 +11,16 @@
                 text-align: left !important;
                 border: 1px solid #9896966e !important;
             }
+            .bg-primary{
+                background-color: #E0F6FB !important;
+            }
+            .bg-secondary{
+                background-color: #83c5be !important;
+                font-weight: bold !important;
+            }
+            table{
+                font-size: 12px !important;
+            }
 
         </style>
     @endpush
@@ -38,15 +48,15 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th rowspan="2" style="vertical-align:middle">Kode Akun</th>
-                                <th rowspan="2" style="vertical-align:middle">Nama Akun</th>
-                                <th rowspan="2" style="text-align: center;" class="text-center">Saldo Awal</th>
-                                <th colspan="2" style="text-align: center;">Mutasi</th>
-                                <th rowspan="2" style="text-align: center;" class="text-center">Saldo Akhir</th>
+                                <th rowspan="2" style="vertical-align:middle">LEDGER A/C NO.</th>
+                                <th rowspan="2" style="vertical-align:middle">KETERANGAN</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center">SALDO AWAL</th>
+                                <th colspan="2" style="text-align: center;" align="center" class="text-center">TRANSAKSI</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center">SALDO AKHIR</th>
                                 <tr>
 
-                                    <th style="text-align: center;">Debet</th>
-                                    <th style="text-align: center;">Kredit</th>
+                                    <th style="text-align: center;" class="text-center">DEBET</th>
+                                    <th style="text-align: center;" class="text-center">KREDIT</th>
 
 
 
@@ -202,7 +212,7 @@
                                             @endphp
                                         @endforeach
                                     @endforeach
-                                    <tr class="bg-secondary text-white">
+                                    <tr class="bg-secondary">
                                         <td>{{ $item_induk->kode_ledger }}</td>
                                         <td>{{ $item_induk->nama_ledger }}</td>
                                         @if ($item_ledger->jenis == 'debit')
@@ -358,17 +368,17 @@
                                                 }
                                             @endphp
                                         @endforeach
-                                        <tr class="bg-primary text-white">
+                                        <tr class="bg-primary">
                                                 <td> {{ $tes->kode_induk }}</td>
                                                 <td> {{ $tes->nama }}</td>
-                                                @if ($item_ledger->jenis)
+                                                @if ($item_ledger->jenis == 'debit')
                                                     <td>{{ number_format(abs($totalSaldoAwalDebetDua), 2, ',', '.') }}</td>
                                                 @else
                                                     <td>{{ number_format(abs($totalSaldoAwalKreditDua), 2, ',', '.') }}</td>
                                                 @endif
                                                 <td>{{ number_format(abs($totalMutasiDebetDua), 2, ',', '.') }}</td>
                                                 <td>{{ number_format(abs($totalMutasiKreditDua), 2, ',', '.') }}</td>
-                                                @if ($item_ledger->jenis)
+                                                @if ($item_ledger->jenis == 'debit')
                                                     <td>{{ number_format(abs($totalSaldoAkhirDebetDua), 2, ',', '.') }}</td>
                                                 @else
                                                     <td>{{ number_format(abs($totalSaldoAkhirKreditDua), 2, ',', '.') }}</td>
