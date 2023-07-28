@@ -65,6 +65,11 @@
             placeholder: "Pilih Rekening"
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        })
+    </script>
     @endpush
     @section('content')
     <section class="content-main">
@@ -102,20 +107,6 @@
                                     <label for="product_name" class="form-label">Kode Induk</label>
                                     <input placeholder="Masukkan kode induk" value="{{ old('kode_induk') }}" type="text" value="{{ old('kode_induk') }}" class="form-control @error('kode_induk') is-invalid @enderror" name="kode_induk" />
                                     @error('kode_induk')
-                                        <div class="invalid-feedback">
-                                            {{$message}}.
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Jenis</label>
-                                    <select name="jenis" id="jenis" class="form-control @error('jenis') is-invalid @enderror">
-                                        <option value="kredit">Kredit</option>
-                                        <option value="debit">Debit</option>
-                                    </select>
-                                    @error('jenis')
                                         <div class="invalid-feedback">
                                             {{$message}}.
                                         </div>

@@ -21,8 +21,8 @@ class LaporanNeracaController extends Controller
         $kode_induk = KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
                                 ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
                                 ->groupBy('kode_ledger.nama')
+                                ->orderBy('kode_induk.kode_induk')
                                 ->get();
-        // return $kode_induk;
         return view('pages.laporan.neraca.index',compact('ledger','kode_induk'));
     }
 }

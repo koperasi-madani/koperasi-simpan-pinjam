@@ -21,6 +21,7 @@ class KodeIndukController extends Controller
                 'kode_ledger.kode_ledger',
                 'kode_ledger.nama as nama_ledger')
                 ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                ->orderBy('kode_induk.kode_induk','ASC')
                 ->get();
         return view('pages.master-akuntansi.kode-induk.index',compact('data','kode'));
     }
@@ -38,22 +39,25 @@ class KodeIndukController extends Controller
      */
     public function store(Request $request)
     {
-        $ledger = KodeInduk::select('kode_induk.*','kode_ledger.kode_ledger')->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')->where('id_ledger',$request->get('id_ledger'))->where('kode_induk.kode_induk',$request->get('kode_induk'))->orderBy('id')->first();
-        $cek = '';
-        if ($ledger != null) {
-            $cek = ($ledger->kode_induk == $request->get('kode_induk')) ? '|unique:kode_induk,kode_induk' : '' ;
-        }
+        // $ledger = KodeInduk::select('kode_induk.*','kode_ledger.kode_ledger')->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')->where('id_ledger',$request->get('id_ledger'))->where('kode_induk.kode_induk',$request->get('kode_induk'))->orderBy('id')->first();
+        // $cek = '';
+        // return $ledger;
+        // if ($ledger != null) {
+        //     $cek = ($ledger->kode_induk == $request->get('kode_induk')) ? '|unique:kode_induk,kode_induk' : '' ;
+        // }
         $request->validate([
             'id_ledger' => 'required',
-            'kode_induk' => 'required'.$cek,
+            // 'kode_induk' => 'required'.$cek,
+            'kode_induk' => 'required',
             'nama' => 'required',
         ]);
         try {
             $kode = new KodeInduk;
+            $ledger = KodeLedger::find($request->get('id_ledger'));
             $kode->id_ledger = $request->get('id_ledger');
             $kode->kode_induk = $request->get('kode_induk');
             $kode->nama = $request->get('nama');
-            $kode->jenis = $request->get('jenis');
+            $kode->jenis = $ledger->nama != 'A K T I V A' && $ledger->nama != 'B I A Y A' ? 'kredit' : 'debit';
             $kode->save();
             return redirect()->route('kode-induk.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {

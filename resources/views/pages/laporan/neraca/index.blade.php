@@ -230,7 +230,9 @@
                                     </tr>
 
                                     @php
-                                        $kode_induk_dua = \App\Models\KodeInduk::select('kode_induk.id','kode_induk.id_ledger','kode_induk.kode_induk','kode_induk.nama')->where('id_ledger',$item_induk->id_ledger)->groupBy('kode_induk.kode_induk')->orderBy('id','DESC')->get();
+                                        $kode_induk_dua = \App\Models\KodeInduk::select('kode_induk.id','kode_induk.id_ledger','kode_induk.kode_induk','kode_induk.nama')
+                                                    ->where('id_ledger',$item_induk->id_ledger)
+                                                    ->orderBy('kode_induk.kode_induk','ASC')->get();
                                     @endphp
                                     @foreach ($kode_induk_dua as $tes)
                                         @php

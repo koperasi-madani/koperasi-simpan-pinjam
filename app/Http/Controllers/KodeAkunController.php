@@ -16,9 +16,11 @@ class KodeAkunController extends Controller
     public function index()
     {
         $data = KodeAkun::select('kode_akun.*',
-                    'kode_induk.id as kode_induk_id',
-                    'kode_induk.kode_induk as nama_kode')
+                    'kode_induk.id as kode_induk_id','kode_induk.jenis as jenis_induk',
+                    'kode_induk.kode_induk as nama_kode',
+                    'kode_ledger.nama as nama_ledger')
                     ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                    ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
                     ->get();
         $kode = KodeInduk::all();
         return view('pages.master-akuntansi.kode-akun.index',compact('data','kode'));
@@ -44,11 +46,16 @@ class KodeAkunController extends Controller
             ]);
         try {
             $no = $this->noAkun($request->get('id_induk'));
+            $ledger = KodeInduk::select('kode_induk.*','kode_ledger.kode_ledger','kode_ledger.nama')
+                    ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                    ->where('kode_induk.id',$request->get('id_induk'))
+                    ->first();
             $kode = new KodeAkun;
             $kode->id_induk = $request->get('id_induk');
             $kode->kode_akun = $no;
             $kode->nama_akun = $request->get('nama');
-            $kode->jenis = $request->get('jenis');
+
+            $kode->jenis = $ledger->nama != 'A K T I V A' && $ledger->nama != 'B I A Y A' ? 'kredit' : 'debit';
             $kode->save();
             return redirect()->route('kode-akun.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
