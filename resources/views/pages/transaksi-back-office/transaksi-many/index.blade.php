@@ -45,8 +45,6 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Kode Kas</th>
                                 <th scope="col">Tanggal</th>
-                                <th scope="col">Kode Akun Kas</th>
-                                <th scope="col">Tipe</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Aksi</th>
                                 {{-- <th scope="col" class="text-start">Action</th> --}}
@@ -58,8 +56,6 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_transaksi }}</td>
                                     <td>{{ date('d-m-Y', strtotime($item->tanggal)) }}</td>
-                                    <td>{{ $item->kode_akun }}</td>
-                                    <td>{{ $item->tipe }}</td>
                                     <td>Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">

@@ -228,10 +228,8 @@ class PenarikanController extends Controller
             return redirect()->route('penarikan.index')->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {
-            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e) {
-            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         }
     }

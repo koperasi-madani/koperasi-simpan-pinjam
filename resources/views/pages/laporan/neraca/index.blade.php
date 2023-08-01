@@ -58,14 +58,25 @@
                                     <th style="text-align: center;" class="text-center">DEBET</th>
                                     <th style="text-align: center;" class="text-center">KREDIT</th>
 
-
-
                                 </tr>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                 $kode_induk = \App\Models\KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                                                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                                                ->groupBy('kode_ledger.nama')
+                                                ->orderBy('kode_induk.kode_induk')
+                                                ->get();
+                                $totalPendapatan = 0;
+                                $totalBiaya = 0;
+
+                            @endphp
                             @foreach ($kode_induk as $item_induk)
                                     @php
+                                        $totalLabaRugiSatu = 0;
+                                        $totalLabaRugiDua = 0;
+
                                         $totalSaldoAwalDebet = 0;
                                         $totalSaldoAwalKredit = 0;
                                         $totalMutasiDebet = 0;
@@ -75,11 +86,21 @@
 
                                         $totalSaldoAwalDebetTotal = 0;
                                         $totalSaldoAwalKreditTotal = 0;
+
+                                        $totalSaldoAwalDebetTotalTiga = 0;
+                                        $totalSaldoAwalKreditTotalTiga = 0;
+
                                         $totalMutasiDebetTotal = 0;
                                         $totalMutasiKreditTotal = 0;
+
                                         $totalSaldoAkhirDebetTotal = 0;
                                         $totalSaldoAkhirKreditTotal = 0;
+
+                                        $totalSaldoAkhirDebetTotalTiga = 0;
+                                        $totalSaldoAkhirKreditTotalTiga = 0;
+
                                     @endphp
+
                                     @php
                                         $kode_induk_dua = \App\Models\KodeInduk::select('kode_induk.id','kode_induk.id_ledger','kode_induk.kode_induk','kode_induk.nama')->where('id_ledger',$item_induk->id_ledger)->groupBy('kode_induk.kode_induk')->orderBy('id','DESC')->get();
                                     @endphp
@@ -131,33 +152,6 @@
                                                         $mutasiAwalKredit += $sumMutasiAwalKreditDiLawan;
                                                     }
                                                 }
-                                                else{ // cek apakah ada jurnal awal di field lawan
-                                                    $cekTransaksiAwalDiLawan = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_lawan', $item_ledger->id)->count();
-                                                    if ($cekTransaksiAwalDiLawan > 0) {
-                                                        $sumMutasiAwalDebetDiLawan = \DB::table('jurnal')->where('kode_lawan', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                        $sumMutasiAwalKreditDiLawan = \DB::table('jurnal')->where('kode_lawan', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                        if ($item_ledger->jenis == 'debit') {
-                                                            $mutasiAwalDebet += $sumMutasiAwalDebetDiLawan;
-
-                                                            $mutasiAwalKredit += $sumMutasiAwalKreditDiLawan;
-                                                        }
-                                                        else{
-                                                            $mutasiAwalDebet += $sumMutasiAwalDebetDiLawan;
-                                                            $mutasiAwalKredit += $sumMutasiAwalKreditDiLawan;
-                                                        }
-                                                    }
-                                                    else{ //tidak ada jurnal awal di field kode maupun lawan
-                                                        // if ($item_ledger->jenis == 'debit') {
-                                                        //     $mutasiAwalDebet += $item_ledger->saldo_awal;
-                                                        // }
-                                                        // else{
-                                                        //     $mutasiAwalKredit += $item_ledger->saldo_awal;
-                                                        // }
-                                                    }
-                                                }
-
                                                 // cek transaksi di field kode
                                                 $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $item_ledger->id)->count();
 
@@ -181,18 +175,6 @@
                                                         $mutasiKredit += $sumMutasiKreditDiLawan;
                                                     }
                                                 }
-                                                else{ // cek transaksi di field lawan
-                                                    // cek transaksi di field lawan
-                                                    $cekTransaksiDiLawan = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_lawan', $item_ledger->id)->count();
-                                                    if ($cekTransaksiDiLawan > 0) {
-                                                        $sumMutasiDebetDiLawan = \DB::table('jurnal')->where('kode_lawan', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                        $sumMutasiKreditDiLawan = \DB::table('jurnal')->where('kode_lawan', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                        $mutasiDebet += $sumMutasiDebetDiLawan;
-                                                        $mutasiKredit += $sumMutasiKreditDiLawan;
-                                                    }
-                                                }
 
                                                 $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
 
@@ -202,33 +184,46 @@
                                                 $totalMutasiKreditTotal += $mutasiKredit;
 
                                                 if ($item_ledger->jenis == 'debit') {
-                                                    $totalSaldoAwalDebetTotal += $saldoAwal;
-                                                    $totalSaldoAkhirDebetTotal += $saldoAkhir;
+                                                    $totalSaldoAwalDebetTotalTiga += $saldoAwal;
+                                                    $totalSaldoAkhirDebetTotalTiga += $saldoAkhir;
                                                 }
                                                 else{
-                                                    $totalSaldoAwalKreditTotal += $saldoAwal;
-                                                    $totalSaldoAkhirKreditTotal += $saldoAkhir;
+                                                    $totalSaldoAwalKreditTotalTiga += $saldoAwal;
+                                                    $totalSaldoAkhirKreditTotalTiga += $saldoAkhir;
+                                                }
+
+                                                if ($item_ledger->nama_ledger == 'B I A Y A') {
+                                                    $totalBiaya += $saldoAwal;
+                                                }
+                                                if ($item_induk->nama_ledger == 'P E N D A P A T A N') {
+                                                    $totalPendapatan += $saldoAwal;
                                                 }
                                             @endphp
                                         @endforeach
                                     @endforeach
+                                    @php
+                                        $labaRugi = $totalBiaya - $totalPendapatan;
+                                        if ($item_ledger->nama_ledger == 'B I A Y A') {
+                                        }
+
+                                    @endphp
+
                                     <tr class="bg-secondary">
                                         <td>{{ $item_induk->kode_ledger }}</td>
                                         <td>{{ $item_induk->nama_ledger }}</td>
                                         @if ($item_ledger->jenis == 'debit')
-                                            <td>{{ number_format(abs($totalSaldoAwalDebetTotal), 2, ',', '.') }}</td>
+                                            <td>{{ number_format(abs($totalSaldoAwalDebetTotalTiga), 2, ',', '.') }}</td>
                                         @else
-                                            <td>{{ number_format(abs($totalSaldoAwalKreditTotal), 2, ',', '.') }}</td>
+                                            <td>{{ number_format(abs($totalSaldoAwalKreditTotalTiga), 2, ',', '.') }}</td>
                                         @endif
                                         <td>{{ number_format(abs($totalMutasiDebetTotal), 2, ',', '.') }}</td>
                                         <td>{{ number_format(abs($totalMutasiKreditTotal), 2, ',', '.') }}</td>
                                         @if ($item_ledger->jenis == 'debit')
-                                            <td>{{ number_format(abs($totalSaldoAkhirDebetTotal), 2, ',', '.') }}</td>
+                                            <td>{{ number_format(abs($totalSaldoAkhirDebetTotalTiga), 2, ',', '.') }}</td>
                                         @else
-                                            <td>{{ number_format(abs($totalSaldoAkhirKreditTotal), 2, ',', '.') }}</td>
+                                            <td>{{ number_format(abs($totalSaldoAkhirKreditTotalTiga), 2, ',', '.') }}</td>
                                         @endif
                                     </tr>
-
                                     @php
                                         $kode_induk_dua = \App\Models\KodeInduk::select('kode_induk.id','kode_induk.id_ledger','kode_induk.kode_induk','kode_induk.nama')
                                                     ->where('id_ledger',$item_induk->id_ledger)
@@ -389,7 +384,10 @@
                                         @php
                                         $ledger = \App\Models\KodeAkun::select('kode_akun.*',
                                                         'kode_induk.id as induk_id',
-                                                        'kode_induk.nama as nama_induk','kode_induk.jenis','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                                                        'kode_induk.kode_induk',
+                                                        'kode_induk.nama as nama_induk','kode_induk.jenis',
+                                                        'kode_ledger.id as ledger_id',
+                                                        'kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
                                                         ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
                                                         ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
                                                         // ->where('kode_induk.id_ledger',$item_induk->id)
@@ -512,14 +510,31 @@
                                                     $totalSaldoAkhirKredit += $saldoAkhir;
                                                 }
                                             @endphp
+
                                             <tr>
                                                 <td>{{ $item->kode_akun }}</td>
                                                 <td>{{ $item->nama_akun }}</td>
-                                                @if ($item->jenis == 'debit')
-                                                    <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
+
+                                                {{-- <p>{{ $labaRugi }}</p> --}}
+                                                {{-- @if ($item->nama_akun == 'LABA / RUGI TAHUN BERJALAN')
                                                 @else
                                                     <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
+                                                @endif --}}
+                                                {{-- <td> <b>{{ number_format(abs($labaRugi), 2, ',', '.') }}</b></td> --}}
+                                                @if ($item->jenis == 'debit')
+                                                <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
+
+                                                @else
+                                                    {{-- @if ($item->nama_akun == 'LABA / RUGI TAHUN BERJALAN')
+                                                        <p>{{ $item->nama_ledger }}</p>
+                                                        @if ($item->nama_ledger == 'B I A Y A' )
+
+                                                        @endif
+                                                    @else
+                                                    @endif --}}
+                                                    <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
                                                 @endif
+
                                                 <td>{{ number_format(abs($mutasiDebet), 2, ',', '.') }}</td>
                                                 <td>{{ number_format(abs($mutasiKredit), 2, ',', '.') }}</td>
                                                 @if ($item->jenis == 'debit')

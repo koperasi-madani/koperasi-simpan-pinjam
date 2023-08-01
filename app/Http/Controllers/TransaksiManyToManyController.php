@@ -6,6 +6,7 @@ use App\Models\DTransaksiManyToMany;
 use App\Models\Jurnal;
 use App\Models\KodeAkun;
 use App\Models\TransaksiManyToMany;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -36,7 +37,9 @@ class TransaksiManyToManyController extends Controller
                     ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
                     ->where('kode_akun.nama_akun','NOT LIKE', "%tabungan mudharabah%")
                     ->get();
-        return view('pages.transaksi-back-office.transaksi-many.create',compact('KodeAkun'));
+        $kode = $this->generateKode();
+
+        return view('pages.transaksi-back-office.transaksi-many.create',compact('KodeAkun','kode'));
     }
 
     /**
@@ -45,22 +48,23 @@ class TransaksiManyToManyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tanggal' => 'required',
-            'tipe' => 'required|not_in:0',
-            'kode_akun' => 'required|not_in:0',
-            // 'akun_lawan.*' => 'required',
-            // 'nominal.*' => 'required',
-            // 'ket.*' => 'required'
+            'akun_lawan.*' => 'required',
+            'nominal.*' => 'required',
+            'ket.*' => 'required'
         ]);
         DB::beginTransaction();
         try {
+            $total = 0;
+            foreach ($_POST['nominal'] as $key => $value) {
+                $total += $this->formatNumber($_POST['nominal'][$key]);
+            }
             $transaksi = new TransaksiManyToMany;
             $transaksi->kode_transaksi = $this->generateKode();
             $transaksi->id_user = auth()->user()->id;
-            $transaksi->tanggal = $request->get('tanggal');
-            $transaksi->kode_akun = $request->get('kode_akun');
-            $transaksi->tipe = $request->get('tipe');
-            $transaksi->total = $request->get('total');
+            $transaksi->tanggal = Carbon::now();
+            $transaksi->kode_akun = $request->get('akun_lawan')[0];
+            $transaksi->tipe = $request->get('tipe')[0];
+            $transaksi->total = $total;
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
 
@@ -69,19 +73,19 @@ class TransaksiManyToManyController extends Controller
                 $detailTransaksi = new DTransaksiManyToMany;
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $_POST['akun_lawan'][$key];
-                $detailTransaksi->subtotal = $_POST['nominal'][$key];
+                $detailTransaksi->subtotal = $this->formatNumber($_POST['nominal'][$key]);
                 $detailTransaksi->keterangan = $_POST['ket'][$key];
                 $detailTransaksi->save();
 
                 // jurnal
                 $jurnal = new Jurnal;
-                $jurnal->tanggal = $request->get('tanggal');
+                $jurnal->tanggal = Carbon::now();
                 $jurnal->kode_transaksi = $transaksi->kode_transaksi;
                 $jurnal->keterangan = $_POST['ket'][$key];
-                $jurnal->kode_akun = $request->get('kode_akun');
-                $jurnal->kode_lawan = $_POST['akun_lawan'][$key];
-                $jurnal->tipe = $request->tipe == 'Masuk' ? 'debit' : 'kredit';
-                $jurnal->nominal =  $_POST['nominal'][$key];
+                $jurnal->kode_akun = $_POST['akun_lawan'][$key];
+                $jurnal->kode_lawan = 0;
+                $jurnal->tipe = $_POST['tipe'][$key] == 'Masuk' ? 'debit' : 'kredit';
+                $jurnal->nominal =  $this->formatNumber($_POST['nominal'][$key]);
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }
@@ -89,9 +93,11 @@ class TransaksiManyToManyController extends Controller
             return redirect()->route('transaksi-many-to-many.index')->withStatus('Berhasil menambahkan data transaksi');
 
         } catch (Exception $e) {
+            return $e;
             DB::rollBack();
             return redirect()->route('transaksi-many-to-many.index')->withError('Terjadi Kesalahan');
         } catch (QueryException $e) {
+            return $e;
             DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan.');
        }
@@ -166,5 +172,10 @@ class TransaksiManyToManyController extends Controller
             return $notransaksi = 'TM'.$date."001";
 
         }
+    }
+
+    public function formatNumber($param)
+    {
+        return (int)str_replace('.', '', $param);
     }
 }

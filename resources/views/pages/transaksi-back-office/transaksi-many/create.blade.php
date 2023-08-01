@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('css')
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <style>
             .page-item.active .page-link{
                 background-color: #219ebc !important;
@@ -9,87 +10,166 @@
             .active-ket{
                 display: none;
             }
+            .select2-container--default .select2-selection--single {
+                border-radius: 0.35rem !important;
+                border: 1px solid #d1d3e2;
+                height: calc(1.95rem + 5px);
+                background: #fff;
+            }
+
+            .select2-container--default .select2-selection--single:hover,
+            .select2-container--default .select2-selection--single:focus,
+            .select2-container--default .select2-selection--single.active {
+                box-shadow: none;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 32px;
+
+            }
+
+            .select2-container--default .select2-selection--multiple {
+                border-color: #eaeaea;
+                border-radius: 0;
+            }
+
+            .select2-dropdown {
+                border-radius: 0;
+            }
+
+            .select2-container--default .select2-results__option--highlighted[aria-selected] {
+                /* background-color: #3838eb; */
+            }
+
+            .select2-container--default.select2-container--focus .select2-selection--multiple {
+                border-color: #eaeaea;
+                background: #fff;
+
+            }
         </style>
     @endpush
     @push('js')
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#example').DataTable();
         })
     </script>
     <script>
-         $(document).ready(function() {
-            // Menambahkan form dinamis ketika tombol "Add Form" ditekan
+        function selectRefresh() {
+            $('.formContainerTest .akun-select').select2({
+                placeholder: "Pilih Akun",
+                allowClear: false,
+            });
+        }
+        $(document).ready(function() {
+            selectRefresh()
             $('#addBtn').click(function() {
                 var formRow = `
                     <div class="row form-row my-3">
-                        <div class="form-group col-md-4">
-                            <label for="obat">Lawan</label>
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="obat">Kode Akun</label>
                             <select class="form-control akun-select" name="akun_lawan[]" required>
-                                <option value="">Pilih Obat</option>
+                                @foreach($KodeAkun as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode_akun }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="harga">Nominal</label>
-                            <input type="number" class="form-control harga-input" placeholder="Masukkan Nominal" name="nominal[]" required>
+                        <div class="form-group col-md-4">
+                            <label for="harga">Nama Akun</label>
+                            <input type="text" class="form-control nama-input" placeholder="Nama Akun" name="nama_akun[]" readonly id="nama-input" >
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
+                            <label for="harga">Tipe</label>
+                            <select name="tipe[]" id="" class="form-control @error('tipe') is-invalid @enderror" required>
+                                <option value="Masuk" {{old('tipe') == 'Masuk' ? 'selected' : ''}}>Debet</option>
+                                <option value="Keluar" {{old('tipe') == 'Keluar' ? 'selected' : ''}}>Kredit</option>
+                            </select>
+                            @error('tipe')
+                                <div class="invalid-feedback">
+                                    {{$message}}.
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="harga">Nominal</label>
+                            <input type="text" class="form-control harga-input" placeholder="Masukkan Nominal" name="nominal[]" required>
+                        </div>
+                        <div class="form-group col-md-5">
                             <label for="ket">Keterangan</label>
                             <input type="text" class="form-control ket-input" placeholder="Masukkan Keterangan" name="ket[]">
                         </div>
-                        <div class="form-group col-md-2">
-                            <button type="button" class="btn btn-danger remove-btn">Hapus</button>
+                        <div class="form-group col-md-2 my-3">
+                            <button type="button" class="btn btn-danger remove-btn text-center px-5">Hapus</button>
                         </div>
+                        <hr>
                     </div>
                 `;
+                $('.formContainerTest').append(formRow);
+                selectRefresh()
 
-                $('#formContainer').append(formRow);
+            });
 
-                // Mendapatkan data obat dan mengisi dropdown di form baru
+            $(document).on('change','.formContainerTest .akun-select',function(e) {
+                var obatId = $(this).val();
+                console.log(obatId);
+                var hargaInput = $(this).closest('.form-row').find('.nama-input');
                 $.ajax({
-                    url: "{{ route('transaksi.kodeAkun') }}",
-                    type: "GET",
-                    dataType: "json",
-                    success: function(response) {
-                        var obatSelect = $('.akun-select:last');
-                        obatSelect.empty();
-                        obatSelect.append('<option value="">Pilih Akun</option>');
+                    url: `{{ route('get.akun') }}`,
+                    type: 'GET',
+                    data: {
+                        id: $(this).val()
+                    },
+                    success: function (data) {
+                        hargaInput.val(data.nama_akun);
 
-                        $.each(response, function(key, value) {
-                            obatSelect.append('<option value="' + value.id + '">' + value.nama_akun + '</option>');
-                        });
                     }
                 });
             });
-
-            // Menghapus form ketika tombol "Remove" ditekan
             $(document).on('click', '.remove-btn', function() {
                 $(this).closest('.form-row').remove();
-                calculateTotal();
             });
 
             $(document).on('keyup','.harga-input',function() {
-                calculateTotal();
+                $(this).val(formatRupiah($(this).val()))
             })
-
-
+            formatRupiah($('.harga-input').val())
             // Fungsi untuk menghitung total
-            function calculateTotal() {
-                var total = 0;
-                $('.form-row').each(function() {
-                    var nominal = parseInt($(this).find('.harga-input').val());
-                    if (nominal) {
-                        total += nominal
-                    }
-                });
+            // function calculateTotal() {
+            //     var total = 0;
+            //     $('.form-row').each(function() {
+            //         var nominal = parseInt($(this).find('.harga-input').val());
+            //         if (nominal) {
+            //             total += nominal
+            //         }
+            //     });
 
-                $('#total').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total));
-                $('#total_input').val(total);
-            }
+            //     $('#total').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total));
+            //     $('#total_input').val(total);
+            // }
         });
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return prefix == undefined ? rupiah : rupiah ? rupiah : "";
+        }
+        // Menambahkan form dinamis ketika tombol "Add Form" ditekan
+
     </script>
     @endpush
     @section('content')
@@ -106,47 +186,25 @@
                         <form action="{{ route('transaksi-many-to-many.store') }}" class="mt-4" method="POST">
                         @csrf
                         <div class="row form-row my-3">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="harga">Tanggal</label>
-                                <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal">
+                                <input type="text" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" value="{{ Carbon\Carbon::now() }}" readonly>
                                 @error('tanggal')
                                     <div class="invalid-feedback">
                                         {{$message}}.
                                     </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="harga">Tipe</label>
-                                <select name="tipe" id="" class="form-control @error('tipe') is-invalid @enderror">
-                                    <option value="0"> --Pilih--</option>
-                                    <option value="Masuk" {{old('tipe') == 'Masuk' ? 'selected' : ''}}>Masuk</option>
-                                    <option value="Keluar" {{old('tipe') == 'Keluar' ? 'selected' : ''}}>Keluar</option>
-                                </select>
-                                @error('tipe')
-                                    <div class="invalid-feedback">
-                                        {{$message}}.
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-4">
+
+                            <div class="form-group col-md-6">
                                 <label for="obat">Kode Akun Kas</label>
-                                <select class="form-control @error('kode_akun') is-invalid @enderror kode_akun" name="kode_akun">
-                                    <option value="">Pilih Akun</option>
-                                    @foreach($KodeAkun as $item)
-                                        <option value="{{ $item->id }}">{{ $item->nama_akun }}</option>
-                                    @endforeach
-                                </select>
-                                @error('kode_akun')
-                                    <div class="invalid-feedback">
-                                        {{$message}}.
-                                    </div>
-                                @enderror
+                                <input type="text" name="kode" id="" value="{{ $kode }}" readonly class="form-control">
                             </div>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between">
                             <div class="my-4">
-                                <h4>Detail Transaksi</h4>
+                                <h4>Transaksi</h4>
                             </div>
                             <div>
                                 <div class="form-group my-4">
@@ -156,43 +214,47 @@
                         </div>
                         <hr>
                         <div class="card card-body">
-                            <div id="formContainer">
+                            <div id="formContainer" class="formContainerTest">
                                 <div class="row form-row my-3">
-                                    <div class="form-group col-md-4">
-                                        <label for="obat">Lawan</label>
+                                    <div class="form-group col-md-4 mb-3">
+                                        <label for="obat">Kode Akun</label>
                                         <select class="form-control akun-select" name="akun_lawan[]" required>
-                                            <option value="">Pilih Akun</option>
                                             @foreach($KodeAkun as $item)
-                                                <option value="{{ $item->id }}">{{ $item->nama_akun }}</option>
+                                                <option value="{{ $item->id }}">{{ $item->kode_akun }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-3">
-                                        <label for="harga">Nominal</label>
-                                        <input type="number" class="form-control harga-input" placeholder="Masukkan Nominal" name="nominal[]" required>
+                                    <div class="form-group col-md-4">
+                                        <label for="harga">Nama Akun</label>
+                                        <input type="text" class="form-control nama-input" placeholder="Nama Akun" name="nama_akun[]" readonly  id="nama-input">
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
+                                        <label for="harga">Tipe</label>
+                                        <select name="tipe[]" id="" class="form-control @error('tipe') is-invalid @enderror" required>
+                                            <option value="Masuk" {{old('tipe') == 'Masuk' ? 'selected' : ''}}>Debet</option>
+                                            <option value="Keluar" {{old('tipe') == 'Keluar' ? 'selected' : ''}}>Kredit</option>
+                                        </select>
+                                        @error('tipe')
+                                            <div class="invalid-feedback">
+                                                {{$message}}.
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="harga">Nominal</label>
+                                        <input type="text" class="form-control harga-input" placeholder="Masukkan Nominal" name="nominal[]" required>
+                                    </div>
+                                    <div class="form-group col-md-5">
                                         <label for="ket">Keterangan</label>
                                         <input type="text" class="form-control ket-input" placeholder="Masukkan Keterangan" name="ket[]">
                                     </div>
-                                    <div class="form-group col-md-2">
-                                        <button type="button" class="btn btn-danger remove-btn">Hapus</button>
+                                    <div class="form-group col-md-2 my-3">
+                                        <button type="button" class="btn btn-danger remove-btn text-center px-5" >Hapus</button>
                                     </div>
                                 </div>
+                                <hr>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row test mt-4">
-                            {{-- <input type="text" name="kode_transaksi" id="" value="{{ $data->kode_transaksi }}" hidden> --}}
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <h4 class='text-right mt-1 pr-5' style="font-weight: bold">Total : <span id='total' class="text-info" style="font-weight: bold">0</span></h4>
-                                    <input type="number" class="form-control" name="total" id="total_input" readonly hidden>
-                                </div>
-                            </div>
-                        </div>
-
-
                     </div>
                     <div class="card-footer">
                         <hr>

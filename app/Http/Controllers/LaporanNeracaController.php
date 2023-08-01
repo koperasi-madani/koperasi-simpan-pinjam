@@ -23,6 +23,6 @@ class LaporanNeracaController extends Controller
                                 ->groupBy('kode_ledger.nama')
                                 ->orderBy('kode_induk.kode_induk')
                                 ->get();
-        return view('pages.laporan.neraca.index',compact('ledger','kode_induk'));
+        return view('pages.laporan.neraca.index',compact('ledger'));
     }
 }
