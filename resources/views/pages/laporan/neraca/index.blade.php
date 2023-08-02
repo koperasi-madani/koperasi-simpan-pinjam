@@ -35,13 +35,15 @@
     @endpush
     @section('content')
     <section class="content-main">
-        <div class="content-header">
-            <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2>
 
-        </div>
         <div class="card mb-4">
             <header class="card-header">
-                <h4>WILAYAH: 01 - JAWA TIMUR</h4>
+                <div class="d-flex justify-content-between">
+                    <div> <h2 class="content-title">{{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h2></div>
+                    <div>
+                        <h5>WILAYAH: 01 - JAWA TIMUR</h5>
+                    </div>
+                </div>
             </header>
             <div class="card-body">
                 <div class="table-responsive">
