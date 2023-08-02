@@ -23,6 +23,24 @@ class LaporanNeracaController extends Controller
                                 ->groupBy('kode_ledger.nama')
                                 ->orderBy('kode_induk.kode_induk')
                                 ->get();
-        return view('pages.laporan.neraca.index',compact('ledger'));
+        $kode_pendapatan = KodeAkun::select('kode_akun.id',
+                                'kode_induk.id as induk_id',
+                                'kode_induk.kode_induk',
+                                'kode_induk.nama as nama_induk','kode_induk.jenis',
+                                'kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                        ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                        ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                        ->where('kode_ledger.kode_ledger','30000')
+                        ->get();
+        $kode_modal = KodeAkun::select('kode_akun.id',
+                                'kode_induk.id as induk_id',
+                                'kode_induk.kode_induk',
+                                'kode_induk.nama as nama_induk','kode_induk.jenis',
+                                'kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                                ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                                ->where('kode_ledger.kode_ledger','40000')
+                                ->get();
+        return view('pages.laporan.neraca.index',compact('ledger','kode_pendapatan','kode_modal'));
     }
 }
