@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('suku:cron')
-                 ->everyMinute()
+                 ->daily()
                  ->appendOutputTo(storage_path('logs/inspire.log'));
         $schedule->command('totalsuku:cron')
                  ->monthly()
