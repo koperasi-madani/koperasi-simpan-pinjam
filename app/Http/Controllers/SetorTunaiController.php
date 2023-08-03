@@ -136,7 +136,7 @@ class SetorTunaiController extends Controller
                 $setor->saldo = $result_saldo;
             }else{
                 $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
-                $saldo_awal = $tabungan->first()->saldo_awal;
+                $saldo_awal = $tabungan->first()->saldo;
                 $result_saldo = $saldo_awal + $setor->nominal;
 
                 $penerimaan = $pembayaran->penerimaan + $setor->nominal;

@@ -41,14 +41,12 @@
                         id:id
                     },
                     success: function(data) {
-                        $.each(data, function (key, value) {
-                            console.log(value);
-                            $('#no_anggota').val(value.nik);
-                            $('#id_nasabah').val(value.id_rekening_tabungan);
-                            $('#nama').val(value.nama)
-                            var total_saldo = document.getElementById("total_penarikan");
-                            total_saldo.value = formatRupiah(value.nominal_setor);
-                        })
+                        console.log(data);
+                        $('#no_anggota').val(data.nik);
+                        $('#id_nasabah').val(data.id_nasabah);
+                        $('#nama').val(data.nama)
+                        var total_saldo = document.getElementById("total_penarikan");
+                        total_saldo.value = data.nominal;
                     }
                 })
             })
@@ -103,13 +101,13 @@
                                                 <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
                                             </td>
                                             <td>{{ $item->no_rekening }}</td>
-                                            <td><b>Rp. {{ number_format($item->nominal_setor,2, ",", ".") }}</b></td>
-                                            <td><b>{{ $item->validasi }}</b></td>
+                                            <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
+                                            <td><b>{{ $item->ket }}</b></td>
                                             <td>
-                                                @if ($item->otorisasi_penarikan == 'setuju')
+                                                @if ($item->status == 'setuju')
                                                     <span class="badge rounded-pill alert-success">Disetujui</span>
-                                                @elseif ($item->otorisasi_penarikan == 'pending')
-                                                    <span class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</span>
+                                                @elseif ($item->status == 'pending')
+                                                    <a class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</a>
                                                 @else
                                                     <span class="badge rounded-pill alert-danger">Ditolak</span>
                                                 @endif
@@ -139,8 +137,8 @@
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel" hidden>Ganti Status Rekening</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="exampleModalLabel" >Ganti Status Rekening</h5>
+                {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> --}}
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('otorisasi.post.rekening') }}" method="POST">
@@ -201,7 +199,7 @@
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button class="btn btn-primary" type="submit">Simpan</button>
 
                     </form>

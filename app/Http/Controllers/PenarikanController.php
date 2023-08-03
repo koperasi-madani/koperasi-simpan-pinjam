@@ -200,7 +200,7 @@ class PenarikanController extends Controller
             $transaksi->id_user = auth()->user()->id;
             $transaksi->tanggal = $request->get('tgl');
             $transaksi->kode_akun = $kode_akun;
-            $transaksi->tipe = 'debit';
+            $transaksi->tipe = 'kredit';
             $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
@@ -218,7 +218,7 @@ class PenarikanController extends Controller
             $jurnal->keterangan = 'tabungan';
             $jurnal->kode_akun = $kode_akun;
             $jurnal->kode_lawan = 0;
-            $jurnal->tipe = 'debit';
+            $jurnal->tipe = 'kredit';
             $jurnal->nominal =  $this->formatNumber($request->get('nominal_penarikan'));
             $jurnal->id_detail = $detailTransaksi->id;
             $jurnal->save();

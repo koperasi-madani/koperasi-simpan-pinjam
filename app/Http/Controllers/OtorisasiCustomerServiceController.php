@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\BukuTabungan;
+use App\Models\DTransaksiManyToMany;
+use App\Models\Jurnal;
 use App\Models\NasabahModel;
 use App\Models\Penarikan;
 use App\Models\SaldoTeller;
+use App\Models\TransaksiManyToMany;
+use App\Models\TransaksiTabungan;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -47,88 +52,111 @@ class OtorisasiCustomerServiceController extends Controller
 
     public function rekening()
     {
-        $data = Penarikan::select(
-                                'penarikan.id',
-                                'penarikan.id_rekening_tabungan',
-                                'penarikan.kode_penarikan',
-                                'penarikan.tgl_setor',
-                                'penarikan.nominal_setor',
-                                'penarikan.validasi',
-                                'penarikan.otorisasi_penarikan',
-                                'rekening_tabungan.nasabah_id',
-                                'rekening_tabungan.no_rekening',
-                                'nasabah.id as id_nasabah',
-                                'nasabah.nama',
-                                'nasabah.nik',
-                                'users.id as id_user',
-                                'users.kode_user'
-                                )->join(
-                                    'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
-                                )->join(
-                                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                )
-                                ->join(
-                                    'users', 'users.id', 'penarikan.id_user'
-                                )->get();
-
+        $data  = TransaksiTabungan::select('transaksi_tabungan.*',
+                                    'rekening_tabungan.nasabah_id',
+                                    'rekening_tabungan.no_rekening',
+                                    'nasabah.id as id_nasabah',
+                                    'nasabah.nama',
+                                    'nasabah.nik',
+                                    'users.id as id_user',
+                                    'users.kode_user'
+                                    )->join(
+                                        'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                    )->join(
+                                        'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+                                    )
+                                    ->join(
+                                        'users', 'users.id', 'transaksi_tabungan.id_user'
+                                    )
+                                    ->where('transaksi_tabungan.jenis','keluar')
+                                    ->orderByDesc('transaksi_tabungan.created_at')
+                                    ->get();
         return view('pages.otorisasi-customer-service.rekening',compact('data'));
     }
 
     public function getRekening(Request $request)
     {
-        $data = Penarikan::select(
-                        'penarikan.id',
-                        'penarikan.id_rekening_tabungan',
-                        'penarikan.kode_penarikan',
-                        'penarikan.tgl_setor',
-                        'penarikan.nominal_setor',
-                        'penarikan.validasi',
-                        'penarikan.otorisasi_penarikan',
-                        'rekening_tabungan.nasabah_id',
-                        'rekening_tabungan.no_rekening',
-                        'nasabah.id as id_nasabah',
-                        'nasabah.nama',
-                        'nasabah.nik',
-                        'users.id as id_user',
-                        'users.kode_user'
-                        )->join(
-                            'rekening_tabungan','rekening_tabungan.id','penarikan.id_rekening_tabungan'
-                        )->join(
-                            'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                        )
-                        ->join(
-                            'users', 'users.id', 'penarikan.id_user'
-                        )->where('penarikan.id',$request->get('id'))->first();
+        $data = TransaksiTabungan::select('transaksi_tabungan.*',
+                'rekening_tabungan.nasabah_id',
+                'rekening_tabungan.no_rekening',
+                'nasabah.id as id_nasabah',
+                'nasabah.nama',
+                'nasabah.nik',
+                'users.id as id_user',
+                'users.kode_user'
+                )->join(
+                    'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                )->join(
+                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+                )
+                ->join(
+                    'users', 'users.id', 'transaksi_tabungan.id_user'
+                )
+                ->where('transaksi_tabungan.jenis','keluar')
+                ->where('transaksi_tabungan.id',$request->get('id'))->first();
 
-        return response()->json([
-            'data' => $data,
-        ]);
+        return response()->json($data);
     }
 
 
     public function postRekening(Request $request)
     {
-        $penarikan = Penarikan::find($request->get('id'));
+        $penarikan = TransaksiTabungan::find($request->get('id'));
         if ($request->status == 'setuju') {
             $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
             $saldo_akhir = $tabungan->first()->saldo;
-            $result_saldo =  $saldo_akhir - $penarikan->nominal_setor;
+            $result_saldo =  $saldo_akhir - $penarikan->nominal;
             // update penerimaan
+            $head = User::whereHas(
+                'roles', function($q){
+                    $q->where('name', 'head-teller');
+                }
+            )->first();
             $currentDate = Carbon::now()->toDateString();
             $pembayaran = SaldoTeller::where('status','pembayaran')
-                ->where('id_user',auth()->user()->id)
+                ->where('id_user',$head->id)
                 ->where('tanggal',$currentDate)
                 // ->sum('pembayaran');
                 ->first();
-            $penerimaan = $pembayaran->penerimaan - $penarikan->nominal_setor;
+            $penerimaan = $pembayaran->penerimaan - $penarikan->nominal;
             $pembayaran->penerimaan = $penerimaan;
             $pembayaran->update();
             $tabungan->update([
                 'saldo' => $result_saldo,
             ]);
-            $penarikan->otorisasi_penarikan = 'setuju';
+            $penarikan->status = 'setuju';
+
+            $kode_akun = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+
+            $transaksi = new TransaksiManyToMany();
+            $transaksi->kode_transaksi = $this->generateKode();
+            $transaksi->id_user = auth()->user()->id;
+            $transaksi->tanggal = $currentDate;
+            $transaksi->kode_akun = $kode_akun;
+            $transaksi->tipe = 'debit';
+            $transaksi->total = $this->formatNumber($penarikan->nominal);
+            $transaksi->keterangan = 'Transaksi Many To Many';
+            $transaksi->save();
+
+            $detailTransaksi = new DTransaksiManyToMany();
+            $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+            $detailTransaksi->kode_akun = $kode_akun;
+            $detailTransaksi->subtotal = $this->formatNumber($penarikan->nominal);
+            $detailTransaksi->keterangan = 'tabungan';
+            $detailTransaksi->save();
+
+            $jurnal = new Jurnal();
+            $jurnal->tanggal = $currentDate;
+            $jurnal->kode_transaksi = $transaksi->kode_transaksi;
+            $jurnal->keterangan = 'tabungan';
+            $jurnal->kode_akun = $kode_akun;
+            $jurnal->kode_lawan = 0;
+            $jurnal->tipe = 'debit';
+            $jurnal->nominal =  $this->formatNumber($penarikan->nominal);
+            $jurnal->id_detail = $detailTransaksi->id;
+            $jurnal->save();
         }else{
-            $penarikan->otorisasi_penarikan = 'ditolak';
+            $penarikan->status = 'ditolak';
         }
         $penarikan->update();
         return redirect()->route('otorisasi.rekening')->withStatus('Berhasil mengubah status penarikan : '.$request->get('nama'));

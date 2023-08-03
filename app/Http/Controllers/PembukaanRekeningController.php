@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\BukuTabungan;
+use App\Models\DTransaksiManyToMany;
+use App\Models\Jurnal;
 use App\Models\KodeAkun;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
 use App\Models\SaldoTeller;
 use App\Models\SukuBunga;
+use App\Models\TransaksiManyToMany;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -116,6 +119,39 @@ class PembukaanRekeningController extends Controller
             $buku->saldo = $rekening->saldo_awal;
             $buku->jenis = 'masuk';
             $buku->save();
+
+             // jurnal;
+             $kode_akun = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+
+             $transaksi = new TransaksiManyToMany;
+             $transaksi->kode_transaksi = $this->generateKode();
+             $transaksi->id_user = auth()->user()->id;
+             $transaksi->tanggal = $request->get('tgl');
+             $transaksi->kode_akun = $kode_akun;
+             $transaksi->tipe = 'debit';
+             $transaksi->total = $this->formatNumber($request->saldo_awal);
+             $transaksi->keterangan = 'Transaksi Many To Many';
+             $transaksi->save();
+
+             $detailTransaksi = new DTransaksiManyToMany;
+             $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+             $detailTransaksi->kode_akun = $kode_akun;
+             $detailTransaksi->subtotal = $this->formatNumber($request->saldo_awal);
+             $detailTransaksi->keterangan = 'tabungan';
+             $detailTransaksi->save();
+
+             $jurnal = new Jurnal;
+             $jurnal->tanggal = $request->get('tgl');
+             $jurnal->kode_transaksi = $transaksi->kode_transaksi;
+             $jurnal->keterangan = 'tabungan';
+             $jurnal->kode_akun = $kode_akun;
+             $jurnal->kode_lawan = 0;
+             $jurnal->tipe = 'debit';
+             $jurnal->nominal =  $this->formatNumber($request->saldo_awal);
+             $jurnal->id_detail = $detailTransaksi->id;
+             $jurnal->save();
+
+
             return redirect()->route('pembukaan-rekening.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
             return $e;
@@ -173,6 +209,23 @@ class PembukaanRekeningController extends Controller
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
+        }
+    }
+
+    function generateKode() {
+        $nosaldo = null;
+        $transaksi = TransaksiManyToMany::orderBy('created_at', 'DESC')->get();
+        $date = date('Ymd');
+        if($transaksi->count() > 0) {
+            $notransaksi = $transaksi[0]->kode_transaksi;
+
+            $lastIncrement = substr($notransaksi, 10);
+            $notransaksi = str_pad($lastIncrement + 1, 3, 0, STR_PAD_LEFT);
+            return $notransaksi = 'TM'.$date.$notransaksi;
+        }
+        else {
+            return $notransaksi = 'TM'.$date."001";
+
         }
     }
 }
