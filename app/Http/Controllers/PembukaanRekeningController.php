@@ -103,17 +103,6 @@ class PembukaanRekeningController extends Controller
             $rekening->id_suku_bunga = $request->get('suku');
             $rekening->tgl_transaksi = $request->get('tgl');
 
-            // update penerimaan
-            $currentDate = Carbon::now()->toDateString();
-            $pembayaran = SaldoTeller::where('status','pembayaran')
-                ->where('id_user',auth()->user()->id)
-                ->where('tanggal',$currentDate)
-                // ->sum('pembayaran');
-                ->first();
-            $penerimaan = $pembayaran->pembayaran != 0 ? $pembayaran->pembayaran + $this->formatNumber($request->saldo_awal) : $pembayaran->pembayaran + 0;
-            $pembayaran->penerimaan = $penerimaan;
-            $pembayaran->update();
-
             $rekening->saldo_awal = $this->formatNumber($request->saldo_awal);
             $rekening->ket = $request->get('ket');
             $rekening->nasabah_id = $request->get('id_nasabah');
