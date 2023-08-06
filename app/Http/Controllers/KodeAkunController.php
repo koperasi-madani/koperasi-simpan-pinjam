@@ -41,7 +41,6 @@ class KodeAkunController extends Controller
     {
         $request->validate([
             'id_induk' => 'required',
-            'jenis' => 'required',
             'nama' => 'required',
             ]);
         try {
