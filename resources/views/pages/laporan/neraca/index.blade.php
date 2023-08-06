@@ -269,11 +269,6 @@
                                                             $totalSaldoAkhirKreditTotalTiga = ($totalSaldoAwalKreditTotalTiga + $totalMutasiKreditTotal) - $totalMutasiDebetTotal;
                                                         }
 
-                                                    } else {
-                                                        // $totalSaldoAwalKreditTotalTiga =  $totalSaldoAwalLaba;
-                                                        // $totalSaldoAkhirKreditTotalTiga =  $totalSaldoAkhirLaba;
-                                                        // $totalMutasiDebetTotal = $totalMutasiDebetLaba;
-                                                        // $totalMutasiKreditTotal = $totalMutasiKreditPendapatan;
                                                     }
 
                                                 }
@@ -283,7 +278,7 @@
                                     @endforeach
                                     <tr class="bg-secondary">
                                         <td>{{ $item_induk->kode_ledger }}</td>
-                                        <td>{{ $item_induk->nama_ledger }}</td>
+                                        <td>{{ strtoupper($item_induk->nama_ledger) }}</td>
                                         @if ($item_ledger->jenis == 'debit')
                                             <td>{{ number_format(abs($totalSaldoAwalDebetTotalTiga), 2, ',', '.') }}</td>
                                         @else
@@ -488,7 +483,7 @@
                                         @endforeach
                                         <tr class="bg-primary">
                                                 <td> {{ $tes->kode_induk }}</td>
-                                                <td> {{ $tes->nama }}</td>
+                                                <td> {{ strtoupper($tes->nama) }}</td>
                                                 @if ($item_ledger->jenis == 'debit')
                                                     <td>{{ number_format(abs($totalSaldoAwalDebetDua), 2, ',', '.') }}</td>
                                                 @else
@@ -667,7 +662,7 @@
 
                                             <tr>
                                                 <td>{{ $item->kode_akun }}</td>
-                                                <td>{{ $item->nama_akun }}</td>
+                                                <td>{{ strtoupper($item->nama_akun) }}</td>
                                                 @if ($item->jenis == 'debit')
                                                     <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
                                                 @else
