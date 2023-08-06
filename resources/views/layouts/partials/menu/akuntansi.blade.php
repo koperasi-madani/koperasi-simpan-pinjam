@@ -30,6 +30,7 @@
         <a href="{{ route('melihat.gl.master') }}" class="{{ Request::segment(3) == 'melihat-gl-master' ? 'active' : '' }}">Melihat G/L Master</a>
         <a href="{{ route('melihat.transaksi.gl') }}" class="{{ Request::segment(3) == 'melihat-transaksi-gl' ? 'active' : '' }}">Melihat Transaksi G/L</a>
         <a href="{{ route('melihat.data.rekening.tabungan') }}" class="{{ Request::segment(3) == 'melihat-data-rekening-tabungan' ? 'active' : '' }}">Melihat Data Rekening Tabungan</a>
+        <a href="{{ route('teller.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-tabungan-nasabah' ? 'active' : '' }}">Informasi Tabungan Nasabah</a>
     </div>
 </li>
 <li class="menu-item has-submenu {{ Request::segment(2) == 'laporan-back-office' ? 'active' : '' }} ">

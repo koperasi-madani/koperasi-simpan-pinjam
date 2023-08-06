@@ -6,6 +6,7 @@ use App\Models\BukuTabungan;
 use App\Models\Denominasi;
 use App\Models\DTransaksiManyToMany;
 use App\Models\Jurnal;
+use App\Models\KodeAkun;
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
 use App\Models\SaldoTeller;
@@ -193,43 +194,49 @@ class PenarikanController extends Controller
 
                 $penarikan->status = 'setuju';
             }
-            $kode_akun = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+            $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
 
-            $transaksi = new TransaksiManyToMany();
-            $transaksi->kode_transaksi = $this->generateKode();
-            $transaksi->id_user = auth()->user()->id;
-            $transaksi->tanggal = $request->get('tgl');
-            $transaksi->kode_akun = $kode_akun;
-            $transaksi->tipe = 'kredit';
-            $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
-            $transaksi->keterangan = 'Transaksi Many To Many';
-            $transaksi->save();
+            $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
-            $detailTransaksi = new DTransaksiManyToMany();
-            $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
-            $detailTransaksi->kode_akun = $kode_akun;
-            $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
-            $detailTransaksi->keterangan = 'tabungan';
-            $detailTransaksi->save();
+            foreach ($kode_akun_kas as $item) {
+                $transaksi = new TransaksiManyToMany();
+                $transaksi->kode_transaksi = $this->generateKode();
+                $transaksi->id_user = auth()->user()->id;
+                $transaksi->tanggal = $request->get('tgl');
+                $transaksi->kode_akun = $item->id;
+                $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
+                $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
+                $transaksi->keterangan = 'Transaksi Many To Many';
+                $transaksi->save();
 
-            $jurnal = new Jurnal;
-            $jurnal->tanggal = $request->get('tgl');
-            $jurnal->kode_transaksi = $transaksi->kode_transaksi;
-            $jurnal->keterangan = 'tabungan';
-            $jurnal->kode_akun = $kode_akun;
-            $jurnal->kode_lawan = 0;
-            $jurnal->tipe = 'kredit';
-            $jurnal->nominal =  $this->formatNumber($request->get('nominal_penarikan'));
-            $jurnal->id_detail = $detailTransaksi->id;
-            $jurnal->save();
+                $detailTransaksi = new DTransaksiManyToMany();
+                $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+                $detailTransaksi->kode_akun = $item->id;
+                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
+                $detailTransaksi->keterangan = 'tabungan';
+                $detailTransaksi->save();
 
+                $jurnal = new Jurnal;
+                $jurnal->tanggal = $request->get('tgl');
+                $jurnal->kode_transaksi = $transaksi->kode_transaksi;
+                $jurnal->keterangan = 'tabungan';
+                $jurnal->kode_akun =$item->id;
+                $jurnal->kode_lawan = 0;
+                $jurnal->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
+                $jurnal->nominal =  $this->formatNumber($request->get('nominal_penarikan'));
+                $jurnal->id_detail = $detailTransaksi->id;
+                $jurnal->save();
+            }
             $penarikan->save();
 
             return redirect()->route('penarikan.index')->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e) {
+            return $e;
+
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         }
     }

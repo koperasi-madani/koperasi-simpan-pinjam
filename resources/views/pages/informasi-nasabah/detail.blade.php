@@ -66,6 +66,11 @@
                                     @endphp
                                     {{ ceil($result) }} --}}
                                     <tr>
+                                        <td width="20%">Saldo</td>
+                                        <td width="1%">:</td>
+                                        <td>Rp. {{ number_format($data->saldo,2, ",", ".") }}</td>
+                                    </tr>
+                                    <tr>
                                         <td width="20%">Suku Bunga Dicadangkan</td>
                                         <td width="1%">:</td>
                                         <td >Rp.  {{ number_format($data->saldo_bunga,2, ",", ".") }}</td>
@@ -80,7 +85,7 @@
                             </table>
                             <hr>
                             @php
-                                $data_tabungan = \App\Models\TransaksiTabungan::select('transaksi_tabungan.*',
+                                $query = \App\Models\TransaksiTabungan::select('transaksi_tabungan.*',
                                             'rekening_tabungan.nasabah_id',
                                             'rekening_tabungan.no_rekening',
                                             'nasabah.id as id_nasabah',
@@ -99,11 +104,16 @@
                                             )
                                             ->where(
                                                 'rekening_tabungan.nasabah_id',$data->nasabah_id
-                                            )
-                                            ->where(
+                                            );
+                                    if (Auth::user()->hasRole('akuntansi')){
+                                        $data_tabungan = $query->get();
+                                    }else{
+                                        $data_tabungan = $query->where(
                                                 'transaksi_tabungan.id_user',auth()->user()->id
                                             )
-                                            ->get()
+                                            ->get();
+                                    }
+
                             @endphp
                             <table class="table table-bordered table-responsive-sm">
                                 <thead>

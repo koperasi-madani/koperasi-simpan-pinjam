@@ -218,6 +218,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('melihat-data-rekening-tabungan', function () {
                 return view('tampilan');
             })->name('melihat.data.rekening.tabungan');
+            // informasi tabungan
+            Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
+            Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
 
         });
         //laporan

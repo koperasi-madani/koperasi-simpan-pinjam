@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BukuTabungan;
 use App\Models\DTransaksiManyToMany;
 use App\Models\Jurnal;
+use App\Models\KodeAkun;
 use App\Models\NasabahModel;
 use App\Models\PembukaanRekening;
 use App\Models\SaldoTeller;
@@ -149,21 +150,24 @@ class SetorTunaiController extends Controller
                 $setor->saldo = $result_saldo;
             }
                 // jurnal;
-                $kode_akun = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+                $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
 
-                $transaksi = new TransaksiManyToMany;
+                $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
+
+            foreach ($kode_akun_kas as $item) {
+                $transaksi = new TransaksiManyToMany();
                 $transaksi->kode_transaksi = $this->generateKode();
                 $transaksi->id_user = auth()->user()->id;
                 $transaksi->tanggal = $request->get('tgl');
-                $transaksi->kode_akun = $kode_akun;
-                $transaksi->tipe = 'debit';
+                $transaksi->kode_akun = $item->id;
+                $transaksi->tipe = $item->jenis;
                 $transaksi->total = $this->formatNumber($request->get('nominal_setor'));
                 $transaksi->keterangan = 'Transaksi Many To Many';
                 $transaksi->save();
 
-                $detailTransaksi = new DTransaksiManyToMany;
+                $detailTransaksi = new DTransaksiManyToMany();
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
-                $detailTransaksi->kode_akun = $kode_akun;
+                $detailTransaksi->kode_akun = $item->id;
                 $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_setor'));
                 $detailTransaksi->keterangan = 'tabungan';
                 $detailTransaksi->save();
@@ -172,12 +176,13 @@ class SetorTunaiController extends Controller
                 $jurnal->tanggal = $request->get('tgl');
                 $jurnal->kode_transaksi = $transaksi->kode_transaksi;
                 $jurnal->keterangan = 'tabungan';
-                $jurnal->kode_akun = $kode_akun;
+                $jurnal->kode_akun =$item->id;
                 $jurnal->kode_lawan = 0;
-                $jurnal->tipe = 'debit';
+                $jurnal->tipe = $item->jenis;
                 $jurnal->nominal =  $this->formatNumber($request->get('nominal_setor'));
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
+            }
 
             $setor->save();
             $no_rekening = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first()->no_rekening;
