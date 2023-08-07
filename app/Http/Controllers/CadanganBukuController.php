@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\CadanganBuku;
+use App\Models\Jurnal;
+use App\Models\KodeAkun;
 use App\Models\PembukaanRekening;
 use App\Models\SukuBunga;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CadanganBukuController extends Controller
@@ -48,10 +51,29 @@ class CadanganBukuController extends Controller
             $saldo->bunga_cadangan = ceil($result);
             $saldo->save();
 
+
             $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
             PembukaanRekening::where('nasabah_id',$item->id)->update([
                 'saldo_bunga' => $total
             ]);
+            $kode_akun = KodeAkun::where('kode_akun','42001')->orWhere('kode_akun','21004')->get();
+            foreach ($kode_akun as $item) {
+                $jurnal = new Jurnal;
+                $jurnal->tanggal = Carbon::now();
+                $jurnal->kode_transaksi = '0';
+                $jurnal->keterangan = 'suku bunga';
+                $jurnal->kode_akun = $kode_akun->id;
+                $jurnal->kode_lawan = 0;
+                if ($item->kode_akun == '42001') {
+                    $jurnal->tipe = 'debit';
+                }else{
+                    $jurnal->tipe = 'kredit';
+                }
+                $jurnal->nominal =  $total;
+                $jurnal->id_detail = 0;
+                $jurnal->save();
+
+            }
         }
     }
 
@@ -79,8 +101,25 @@ class CadanganBukuController extends Controller
                         ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
                         ->get();
         foreach ($data as $item) {
-
             $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
+            $kode_akun = KodeAkun::where('kode_akun','21004')->orWhere('kode_akun','22001')->get();
+            foreach ($kode_akun as $item) {
+                $jurnal = new Jurnal;
+                $jurnal->tanggal = Carbon::now();
+                $jurnal->kode_transaksi = '0';
+                $jurnal->keterangan = 'suku bunga';
+                $jurnal->kode_akun = $kode_akun->id;
+                $jurnal->kode_lawan = 0;
+                if ($item->kode_akun == '21004') {
+                    $jurnal->tipe = 'debit';
+                }else{
+                    $jurnal->tipe = 'kredit';
+                }
+                $jurnal->nominal =  $total;
+                $jurnal->id_detail = 0;
+                $jurnal->save();
+
+            }
             PembukaanRekening::where('nasabah_id',$item->id)->update([
                 'saldo_bunga' => $total
             ]);

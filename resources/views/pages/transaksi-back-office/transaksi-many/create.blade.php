@@ -253,6 +253,45 @@
                                     </div>
                                 </div>
                                 <hr>
+                                <div class="row form-row my-3">
+                                    <div class="form-group col-md-4 mb-3">
+                                        <label for="obat">Kode Akun</label>
+                                        <select class="form-control akun-select" name="akun_lawan[]" required>
+                                            @foreach($KodeAkun as $item)
+                                                <option value="{{ $item->id }}">{{ $item->kode_akun }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="harga">Nama Akun</label>
+                                        <input type="text" class="form-control nama-input" placeholder="Nama Akun" name="nama_akun[]" readonly  id="nama-input">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="harga">Tipe</label>
+                                        <select name="tipe[]" id="" class="form-control @error('tipe') is-invalid @enderror" required>
+                                            <option value="Masuk" {{old('tipe') == 'Masuk' ? 'selected' : ''}}>Debet</option>
+                                            <option value="Keluar" {{old('tipe') == 'Keluar' ? 'selected' : ''}}>Kredit</option>
+                                        </select>
+                                        @error('tipe')
+                                            <div class="invalid-feedback">
+                                                {{$message}}.
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="harga">Nominal</label>
+                                        <input type="text" class="form-control harga-input" placeholder="Masukkan Nominal" name="nominal[]" required>
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="ket">Keterangan</label>
+                                        <input type="text" class="form-control ket-input" placeholder="Masukkan Keterangan" name="ket[]">
+                                    </div>
+                                    <div class="form-group col-md-2 my-3">
+                                        <button type="button" class="btn btn-danger remove-btn text-center px-5" >Hapus</button>
+                                    </div>
+                                </div>
+                                <hr>
+
                             </div>
                         </div>
                     </div>
