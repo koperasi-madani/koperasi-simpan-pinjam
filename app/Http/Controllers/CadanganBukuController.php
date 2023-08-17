@@ -100,29 +100,34 @@ class CadanganBukuController extends Controller
                         ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
                         ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
                         ->get();
-        foreach ($data as $item) {
-            $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
-            $kode_akun = KodeAkun::where('kode_akun','23001')->orWhere('kode_akun','22001')->get();
-            foreach ($kode_akun as $item_akun) {
-                $jurnal = new Jurnal;
-                $jurnal->tanggal = Carbon::now();
-                $jurnal->kode_transaksi = '0';
-                $jurnal->keterangan = 'suku bunga';
-                $jurnal->kode_akun = $item_akun->id;
-                $jurnal->kode_lawan = 0;
-                if ($item_akun->kode_akun == '23001') {
-                    $jurnal->tipe = 'debit';
-                }else{
-                    $jurnal->tipe = 'kredit';
-                }
-                $jurnal->nominal =  $total;
-                $jurnal->id_detail = 0;
-                $jurnal->save();
+        if (date('d') == '01') {
+            foreach ($data as $item) {
+                $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
+                $kode_akun = KodeAkun::where('kode_akun','23001')->orWhere('kode_akun','22001')->get();
+                foreach ($kode_akun as $item_akun) {
+                    $jurnal = new Jurnal;
+                    $jurnal->tanggal = Carbon::now();
+                    $jurnal->kode_transaksi = '0';
+                    $jurnal->keterangan = 'suku bunga';
+                    $jurnal->kode_akun = $item_akun->id;
+                    $jurnal->kode_lawan = 0;
+                    if ($item_akun->kode_akun == '23001') {
+                        $jurnal->tipe = 'debit';
+                    }else{
+                        $jurnal->tipe = 'kredit';
+                    }
+                    $jurnal->nominal =  $total;
+                    $jurnal->id_detail = 0;
+                    $jurnal->save();
 
+                }
+                PembukaanRekening::where('nasabah_id', $item->id)->increment('saldo_bunga', $total);
+                // Remove this month's entries from CadanganBuku
+                CadanganBuku::where('id_nasabah', $item->id)
+                ->whereMonth('tgl', date('m'))  // this month
+                ->whereYear('tgl', date('Y'))   // this year
+                ->delete();
             }
-            PembukaanRekening::where('nasabah_id',$item->id)->update([
-                'saldo_bunga' => $total
-            ]);
         }
     }
 }
