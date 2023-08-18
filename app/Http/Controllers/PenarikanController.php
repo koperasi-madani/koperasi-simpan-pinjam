@@ -229,7 +229,9 @@ class PenarikanController extends Controller
             }
             $penarikan->save();
 
-            return redirect()->route('penarikan.index')->withStatus('Berhasil melakukan penarikan.');
+
+
+            return redirect()->route('penarikan.pdf',['id' => $penarikan->id])->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {
             return $e;
@@ -353,6 +355,14 @@ class PenarikanController extends Controller
         } catch (QueryException $e){
             return redirect()->route('penarikan.index')->withError('Terjadi kesalahan.');
         }
+    }
+
+    function pdf($id) {
+       $data = TransaksiTabungan::with('user','nasabah')->find($id);
+       $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                        ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                        ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)->first();
+        return view('pages.penarikan.pdf',compact('data','tabungan'));
     }
 
     function generateKode() {

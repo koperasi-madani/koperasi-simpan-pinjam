@@ -20,4 +20,12 @@ class TransaksiTabungan extends Model
         'saldo',
         'ket',
     ];
+
+    function user() {
+        return $this->belongsTo(User::class,'id_user');
+    }
+    function nasabah() {
+        return $this->belongsTo(NasabahModel::class,'id_nasabah');
+    }
+
 }

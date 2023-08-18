@@ -120,9 +120,10 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('teller')->group(function () {
             Route::prefix('transaksi-teller')->group(function () {
                 // setor tunai
-                Route::post('setor-tunai/pdf',[SetorTunaiController::class,'pdf'])->name('setor-tunai.pdf');
+                Route::get('setor-tunai/pdf/{id}',[SetorTunaiController::class,'pdf'])->name('setor-tunai.pdf');
                 Route::resource('setor-tunai', SetorTunaiController::class);
                 // Penarikan
+                Route::get('penarikan/pdf/{id}',[PenarikanController::class,'pdf'])->name('penarikan.pdf');
                 Route::resource('penarikan',PenarikanController::class);
                 // peminjaman kas teller (head teller)
                 Route::post('pembayaran-kas-teller/peminjaman-kas',[PeminjamanKasTellerController::class,'post'])->name('peminjaman-kas.post');

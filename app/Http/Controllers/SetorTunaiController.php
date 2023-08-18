@@ -195,8 +195,8 @@ class SetorTunaiController extends Controller
                 'validasi' => $validasi
 
             ];
-            // return redirect()->route('setor-tunai.index')->withStatus('Berhasil menambahkan data.');
-            return response()->json(['transaction' => $transaction]);
+            return redirect()->route('setor-tunai.pdf',['id' => $setor->id])->withStatus('Berhasil menambahkan data.');
+            // return response()->route(['transaction' => $transaction]);
 
         } catch (Exception $e) {
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
@@ -308,19 +308,13 @@ class SetorTunaiController extends Controller
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         }
     }
-    public function pdf(Request $request)
+    public function pdf($id)
     {
-        $transaction = $request->input('transaction');
-        // Buat tampilan HTML untuk transaksi setor tunai menggunakan Blade Template
-        $html = view('pages.setor-tunai.pdf', compact('transaction'))->render();
-
-        $pdf = PDF::loadHTML($html);
-        $pdf->setPaper('A4', 'portrait');
-        $filename = $transaction['kode'].'.'.'pdf';
-        $file_path = public_path('pdf/setor/').$filename;
-        $pdf->save($file_path);
-
-        return response()->json(['file_path' => asset('laravel/public/pdf/setor/'.$filename)]);
+        $data = TransaksiTabungan::with('user','nasabah')->find($id);
+        $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                    ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)->first();
+        return view('pages.setor-tunai.pdf',compact('data','tabungan'));
 
     }
 

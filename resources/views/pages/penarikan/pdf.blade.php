@@ -79,7 +79,7 @@
                 </table>
             </div>
         </div>
-        <h4 style="text-align: center">SETOR TUNAI</h4>
+        <h4 style="text-align: center">PENARIKAN TUNAI</h4>
         <div style="padding-bottom: 5px;padding-top: 4px">
             <div class="table-responsive">
                 <table class="table table-bordered table-responsive-sm">

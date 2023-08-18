@@ -6,9 +6,14 @@
                 background-color: #219ebc !important;
                 border-color: #8ecae6;
             }
+            .table > :not(caption) > * > *{
+                padding: 5px;
+            }
+            .table-bondered th, td.uang{
+                text-align: right !important;
+                border: 1px solid #9896966e !important;
+            }
             .table-bondered th, td, th{
-                padding: 8px !important;
-                text-align: left !important;
                 border: 1px solid #9896966e !important;
             }
             .bg-primary{
@@ -50,8 +55,8 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th rowspan="2" style="vertical-align:middle">LEDGER A/C NO.</th>
-                                <th rowspan="2" style="vertical-align:middle">KETERANGAN</th>
+                                <th rowspan="2" style="vertical-align:middle" width="10">LEDGER A/C NO.</th>
+                                <th rowspan="2" style="vertical-align:middle" width="280">KETERANGAN</th>
                                 <th rowspan="2" style="text-align: center;" class="text-center">SALDO AWAL</th>
                                 <th colspan="2" style="text-align: center;" align="center" class="text-center">TRANSAKSI</th>
                                 <th rowspan="2" style="text-align: center;" class="text-center">SALDO AKHIR</th>
@@ -280,16 +285,16 @@
                                         <td>{{ $item_induk->kode_ledger }}</td>
                                         <td>{{ strtoupper($item_induk->nama_ledger) }}</td>
                                         @if ($item_ledger->jenis == 'debit')
-                                            <td>{{ number_format(abs($totalSaldoAwalDebetTotalTiga), 2, ',', '.') }}</td>
+                                            <td class="uang">{{ number_format($totalSaldoAwalDebetTotalTiga, 2, ',', '.') }}</td>
                                         @else
-                                            <td>{{ number_format(abs($totalSaldoAwalKreditTotalTiga), 2, ',', '.') }}</td>
+                                            <td class="uang">{{ number_format($totalSaldoAwalKreditTotalTiga, 2, ',', '.') }}</td>
                                         @endif
-                                        <td>{{ number_format(abs($totalMutasiDebetTotal), 2, ',', '.') }}</td>
-                                        <td>{{ number_format(abs($totalMutasiKreditTotal), 2, ',', '.') }}</td>
+                                        <td class="uang"> {{ number_format($totalMutasiDebetTotal, 2, ',', '.') }}</td>
+                                        <td class="uang">{{ number_format($totalMutasiKreditTotal, 2, ',', '.') }}</td>
                                         @if ($item_ledger->jenis == 'debit')
-                                            <td>{{ number_format(abs($totalSaldoAkhirDebetTotalTiga), 2, ',', '.') }}</td>
+                                            <td class="uang">{{ number_format($totalSaldoAkhirDebetTotalTiga, 2, ',', '.') }}</td>
                                         @else
-                                            <td>{{ number_format(abs($totalSaldoAkhirKreditTotalTiga), 2, ',', '.') }}</td>
+                                            <td class="uang">{{ number_format($totalSaldoAkhirKreditTotalTiga, 2, ',', '.') }}</td>
                                         @endif
                                     </tr>
                                     @php
@@ -485,16 +490,16 @@
                                                 <td> {{ $tes->kode_induk }}</td>
                                                 <td> {{ strtoupper($tes->nama) }}</td>
                                                 @if ($item_ledger->jenis == 'debit')
-                                                    <td>{{ number_format(abs($totalSaldoAwalDebetDua), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAwalDebetDua, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td>{{ number_format(abs($totalSaldoAwalKreditDua), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAwalKreditDua, 2, ',', '.') }}</td>
                                                 @endif
-                                                <td>{{ number_format(abs($totalMutasiDebetDua), 2, ',', '.') }}</td>
-                                                <td>{{ number_format(abs($totalMutasiKreditDua), 2, ',', '.') }}</td>
+                                                <td class="uang">{{ number_format($totalMutasiDebetDua, 2, ',', '.') }}</td>
+                                                <td class="uang">{{ number_format($totalMutasiKreditDua, 2, ',', '.') }}</td>
                                                 @if ($item_ledger->jenis == 'debit')
-                                                    <td>{{ number_format(abs($totalSaldoAkhirDebetDua), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAkhirDebetDua, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td>{{ number_format(abs($totalSaldoAkhirKreditDua), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAkhirKreditDua, 2, ',', '.') }}</td>
                                                 @endif
                                         </tr>
                                         @php
@@ -652,11 +657,11 @@
                                                         $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
 
                                                         $totalModal = $saldoAwal;
-                                                        $mutasiDebit = $mutasiDebetModal - $mutasiKreditModal;
+                                                        $mutasiDebet = $mutasiDebetModal - $mutasiKreditModal;
                                                     }
 
                                                     $saldoAwal =  $totalModal - $totalPendapatan;
-                                                    $saldoAkhir =  $saldoAwal + $mutasiKredit - $mutasiDebit ;
+                                                    $saldoAkhir =  $saldoAwal + $mutasiKredit - $mutasiDebet ;
                                                 }
                                                 @endphp
 
@@ -664,16 +669,16 @@
                                                 <td>{{ $item->kode_akun }}</td>
                                                 <td>{{ strtoupper($item->nama_akun) }}</td>
                                                 @if ($item->jenis == 'debit')
-                                                    <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($saldoAwal, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td>{{ number_format(abs($saldoAwal), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($saldoAwal, 2, ',', '.') }}</td>
                                                 @endif
-                                                <td>{{ number_format(abs($mutasiDebet), 2, ',', '.') }}</td>
-                                                <td>{{ number_format(abs($mutasiKredit), 2, ',', '.') }}</td>
+                                                <td class="uang">{{ number_format($mutasiDebet, 2, ',', '.') }}</td>
+                                                <td class="uang">{{ number_format($mutasiKredit, 2, ',', '.') }}</td>
                                                 @if ($item->jenis == 'debit')
-                                                    <td>{{ number_format(abs($saldoAkhir), 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($saldoAkhir, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td> {{ number_format(abs($saldoAkhir), 2, ',', '.') }}</td>
+                                                    <td class="uang"> {{ number_format($saldoAkhir, 2, ',', '.') }}</td>
                                                 @endif
                                             </tr>
                                         @endforeach
