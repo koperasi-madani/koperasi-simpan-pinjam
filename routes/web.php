@@ -7,6 +7,7 @@ use App\Http\Controllers\DataInformasiPinjamanController;
 use App\Http\Controllers\DenominasiController;
 use App\Http\Controllers\InformasiAdminKreditController;
 use App\Http\Controllers\InformasiCustomerServiceController;
+use App\Http\Controllers\InformasiGLController;
 use App\Http\Controllers\InformasiHeadTellerController;
 use App\Http\Controllers\InformasiNasabahTellerController;
 use App\Http\Controllers\KodeAkunController;
@@ -220,8 +221,8 @@ Route::middleware(['auth'])->group(function () {
                 return view('tampilan');
             })->name('melihat.data.rekening.tabungan');
             // informasi tabungan
-            Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
-            Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
+            Route::get('informasi-tabungan-nasabah/{id}',[InformasiGLController::class,'informasiNasabahDetail'])->name('informasi-gl.informasi.nasabah-detail');
+            Route::get('informasi-tabungan-nasabah',[InformasiGLController::class,'informasiNasabah'])->name('informasi-gl.informasi.nasabah');
 
         });
         //laporan

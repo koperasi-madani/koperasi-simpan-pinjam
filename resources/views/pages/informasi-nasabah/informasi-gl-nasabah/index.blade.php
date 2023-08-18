@@ -55,7 +55,7 @@
                                     <td><b>{{ $item->ket }}</b></td>
                                     <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
                                     <td>
-                                        <a href="{{ route('teller.informasi.nasabah-detail',$item->nasabah_id) }}"  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-assignment"></i> Detail </a>
+                                        <a href="{{ route('informasi-gl.informasi.nasabah-detail',$item->nasabah_id) }}"  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-assignment"></i> Detail </a>
                                     </td>
                                 </tr>
                             @empty
