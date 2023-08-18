@@ -222,7 +222,7 @@
                                                         $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
 
                                                         $totalPendapatan = $saldoAwal;
-                                                        $totalMutasiKreditPendapatan = $mutasiDebetPendapatan - $mutasiKreditPendapatan;
+                                                        $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
                                                     }
                                                     $mutasiAwalDebetModal = 0;
                                                     $mutasiAwalKreditModal = 0;
@@ -425,7 +425,7 @@
                                                         $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
 
                                                         $totalPendapatan = $saldoAwal;
-                                                        $totalMutasiKreditPendapatan = $mutasiDebetPendapatan - $mutasiKreditPendapatan;
+                                                        $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
                                                     }
                                                     $mutasiAwalDebetModal = 0;
                                                     $mutasiAwalKreditModal = 0;
@@ -623,7 +623,7 @@
                                                         $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
 
                                                         $totalPendapatan = $saldoAwal;
-                                                        $mutasiKredit = $mutasiDebetPendapatan - $mutasiKreditPendapatan;
+                                                        $mutasiKredit = $mutasiKreditPendapatan - $mutasiDebetPendapatan ;
                                                     }
                                                     $mutasiAwalDebetModal = 0;
                                                     $mutasiAwalKreditModal = 0;
