@@ -55,11 +55,11 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th rowspan="2" style="vertical-align:middle" width="10">LEDGER A/C NO.</th>
-                                <th rowspan="2" style="vertical-align:middle" width="280">KETERANGAN</th>
-                                <th rowspan="2" style="text-align: center;" class="text-center">SALDO AWAL</th>
-                                <th colspan="2" style="text-align: center;" align="center" class="text-center">TRANSAKSI</th>
-                                <th rowspan="2" style="text-align: center;" class="text-center">SALDO AKHIR</th>
+                                <th rowspan="2" style="vertical-align:middle" width="4%">LEDGER A/C NO.</th>
+                                <th rowspan="2" style="vertical-align:middle" width="28%">KETERANGAN</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center" width="15%">SALDO AWAL</th>
+                                <th colspan="2" style="text-align: center;" align="center" width="30%" class="text-center">TRANSAKSI</th>
+                                <th rowspan="2" style="text-align: center;" class="text-center" width="15%">SALDO AKHIR</th>
                                 <tr>
 
                                     <th style="text-align: center;" class="text-center">DEBET</th>
