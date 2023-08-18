@@ -162,6 +162,8 @@
                                                 $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
                                                 if ($item_ledger->nama_ledger == 'P E N D A P A T A N') {
                                                     $saldoAkhir = ($saldoAwal + $mutasiKredit) - $mutasiDebet;
+                                                } else if ($item_ledger->nama_ledger == 'PASSIVA') {
+                                                    $saldoAkhir = $saldoAwal + $mutasiKredit -  $mutasiDebet;
                                                 } else {
                                                     $saldoAkhir = ($mutasiAwalDebet + $mutasiDebet) - ($mutasiAwalKredit + $mutasiKredit);
                                                 }
@@ -364,6 +366,8 @@
 
                                                 if ($item_dua->nama_ledger == 'P E N D A P A T A N') {
                                                     $saldoAkhir = ($saldoAwal + $mutasiKredit) - $mutasiDebet;
+                                                } else if ($item_dua->nama_ledger == 'PASSIVA') {
+                                                    $saldoAkhir = $saldoAwal + $mutasiKredit -  $mutasiDebet;
                                                 } else {
                                                     $saldoAkhir = ($mutasiAwalDebet + $mutasiDebet) - ($mutasiAwalKredit + $mutasiKredit);
                                                 }
@@ -559,7 +563,9 @@
                                                 // untuk pendapatan berbeda perhitungan
                                                 if ($item->nama_ledger == 'P E N D A P A T A N') {
                                                     $saldoAkhir = ($saldoAwal + $mutasiKredit) - $mutasiDebet;
-                                                } else {
+                                                } else if ($item->nama_ledger == 'PASSIVA') {
+                                                    $saldoAkhir = $saldoAwal + $mutasiKredit -  $mutasiDebet;
+                                                }else{
                                                     $saldoAkhir = ($mutasiAwalDebet + $mutasiDebet) - ($mutasiAwalKredit + $mutasiKredit);
                                                 }
 
