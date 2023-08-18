@@ -56,7 +56,7 @@ class CadanganBukuController extends Controller
             PembukaanRekening::where('nasabah_id',$item->id)->update([
                 'saldo_bunga' => $total
             ]);
-            $kode_akun = KodeAkun::where('kode_akun','42001')->orWhere('kode_akun','21003')->get();
+            $kode_akun = KodeAkun::where('kode_akun','42001')->orWhere('kode_akun','21004')->get();
             foreach ($kode_akun as $item_akun) {
                 $jurnal = new Jurnal;
                 $jurnal->tanggal = Carbon::now();
@@ -103,7 +103,7 @@ class CadanganBukuController extends Controller
         if (date('d') == '01') {
             foreach ($data as $item) {
                 $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
-                $kode_akun = KodeAkun::where('kode_akun','21003')->orWhere('kode_akun','22001')->get();
+                $kode_akun = KodeAkun::where('kode_akun','23001')->orWhere('kode_akun','21004')->get();
                 foreach ($kode_akun as $item_akun) {
                     $jurnal = new Jurnal;
                     $jurnal->tanggal = Carbon::now();
@@ -111,7 +111,7 @@ class CadanganBukuController extends Controller
                     $jurnal->keterangan = 'suku bunga';
                     $jurnal->kode_akun = $item_akun->id;
                     $jurnal->kode_lawan = 0;
-                    if ($item_akun->kode_akun == '21003') {
+                    if ($item_akun->kode_akun == '21004') {
                         $jurnal->tipe = 'debit';
                     }else{
                         $jurnal->tipe = 'kredit';
