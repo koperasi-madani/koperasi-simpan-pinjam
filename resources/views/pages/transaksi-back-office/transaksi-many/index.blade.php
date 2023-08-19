@@ -56,7 +56,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_transaksi }}</td>
                                     <td>{{ date('d-m-Y', strtotime($item->tanggal)) }}</td>
-                                    <td>Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
+                                    <td>Rp. {{ number_format($item->total / 100, 2, ',', '.') }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">
                                             <div>

@@ -176,6 +176,7 @@ class TransaksiManyToManyController extends Controller
 
     public function formatNumber($param)
     {
-        return (int)str_replace('.', '', $param);
+        $cleaned = str_replace(['.', ','], '', $param);
+        return (int)$cleaned;
     }
 }

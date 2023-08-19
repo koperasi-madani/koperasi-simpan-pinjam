@@ -134,39 +134,40 @@
                 $(this).closest('.form-row').remove();
             });
 
-            $(document).on('keyup','.harga-input',function() {
-                $(this).val(formatRupiah($(this).val()))
-            })
-            formatRupiah($('.harga-input').val())
-            // Fungsi untuk menghitung total
-            // function calculateTotal() {
-            //     var total = 0;
-            //     $('.form-row').each(function() {
-            //         var nominal = parseInt($(this).find('.harga-input').val());
-            //         if (nominal) {
-            //             total += nominal
-            //         }
-            //     });
 
-            //     $('#total').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total));
-            //     $('#total_input').val(total);
-            // }
         });
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, "").toString(),
-                split = number_string.split(","),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.harga-input');
 
-            // tambahkan titik jika yang di input sudah menjadi angka ribuan
-            if (ribuan) {
-                separator = sisa ? "." : "";
-                rupiah += separator + ribuan.join(".");
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    let val = this.value;
+                    val = formatRupiah(val);
+
+                    // Update value di input
+                    this.value = val;
+                });
+            });
+        });
+        function formatRupiah(angka) {
+            let cleaned = angka.replace(/\D/g, ""); // Bersihkan dari non-digit
+            let length = cleaned.length;
+
+            // Jika panjang angka lebih dari 2, lakukan pemisahan dengan titik setiap 3 digit
+            if (length > 2) {
+                let integerPart = cleaned.substring(0, length - 2);
+                let decimalPart = cleaned.substring(length - 2, length);
+
+                integerPart = integerPart.split("").reverse().join("")
+                    .match(/.{1,3}/g)
+                    .join(".")
+                    .split("").reverse().join("");
+
+                return `${integerPart},${decimalPart}`;
+            } else {
+                // Jika panjang angka kurang dari atau sama dengan 2, anggap sebagai bagian desimal saja
+                return cleaned;
             }
-
-            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
-            return prefix == undefined ? rupiah : rupiah ? rupiah : "";
         }
         // Menambahkan form dinamis ketika tombol "Add Form" ditekan
 
