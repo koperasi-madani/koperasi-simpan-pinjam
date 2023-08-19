@@ -64,7 +64,7 @@ class TransaksiManyToManyController extends Controller
             $transaksi->tanggal = Carbon::now();
             $transaksi->kode_akun = $request->get('akun_lawan')[0];
             $transaksi->tipe = $request->get('tipe')[0];
-            $transaksi->total = $total;
+            $transaksi->total = (string) $total;
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
 
@@ -73,7 +73,7 @@ class TransaksiManyToManyController extends Controller
                 $detailTransaksi = new DTransaksiManyToMany;
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $_POST['akun_lawan'][$key];
-                $detailTransaksi->subtotal = $this->formatNumber($_POST['nominal'][$key]);
+                $detailTransaksi->subtotal = (string) $this->formatNumber($_POST['nominal'][$key]);
                 $detailTransaksi->keterangan = $_POST['ket'][$key];
                 $detailTransaksi->save();
 
@@ -85,7 +85,7 @@ class TransaksiManyToManyController extends Controller
                 $jurnal->kode_akun = $_POST['akun_lawan'][$key];
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $_POST['tipe'][$key] == 'Masuk' ? 'debit' : 'kredit';
-                $jurnal->nominal =  $this->formatNumber($_POST['nominal'][$key]);
+                $jurnal->nominal =  (string) $this->formatNumber($_POST['nominal'][$key]);
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }

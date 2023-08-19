@@ -132,9 +132,9 @@
                                                 $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $item_ledger->id)->count();
 
                                                 if ($cekTransaksiAwalDiKode > 0) {
-                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                     if ($item_ledger->jenis == 'debit') {
                                                         $mutasiAwalDebet += $sumMutasiAwalDebetDiKode;
@@ -150,9 +150,9 @@
                                                 $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $item_ledger->id)->count();
 
                                                 if ($cekTransaksiDiKode > 0) {
-                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                     $mutasiDebet += $sumMutasiDebetDiKode;
                                                     $mutasiKredit += $sumMutasiKreditDiKode;
@@ -191,9 +191,9 @@
                                                     foreach ($kode_pendapatan as $itemPendapatan) {
                                                         $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
                                                         if ($cekTransaksiAwalDiKode > 0) {
-                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             if ($itemPendapatan->jenis == 'debit') {
                                                                 $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
@@ -208,9 +208,9 @@
                                                         $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
 
                                                         if ($cekTransaksiDiKode > 0) {
-                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
                                                             $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
@@ -232,9 +232,9 @@
                                                     foreach ($kode_modal as $itemModal) {
                                                         $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
                                                         if ($cekTransaksiAwalDiKode > 0) {
-                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             if ($itemModal->jenis == 'debit') {
                                                                 $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
@@ -249,7 +249,7 @@
                                                         $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
 
                                                         if ($cekTransaksiDiKode > 0) {
-                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
@@ -633,9 +633,9 @@
                                                     foreach ($kode_modal as $itemModal) {
                                                         $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
                                                         if ($cekTransaksiAwalDiKode > 0) {
-                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             if ($itemModal->jenis == 'debit') {
                                                                 $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
@@ -650,9 +650,9 @@
                                                         $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
 
                                                         if ($cekTransaksiDiKode > 0) {
-                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
-                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
 
                                                             $mutasiDebetModal += $sumMutasiDebetDiKode;
                                                             $mutasiKreditModal += $sumMutasiKreditDiKode;
