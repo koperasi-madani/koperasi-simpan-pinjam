@@ -205,14 +205,14 @@ class PenarikanController extends Controller
                 $transaksi->tanggal = $request->get('tgl');
                 $transaksi->kode_akun = $item->id;
                 $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
+                $transaksi->total = (int)$this->formatNumber($request->get('nominal_penarikan')).'00';
                 $transaksi->keterangan = 'Transaksi Many To Many';
                 $transaksi->save();
 
                 $detailTransaksi = new DTransaksiManyToMany();
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $item->id;
-                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
+                $detailTransaksi->subtotal = (int)$this->formatNumber($request->get('nominal_penarikan')).'00';
                 $detailTransaksi->keterangan = 'tabungan';
                 $detailTransaksi->save();
 
@@ -223,7 +223,7 @@ class PenarikanController extends Controller
                 $jurnal->kode_akun =$item->id;
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $jurnal->nominal =  $this->formatNumber($request->get('nominal_penarikan'));
+                $jurnal->nominal = (int)$this->formatNumber($request->get('nominal_penarikan')).'00';
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }

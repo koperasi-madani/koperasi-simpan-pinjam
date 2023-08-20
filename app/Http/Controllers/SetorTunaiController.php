@@ -161,14 +161,14 @@ class SetorTunaiController extends Controller
                 $transaksi->tanggal = $request->get('tgl');
                 $transaksi->kode_akun = $item->id;
                 $transaksi->tipe = $item->jenis;
-                $transaksi->total = $this->formatNumber($request->get('nominal_setor'));
+                $transaksi->total =(int) $this->formatNumber($request->get('nominal_setor')).'00';
                 $transaksi->keterangan = 'Transaksi Many To Many';
                 $transaksi->save();
 
                 $detailTransaksi = new DTransaksiManyToMany();
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $item->id;
-                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_setor'));
+                $detailTransaksi->subtotal = (int) $this->formatNumber($request->get('nominal_setor')).'00';
                 $detailTransaksi->keterangan = 'tabungan';
                 $detailTransaksi->save();
 
@@ -179,7 +179,7 @@ class SetorTunaiController extends Controller
                 $jurnal->kode_akun =$item->id;
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $item->jenis;
-                $jurnal->nominal =  $this->formatNumber($request->get('nominal_setor'));
+                $jurnal->nominal =  (int) $this->formatNumber($request->get('nominal_setor')).'00';
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }

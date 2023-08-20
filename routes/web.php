@@ -228,6 +228,7 @@ Route::middleware(['auth'])->group(function () {
         //laporan
         Route::prefix('laporan')->group(function () {
             // neraca
+            Route::get('neraca/cetak',[LaporanNeracaController::class,'cetak'])->name('neraca.cetak');
             Route::get('neraca',[LaporanNeracaController::class,'neraca'])->name('neraca.index');
         });
         // setting

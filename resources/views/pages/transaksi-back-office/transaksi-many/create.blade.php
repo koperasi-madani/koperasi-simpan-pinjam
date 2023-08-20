@@ -136,39 +136,39 @@
 
 
         });
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.harga-input');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const inputs = document.querySelectorAll('.harga-input');
 
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    let val = this.value;
-                    val = formatRupiah(val);
+        //     inputs.forEach(input => {
+        //         input.addEventListener('input', function() {
+        //             let val = this.value;
+        //             val = formatRupiah(val);
 
-                    // Update value di input
-                    this.value = val;
-                });
-            });
-        });
-        function formatRupiah(angka) {
-            let cleaned = angka.replace(/\D/g, ""); // Bersihkan dari non-digit
-            let length = cleaned.length;
+        //             // Update value di input
+        //             this.value = val;
+        //         });
+        //     });
+        // });
+        // function formatRupiah(angka) {
+        //     let cleaned = angka.replace(/\D/g, ""); // Bersihkan dari non-digit
+        //     let length = cleaned.length;
 
-            // Jika panjang angka lebih dari 2, lakukan pemisahan dengan titik setiap 3 digit
-            if (length > 2) {
-                let integerPart = cleaned.substring(0, length - 2);
-                let decimalPart = cleaned.substring(length - 2, length);
+        //     // Jika panjang angka lebih dari 2, lakukan pemisahan dengan titik setiap 3 digit
+        //     if (length > 2) {
+        //         let integerPart = cleaned.substring(0, length - 2);
+        //         let decimalPart = cleaned.substring(length - 2, length);
 
-                integerPart = integerPart.split("").reverse().join("")
-                    .match(/.{1,3}/g)
-                    .join(".")
-                    .split("").reverse().join("");
+        //         integerPart = integerPart.split("").reverse().join("")
+        //             .match(/.{1,3}/g)
+        //             .join(".")
+        //             .split("").reverse().join("");
 
-                return `${integerPart},${decimalPart}`;
-            } else {
-                // Jika panjang angka kurang dari atau sama dengan 2, anggap sebagai bagian desimal saja
-                return cleaned;
-            }
-        }
+        //         return `${integerPart},${decimalPart}`;
+        //     } else {
+        //         // Jika panjang angka kurang dari atau sama dengan 2, anggap sebagai bagian desimal saja
+        //         return cleaned;
+        //     }
+        // }
         // Menambahkan form dinamis ketika tombol "Add Form" ditekan
 
     </script>

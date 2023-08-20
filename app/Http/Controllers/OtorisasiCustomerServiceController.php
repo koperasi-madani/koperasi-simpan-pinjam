@@ -134,14 +134,14 @@ class OtorisasiCustomerServiceController extends Controller
             $transaksi->tanggal = $currentDate;
             $transaksi->kode_akun = $kode_akun;
             $transaksi->tipe = 'debit';
-            $transaksi->total = $this->formatNumber($penarikan->nominal);
+            $transaksi->total = (int) $this->formatNumber($penarikan->nominal).'00';
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
 
             $detailTransaksi = new DTransaksiManyToMany();
             $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
             $detailTransaksi->kode_akun = $kode_akun;
-            $detailTransaksi->subtotal = $this->formatNumber($penarikan->nominal);
+            $detailTransaksi->subtotal = (int) $this->formatNumber($penarikan->nominal).'00';
             $detailTransaksi->keterangan = 'tabungan';
             $detailTransaksi->save();
 
@@ -152,7 +152,7 @@ class OtorisasiCustomerServiceController extends Controller
             $jurnal->kode_akun = $kode_akun;
             $jurnal->kode_lawan = 0;
             $jurnal->tipe = 'debit';
-            $jurnal->nominal =  $this->formatNumber($penarikan->nominal);
+            $jurnal->nominal = (int) $this->formatNumber($penarikan->nominal).'00';
             $jurnal->id_detail = $detailTransaksi->id;
             $jurnal->save();
         }else{
