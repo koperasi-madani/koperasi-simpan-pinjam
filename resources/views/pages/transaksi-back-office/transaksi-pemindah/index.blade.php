@@ -24,7 +24,7 @@
             <div>
                 @if (Session::has('status_tutup'))
                     @if (Session::get('status_tutup') == 'buka' || Auth::user()->hasRole('manager'))
-                        <a href="{{ route('transaksi-many-to-many.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Transaksi</a>
+                        <a href="{{ route('transaksi.pemindah.create') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Tambah Transaksi</a>
                     @else
                         <small><strong>Perhatian!</strong> form belum bisa diakses.</small>
                     @endif
@@ -35,7 +35,7 @@
 
         <div class="card mb-4">
             <header class="card-header">
-                <h4>List Transaksi Many To Many</h4>
+                <h4>List {{ ucwords(str_replace('-',' ',Request::segment(3))) }}</h4>
             </header>
             <div class="card-body">
                 <div class="table-responsive">

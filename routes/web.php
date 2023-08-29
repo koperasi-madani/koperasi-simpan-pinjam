@@ -26,6 +26,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetorTunaiController;
 use App\Http\Controllers\SukuBungaController;
 use App\Http\Controllers\TransaksiManyToManyController;
+use App\Http\Controllers\TransaksiPemindahAntarRekeningController;
 use App\Http\Controllers\TutupCabangController;
 use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
@@ -172,9 +173,9 @@ Route::middleware(['auth'])->group(function () {
         // transaksi back office
         Route::prefix('transaksi-back-office')->group(function () {
             // TRANSAKSI PEMINDAH BUKUAN ANTAR REKENING
-            Route::get('transaksi-pemindah-buku-antar-rekening', function () {
-                return view('tampilan');
-            })->name('transaksi.pemindah.buku.rekening');
+            Route::get('transaksi-pemindah-buku-antar-rekening',[TransaksiPemindahAntarRekeningController::class,'index'])->name('transaksi.pemindah.index');
+            Route::get('transaksi-pemindah-buku-antar-rekening/create',[TransaksiPemindahAntarRekeningController::class,'create'])->name('transaksi.pemindah.create');
+            Route::post('transaksi-pemindah-buku-antar-rekening/store',[TransaksiPemindahAntarRekeningController::class,'store'])->name('transaksi.pemindah.store');
             // TRANSAKSI PENDEBETAN DENGAN KODE GL
             Route::get('transaksi-pendebetan-dengan-kode-gl', function () {
                 return view('tampilan');

@@ -56,28 +56,23 @@ class TransaksiManyToManyController extends Controller
         try {
             $total = 0;
             foreach ($_POST['nominal'] as $key => $value) {
-                // $total += $this->formatNumber($_POST['nominal'][$key]);
                 $total += $_POST['nominal'][$key];
             }
-            $result = number_format((float)($total), 2);
+
             $transaksi = new TransaksiManyToMany;
             $transaksi->kode_transaksi = $this->generateKode();
             $transaksi->id_user = auth()->user()->id;
             $transaksi->tanggal = Carbon::now();
             $transaksi->kode_akun = $request->get('akun_lawan')[0];
             $transaksi->tipe = $request->get('tipe')[0];
-            $transaksi->total = $this->formatNumber($result);
+            $transaksi->total = $total;
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
-
             foreach ($_POST['nominal'] as $key => $value) {
-                // detail transaksi many to many
                 $detailTransaksi = new DTransaksiManyToMany;
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $_POST['akun_lawan'][$key];
-                // $detailTransaksi->subtotal = (string) $this->formatNumber($_POST['nominal'][$key]);
-                $nominal = number_format((float)($total), 2);
-                $detailTransaksi->subtotal =  $this->formatNumber($nominal);
+                $detailTransaksi->subtotal =  $_POST['nominal'][$key];
                 $detailTransaksi->keterangan = $_POST['ket'][$key];
                 $detailTransaksi->save();
 
@@ -89,7 +84,7 @@ class TransaksiManyToManyController extends Controller
                 $jurnal->kode_akun = $_POST['akun_lawan'][$key];
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $_POST['tipe'][$key] == 'Masuk' ? 'debit' : 'kredit';
-                $jurnal->nominal =  $this->formatNumber($nominal);
+                $jurnal->nominal =  $_POST['nominal'][$key];
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }
