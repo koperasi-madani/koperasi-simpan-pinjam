@@ -50,16 +50,20 @@ class PenerimaanKasTellerController extends Controller
 
         try {
             $currentDate = Carbon::now()->toDateString();
-            $current_penerimaan = SaldoTeller::where('status','pembayaran')
-                                    ->where('id_user',auth()->user()->id)
-                                    ->where('tanggal',$currentDate)
-                                    ->first()->penerimaan;
-            $nominal_denominasi = Denominasi::where('id_user',auth()->user()->id)
-                                    ->whereDate('created_at','=',$currentDate)
-                                    ->sum('total');
-            if ($nominal_denominasi > 0) {
-                $current_penerimaan =  $current_penerimaan - $nominal_denominasi;
+            // Fetch the current penerimaan. If no record is found, default to 0.
+            $current_penerimaan_record = SaldoTeller::where('status', 'pembayaran')
+                                            ->where('id_user', auth()->user()->id)
+                                            ->where('tanggal', $currentDate)
+                                            ->first();
 
+            $current_penerimaan = $current_penerimaan_record ? $current_penerimaan_record->penerimaan : 0;
+
+            $nominal_denominasi = Denominasi::where('id_user', auth()->user()->id)
+                                        ->whereDate('created_at', $currentDate)
+                                        ->sum('total');
+
+            if ($nominal_denominasi > 0) {
+                $current_penerimaan -= $nominal_denominasi;
             }
             $denominasi = (int) $request->get('penerimaan_total');
             if ($current_penerimaan != $denominasi) {

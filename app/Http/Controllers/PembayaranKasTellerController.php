@@ -59,8 +59,8 @@ class PembayaranKasTellerController extends Controller
                 $current_pembayaran->kode = $request->get('kode_pembayaran');
                 $current_pembayaran->id_user = $request->get('id_akun');
                 $current_pembayaran->status = 'pembayaran';
-                $current_pembayaran->pembayaran = $current_pembayaran->pembayaran + $this->formatNumber($request->get('nominal'));
-                $current_pembayaran->penerimaan = $current_pembayaran->penerimaan + $this->formatNumber($request->get('nominal'));
+                $current_pembayaran->pembayaran = $current_pembayaran != null ? $current_pembayaran->pembayaran : 0  + $this->formatNumber($request->get('nominal'));
+                $current_pembayaran->penerimaan = $current_pembayaran->penerimaan != null ? $current_pembayaran->penerimaan : 0 + $this->formatNumber($request->get('nominal'));
                 $current_pembayaran->tanggal = date('Y-m-d');
                 $current_pembayaran->update();
             }else{
