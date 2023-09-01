@@ -36,21 +36,21 @@ class CadanganBukuController extends Controller
                                     ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
                                     ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
                                     ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
-                                    ->get();
+                                    ->take(1)->get();
         foreach ($data as $item) {
             $sukuBunga = $item->suku_bunga;
-            $hitung =  $item->saldo * ( $sukuBunga / 100) ;
+            $persen =  $sukuBunga / 365;
+            $total_persen = ($item->saldo * round($persen,4)) / 100;
             // 80 persen dari pajak (pph)
             // $result = $hitung * 80 / 100 / 365;
-            $result = $hitung * 80 / 100 / 365;
+            $result = $total_persen;
             $saldo = new CadanganBuku;
             $saldo->tgl = date(now());
             $saldo->id_nasabah = $item->nasabah_id;
             $saldo->suku_bunga = $sukuBunga;
             $saldo->saldo = $item->saldo;
-            $saldo->bunga_cadangan = ceil($result);
+            $saldo->bunga_cadangan = $result;
             $saldo->save();
-
 
             $total = CadanganBuku::where('id_nasabah',$item->id)->sum('bunga_cadangan');
             PembukaanRekening::where('nasabah_id',$item->id)->update([
@@ -116,7 +116,7 @@ class CadanganBukuController extends Controller
                     }else{
                         $jurnal->tipe = 'kredit';
                     }
-                    $jurnal->nominal =  (int) $total.'00';
+                    $jurnal->nominal =  $total;
                     $jurnal->id_detail = 0;
                     $jurnal->save();
 

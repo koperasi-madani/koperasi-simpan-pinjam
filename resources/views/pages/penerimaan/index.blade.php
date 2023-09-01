@@ -229,17 +229,8 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Saldo Teller</h6>
-                            @php
-                                $nominal_pembayaran = isset($pembayaran) ? $pembayaran->penerimaan : 0;
-                                if ($nominal_denominasi != 0) {
-                                    $nominal =  (int) $nominal_pembayaran - (int)$nominal_denominasi;
-                                } else {
-                                    $nominal =  (int) $nominal_pembayaran;
-                                }
-                            @endphp
-                            <input type="number" name="pembayaran" id="pembayaran" value="{{ $nominal }}" hidden>
-                            <span>Rp. {{ number_format($nominal,2, ",", ".") }}</span>
-
+                            <input type="number" name="pembayaran" id="pembayaran" value="{{ isset($pembayaran) ? $pembayaran - $denominasi : 0 }}" hidden>
+                            <span>Rp. {{ number_format(isset($pembayaran) ? $pembayaran - $denominasi : 0 ,2, ",", ".") }}</span>
                         </div>
                     </article>
                     <hr>

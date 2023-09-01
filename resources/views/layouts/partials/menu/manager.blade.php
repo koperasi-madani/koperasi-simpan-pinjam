@@ -23,7 +23,7 @@
 <li class="menu-item has-submenu {{ Request::segment(2) == 'otorisasi-customer-service' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
     <a class="menu-link " href="page-form-product-1.html">
         <i class="icon material-icons md-sync"></i>
-        <span class="text ">Otorisasi Customer Service</span>
+        <span class="text ">Otorisasi</span>
     </a>
     <div class="submenu">
         <a href="{{ route('otorisasi.nasabah') }}" class="{{ Request::segment(3) == 'otorisasi-data-nasabah' ? 'active' : '' }}">Otorisasi Data Nasabah</a>
@@ -40,7 +40,7 @@
         <a href="{{ route('informasi.saldo-teller') }}" class="{{ Request::segment(3) == 'saldo-teller' ? 'active' : '' }}">Saldo Teller</a>
     </div>
 </li>
-<li class="menu-item has-submenu {{ Request::segment(2) == 'otorisasi-head-teller' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
+{{-- <li class="menu-item has-submenu {{ Request::segment(2) == 'otorisasi-head-teller' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
     <a class="menu-link " href="page-form-product-1.html">
         <i class="icon material-icons md-sync"></i>
         <span class="text ">Otorisasi Head Teller</span>
@@ -48,7 +48,7 @@
     <div class="submenu">
         <a href="{{ route('otorisasi.transaksi-operator') }}" class="{{ Request::segment(3) == 'otorisasi-transaksi-per-operator' ? 'active' : '' }}">Otorisasi Transaksi Per Operotor</a>
     </div>
-</li>
+</li> --}}
 <li class="menu-item has-submenu {{ Request::segment(2) == 'admin-kredit' ? 'active' : '' }} ">
     <a class="menu-link " href="page-form-product-1.html">
         <i class="icon material-icons md-ballot"></i>

@@ -16,5 +16,6 @@ class BukuTabungan extends Model
         'saldo',
         'validasi',
         'jenis',
+        'id_kode_akun',
     ];
 }

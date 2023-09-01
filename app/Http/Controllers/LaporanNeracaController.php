@@ -12,19 +12,6 @@ use Illuminate\Http\Request;
 class LaporanNeracaController extends Controller
 {
     public function neraca(Request $request){
-        // $pencarian = KodeAkun::select('kode_akun.*',
-        //             'kode_induk.id as kode_induk_id',
-        //             'kode_induk.kode_induk as nama_kode')
-
-        //             ->join('kode_induk','kode_induk.id','kode_akun.id_induk');
-        // if ($request->has('nama_akun') && $request->get('nama_akun') != null ) {
-        //     $kata_kunci_nama_akun = strtolower($request->get('nama_akun'));
-        //     $pencarian = $pencarian
-        //                 ->where('kode_akun.nama_akun','LIKE', "%".$kata_kunci_nama_akun."%")
-        //                 ->get();
-        //     return $pencarian;
-
-        // }
         $kode_pendapatan = KodeAkun::select('kode_akun.id',
                                 'kode_induk.id as induk_id',
                                 'kode_induk.kode_induk',

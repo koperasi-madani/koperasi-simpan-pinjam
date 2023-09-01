@@ -121,7 +121,6 @@
                                 </thead>
                                 <tbody>
                                     @php
-
                                         $totalPendapatan = 0;
                                         $totalBiaya = 0;
                                     @endphp
@@ -178,9 +177,9 @@
                                                         $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $item_ledger->id)->count();
 
                                                         if ($cekTransaksiAwalDiKode > 0) {
-                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                            $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
 
-                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                            $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
                                                             if ($item_ledger->jenis == 'debit') {
                                                                 $mutasiAwalDebet += $sumMutasiAwalDebetDiKode;
@@ -196,9 +195,9 @@
                                                         $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $item_ledger->id)->count();
 
                                                         if ($cekTransaksiDiKode > 0) {
-                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                            $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
 
-                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                            $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $item_ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
                                                             $mutasiDebet += $sumMutasiDebetDiKode;
                                                             $mutasiKredit += $sumMutasiKreditDiKode;
@@ -227,104 +226,109 @@
                                                         }
 
                                                         // perhitungan laba/rugi
-                                                        if ($item_ledger->nama_induk == 'MODAL' || $item_ledger->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
-                                                            // Ngitung pendapatan;
-                                                            $mutasiAwalDebetPendapatan = 0;
-                                                            $mutasiAwalKreditPendapatan = 0;
+                                                        if (count($kode_pendapatan) > 0) {
+                                                            if ($item_ledger->nama_induk == 'MODAL' || $item_ledger->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
+                                                                // Ngitung pendapatan;
+                                                                $mutasiAwalDebetPendapatan = 0;
+                                                                $mutasiAwalKreditPendapatan = 0;
 
-                                                            $mutasiDebetPendapatan = 0;
-                                                            $mutasiKreditPendapatan = 0;
-                                                            foreach ($kode_pendapatan as $itemPendapatan) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                                $mutasiDebetPendapatan = 0;
+                                                                $mutasiKreditPendapatan = 0;
+                                                                foreach ($kode_pendapatan as $itemPendapatan) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
 
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
-                                                                    if ($itemPendapatan->jenis == 'debit') {
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        if ($itemPendapatan->jenis == 'debit') {
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
                                                                     }
-                                                                    else{
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
+
                                                                     }
+                                                                    $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
+
+                                                                    $totalPendapatan = $saldoAwal;
+                                                                    $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
+                                                                }
+                                                                $mutasiAwalDebetModal = 0;
+                                                                $mutasiAwalKreditModal = 0;
+
+                                                                $mutasiDebetModal = 0;
+                                                                $mutasiKreditModal = 0;
+                                                                foreach ($kode_modal as $itemModal) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        if ($itemModal->jenis == 'debit') {
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                    }
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetModal += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditModal += $sumMutasiKreditDiKode;
+
+                                                                    }
+                                                                    $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
+
+                                                                    $totalModal = $saldoAwal;
+                                                                    $totalMutasiDebetLaba = $mutasiDebetModal - $mutasiKreditModal;
+                                                                }
+                                                                $totalSaldoAwalLaba =  $totalModal - $totalPendapatan;
+                                                                $totalSaldoAkhirLaba =  $totalSaldoAwalLaba + $totalMutasiKreditPendapatan - $totalMutasiDebetLaba;
+                                                                if ($item_ledger->nama_induk == 'MODAL') {
+                                                                    $total = $totalSaldoAwalKreditTotalTiga;
+                                                                    $totalAkhir = $totalSaldoAkhirKreditTotalTiga;
+                                                                    if ($loop->first) {
+                                                                        $totalSaldoAwalKreditTotalTiga = $total + $totalSaldoAwalLaba;
+                                                                        $totalMutasiDebetTotal = $totalMutasiDebetTotal + $totalMutasiDebetLaba;
+                                                                        $totalMutasiKreditTotal = $totalMutasiKreditTotal + $totalMutasiKreditPendapatan;
+                                                                        $totalSaldoAkhirKreditTotalTiga = ($totalSaldoAwalKreditTotalTiga + $totalMutasiKreditTotal) - $totalMutasiDebetTotal;
+                                                                    }
+
                                                                 }
 
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
-
-
-                                                                $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
-
-                                                                $totalPendapatan = $saldoAwal;
-                                                                $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
                                                             }
-                                                            $mutasiAwalDebetModal = 0;
-                                                            $mutasiAwalKreditModal = 0;
-
-                                                            $mutasiDebetModal = 0;
-                                                            $mutasiKreditModal = 0;
-                                                            foreach ($kode_modal as $itemModal) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    if ($itemModal->jenis == 'debit') {
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                    else{
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                }
-
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                                    $mutasiDebetModal += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditModal += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
-
-                                                                $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
-
-                                                                $totalModal = $saldoAwal;
-                                                                $totalMutasiDebetLaba = $mutasiDebetModal - $mutasiKreditModal;
-                                                            }
-                                                            $totalSaldoAwalLaba =  $totalModal - $totalPendapatan;
-                                                            $totalSaldoAkhirLaba =  $totalSaldoAwalLaba + $totalMutasiKreditPendapatan - $totalMutasiDebetLaba;
-                                                            if ($item_ledger->nama_induk == 'MODAL') {
-                                                                $total = $totalSaldoAwalKreditTotalTiga;
-                                                                $totalAkhir = $totalSaldoAkhirKreditTotalTiga;
-                                                                if ($loop->first) {
-                                                                    $totalSaldoAwalKreditTotalTiga = $total + $totalSaldoAwalLaba;
-                                                                    $totalMutasiDebetTotal = $totalMutasiDebetTotal + $totalMutasiDebetLaba;
-                                                                    $totalMutasiKreditTotal = $totalMutasiKreditTotal + $totalMutasiKreditPendapatan;
-                                                                    $totalSaldoAkhirKreditTotalTiga = ($totalSaldoAwalKreditTotalTiga + $totalMutasiKreditTotal) - $totalMutasiDebetTotal;
-                                                                }
-
-                                                            }
-
+                                                        } else {
+                                                            # code...
                                                         }
+
 
                                                     @endphp
                                                 @endforeach
@@ -333,16 +337,16 @@
                                                 <td>{{ $item_induk->kode_ledger }}</td>
                                                 <td>{{ strtoupper($item_induk->nama_ledger) }}</td>
                                                 @if ($item_ledger->jenis == 'debit')
-                                                    <td class="uang">{{ number_format($totalSaldoAwalDebetTotalTiga / 100, 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAwalDebetTotalTiga, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td class="uang">{{ number_format($totalSaldoAwalKreditTotalTiga / 100, 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAwalKreditTotalTiga, 2, ',', '.') }}</td>
                                                 @endif
-                                                <td class="uang"> {{ number_format($totalMutasiDebetTotal / 100, 2, ',', '.') }}</td>
-                                                <td class="uang">{{ number_format($totalMutasiKreditTotal / 100, 2, ',', '.') }}</td>
+                                                <td class="uang"> {{ number_format($totalMutasiDebetTotal, 2, ',', '.') }}</td>
+                                                <td class="uang">{{ number_format($totalMutasiKreditTotal, 2, ',', '.') }}</td>
                                                 @if ($item_ledger->jenis == 'debit')
-                                                    <td class="uang">{{ number_format($totalSaldoAkhirDebetTotalTiga / 100, 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAkhirDebetTotalTiga, 2, ',', '.') }}</td>
                                                 @else
-                                                    <td class="uang">{{ number_format($totalSaldoAkhirKreditTotalTiga / 100, 2, ',', '.') }}</td>
+                                                    <td class="uang">{{ number_format($totalSaldoAkhirKreditTotalTiga, 2, ',', '.') }}</td>
                                                 @endif
                                             </tr>
                                             @php
@@ -429,109 +433,111 @@
                                                             $totalSaldoAwalKreditDua += $saldoAwal;
                                                             $totalSaldoAkhirKreditDua += $saldoAkhir;
                                                         }
-                                                        // perhitungan laba/rugi
-                                                        if ($item_dua->nama_induk == 'MODAL' || $item_dua->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
-                                                            // Ngitung pendapatan;
-                                                            $mutasiAwalDebetPendapatan = 0;
-                                                            $mutasiAwalKreditPendapatan = 0;
+                                                        if (count($kode_pendapatan) > 0) {
+                                                            // perhitungan laba/rugi
+                                                            if ($item_dua->nama_induk == 'MODAL' || $item_dua->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
+                                                                // Ngitung pendapatan;
+                                                                $mutasiAwalDebetPendapatan = 0;
+                                                                $mutasiAwalKreditPendapatan = 0;
 
-                                                            $mutasiDebetPendapatan = 0;
-                                                            $mutasiKreditPendapatan = 0;
-                                                            foreach ($kode_pendapatan as $itemPendapatan) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                                $mutasiDebetPendapatan = 0;
+                                                                $mutasiKreditPendapatan = 0;
+                                                                foreach ($kode_pendapatan as $itemPendapatan) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
 
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
-                                                                    if ($itemPendapatan->jenis == 'debit') {
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        if ($itemPendapatan->jenis == 'debit') {
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
                                                                     }
-                                                                    else{
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
+
                                                                     }
+                                                                    $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
+
+                                                                    $totalPendapatan = $saldoAwal;
+                                                                    $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
+                                                                }
+                                                                $mutasiAwalDebetModal = 0;
+                                                                $mutasiAwalKreditModal = 0;
+
+                                                                $mutasiDebetModal = 0;
+                                                                $mutasiKreditModal = 0;
+                                                                foreach ($kode_modal as $itemModal) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        if ($itemModal->jenis == 'debit') {
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                    }
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetModal += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditModal += $sumMutasiKreditDiKode;
+
+                                                                    }
+                                                                    $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
+
+                                                                    $totalModal = $saldoAwal;
+                                                                    $totalMutasiDebetLaba = $mutasiDebetModal - $mutasiKreditModal;
+                                                                }
+                                                                $totalSaldoAwalLaba =  $totalModal - $totalPendapatan;
+                                                                $totalSaldoAkhirLaba =  $totalSaldoAwalLaba + $totalMutasiKreditPendapatan - $totalMutasiDebetLaba;
+                                                                if ($item_dua->nama_induk == 'MODAL') {
+                                                                    $total = $totalSaldoAwalKreditDua;
+                                                                    $totalAkhir = $totalSaldoAkhirKreditDua;
+                                                                    if ($loop->first) {
+                                                                        $totalSaldoAwalKreditDua = $total + $totalSaldoAwalLaba;
+                                                                        $totalMutasiDebetDua = $totalMutasiDebetDua + $totalMutasiDebetLaba;
+                                                                        $totalMutasiKreditDua = $totalMutasiKreditDua + $totalMutasiKreditPendapatan;
+                                                                        $totalSaldoAkhirKreditDua = ($totalSaldoAwalKreditDua + $totalMutasiKreditDua) - $totalMutasiDebetDua;
+                                                                    }
+
+                                                                } else {
+                                                                    $totalSaldoAwalKreditDua =  $totalSaldoAwalLaba;
+                                                                    $totalSaldoAkhirKreditDua =  $totalSaldoAkhirLaba;
+                                                                    $totalMutasiDebetDua = $totalMutasiDebetLaba;
+                                                                    $totalMutasiKreditDua = $totalMutasiKreditPendapatan;
                                                                 }
 
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                                    $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
-
-
-                                                                $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
-
-                                                                $totalPendapatan = $saldoAwal;
-                                                                $totalMutasiKreditPendapatan =  $mutasiKreditPendapatan - $mutasiDebetPendapatan;
                                                             }
-                                                            $mutasiAwalDebetModal = 0;
-                                                            $mutasiAwalKreditModal = 0;
-
-                                                            $mutasiDebetModal = 0;
-                                                            $mutasiKreditModal = 0;
-                                                            foreach ($kode_modal as $itemModal) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                                    if ($itemModal->jenis == 'debit') {
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                    else{
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                }
-
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                                    $mutasiDebetModal += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditModal += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
-
-                                                                $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
-
-                                                                $totalModal = $saldoAwal;
-                                                                $totalMutasiDebetLaba = $mutasiDebetModal - $mutasiKreditModal;
-                                                            }
-                                                            $totalSaldoAwalLaba =  $totalModal - $totalPendapatan;
-                                                            $totalSaldoAkhirLaba =  $totalSaldoAwalLaba + $totalMutasiKreditPendapatan - $totalMutasiDebetLaba;
-                                                            if ($item_dua->nama_induk == 'MODAL') {
-                                                                $total = $totalSaldoAwalKreditDua;
-                                                                $totalAkhir = $totalSaldoAkhirKreditDua;
-                                                                if ($loop->first) {
-                                                                    $totalSaldoAwalKreditDua = $total + $totalSaldoAwalLaba;
-                                                                    $totalMutasiDebetDua = $totalMutasiDebetDua + $totalMutasiDebetLaba;
-                                                                    $totalMutasiKreditDua = $totalMutasiKreditDua + $totalMutasiKreditPendapatan;
-                                                                    $totalSaldoAkhirKreditDua = ($totalSaldoAwalKreditDua + $totalMutasiKreditDua) - $totalMutasiDebetDua;
-                                                                }
-
-                                                            } else {
-                                                                $totalSaldoAwalKreditDua =  $totalSaldoAwalLaba;
-                                                                $totalSaldoAkhirKreditDua =  $totalSaldoAkhirLaba;
-                                                                $totalMutasiDebetDua = $totalMutasiDebetLaba;
-                                                                $totalMutasiKreditDua = $totalMutasiKreditPendapatan;
-                                                            }
-
                                                         }
 
                                                     @endphp
@@ -540,16 +546,16 @@
                                                         <td> {{ $tes->kode_induk }}</td>
                                                         <td> {{ strtoupper($tes->nama) }}</td>
                                                         @if ($item_ledger->jenis == 'debit')
-                                                            <td class="uang">{{ number_format($totalSaldoAwalDebetDua / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($totalSaldoAwalDebetDua, 2, ',', '.') }}</td>
                                                         @else
-                                                            <td class="uang">{{ number_format($totalSaldoAwalKreditDua / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($totalSaldoAwalKreditDua, 2, ',', '.') }}</td>
                                                         @endif
-                                                        <td class="uang">{{ number_format($totalMutasiDebetDua / 100, 2, ',', '.') }}</td>
-                                                        <td class="uang">{{ number_format($totalMutasiKreditDua / 100, 2, ',', '.') }}</td>
+                                                        <td class="uang">{{ number_format($totalMutasiDebetDua, 2, ',', '.') }}</td>
+                                                        <td class="uang">{{ number_format($totalMutasiKreditDua, 2, ',', '.') }}</td>
                                                         @if ($item_ledger->jenis == 'debit')
-                                                            <td class="uang">{{ number_format($totalSaldoAkhirDebetDua / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($totalSaldoAkhirDebetDua, 2, ',', '.') }}</td>
                                                         @else
-                                                            <td class="uang">{{ number_format($totalSaldoAkhirKreditDua / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($totalSaldoAkhirKreditDua, 2, ',', '.') }}</td>
                                                         @endif
                                                 </tr>
                                                 @php
@@ -627,93 +633,95 @@
                                                             $totalSaldoAwalKredit += $saldoAwal;
                                                             $totalSaldoAkhirKredit += $saldoAkhir;
                                                         }
-                                                        // perhitungan laba/rugi
-                                                        if ($item->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
-                                                            // Ngitung pendapatan;
-                                                            $mutasiAwalDebetPendapatan = 0;
-                                                            $mutasiAwalKreditPendapatan = 0;
+                                                        if (count($kode_pendapatan) > 0) {
+                                                            // perhitungan laba/rugi
+                                                            if ($item->nama_akun == 'LABA / RUGI TAHUN BERJALAN') {
+                                                                // Ngitung pendapatan;
+                                                                $mutasiAwalDebetPendapatan = 0;
+                                                                $mutasiAwalKreditPendapatan = 0;
 
-                                                            $mutasiDebetPendapatan = 0;
-                                                            $mutasiKreditPendapatan = 0;
-                                                            foreach ($kode_pendapatan as $itemPendapatan) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+                                                                $mutasiDebetPendapatan = 0;
+                                                                $mutasiKreditPendapatan = 0;
+                                                                foreach ($kode_pendapatan as $itemPendapatan) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
 
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
 
-                                                                    if ($itemPendapatan->jenis == 'debit') {
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        if ($itemPendapatan->jenis == 'debit') {
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+                                                                        }
                                                                     }
-                                                                    else{
-                                                                        $mutasiAwalDebetPendapatan += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditPendapatan += $sumMutasiAwalKreditDiKode;
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
+
                                                                     }
+                                                                    $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
+
+                                                                    $totalPendapatan = $saldoAwal;
+                                                                    $mutasiKredit = $mutasiKreditPendapatan - $mutasiDebetPendapatan ;
+                                                                }
+                                                                $mutasiAwalDebetModal = 0;
+                                                                $mutasiAwalKreditModal = 0;
+
+                                                                $mutasiDebetModal = 0;
+                                                                $mutasiKreditModal = 0;
+                                                                foreach ($kode_modal as $itemModal) {
+                                                                    $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
+                                                                    if ($cekTransaksiAwalDiKode > 0) {
+                                                                        $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        if ($itemModal->jenis == 'debit') {
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                        else{
+                                                                            $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
+                                                                            $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
+                                                                        }
+                                                                    }
+
+                                                                    $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
+
+                                                                    if ($cekTransaksiDiKode > 0) {
+                                                                        $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+                                                                        $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+                                                                        $mutasiDebetModal += $sumMutasiDebetDiKode;
+                                                                        $mutasiKreditModal += $sumMutasiKreditDiKode;
+
+                                                                    }
+                                                                    $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
+
+                                                                    $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
+
+                                                                    $totalModal = $saldoAwal;
+                                                                    $mutasiDebet = $mutasiDebetModal - $mutasiKreditModal;
                                                                 }
 
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemPendapatan->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemPendapatan->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
-
-                                                                    $mutasiDebetPendapatan += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
-
-
-                                                                $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
-
-                                                                $totalPendapatan = $saldoAwal;
-                                                                $mutasiKredit = $mutasiKreditPendapatan - $mutasiDebetPendapatan ;
+                                                                $saldoAwal =  $totalModal - $totalPendapatan;
+                                                                $saldoAkhir =  $saldoAwal + $mutasiKredit - $mutasiDebet ;
                                                             }
-                                                            $mutasiAwalDebetModal = 0;
-                                                            $mutasiAwalKreditModal = 0;
-
-                                                            $mutasiDebetModal = 0;
-                                                            $mutasiKreditModal = 0;
-                                                            foreach ($kode_modal as $itemModal) {
-                                                                $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $itemModal->id)->count();
-                                                                if ($cekTransaksiAwalDiKode > 0) {
-                                                                    $sumMutasiAwalDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $sumMutasiAwalKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    if ($itemModal->jenis == 'debit') {
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                    else{
-                                                                        $mutasiAwalDebetModal += $sumMutasiAwalDebetDiKode;
-                                                                        $mutasiAwalKreditModal += $sumMutasiAwalKreditDiKode;
-                                                                    }
-                                                                }
-
-                                                                $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $itemModal->id)->count();
-
-                                                                if ($cekTransaksiDiKode > 0) {
-                                                                    $sumMutasiDebetDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $sumMutasiKreditDiKode = \DB::table('jurnal')->where('kode_akun', $itemModal->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum(\DB::raw('CAST(jurnal.nominal AS SIGNED)'));
-
-                                                                    $mutasiDebetModal += $sumMutasiDebetDiKode;
-                                                                    $mutasiKreditModal += $sumMutasiKreditDiKode;
-
-                                                                }
-                                                                $saldoAwal = $mutasiAwalDebetModal - $mutasiAwalKreditModal;
-
-                                                                $saldoAkhir = ($mutasiAwalDebetModal + $mutasiDebetModal) - ($mutasiAwalKreditModal + $mutasiKreditModal);
-
-                                                                $totalModal = $saldoAwal;
-                                                                $mutasiDebet = $mutasiDebetModal - $mutasiKreditModal;
-                                                            }
-
-                                                            $saldoAwal =  $totalModal - $totalPendapatan;
-                                                            $saldoAkhir =  $saldoAwal + $mutasiKredit - $mutasiDebet ;
                                                         }
                                                         @endphp
 
@@ -721,16 +729,16 @@
                                                         <td>{{ $item->kode_akun }}</td>
                                                         <td>{{ strtoupper($item->nama_akun) }}</td>
                                                         @if ($item->jenis == 'debit')
-                                                            <td class="uang">{{ number_format($saldoAwal / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($saldoAwal, 2, ',', '.') }}</td>
                                                         @else
-                                                            <td class="uang">{{ number_format($saldoAwal / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($saldoAwal, 2, ',', '.') }}</td>
                                                         @endif
-                                                        <td class="uang">{{ number_format($mutasiDebet / 100, 2, ',', '.') }}</td>
-                                                        <td class="uang">{{ number_format($mutasiKredit / 100, 2, ',', '.') }}</td>
+                                                        <td class="uang">{{ number_format($mutasiDebet, 2, ',', '.') }}</td>
+                                                        <td class="uang">{{ number_format($mutasiKredit, 2, ',', '.') }}</td>
                                                         @if ($item->jenis == 'debit')
-                                                            <td class="uang">{{ number_format($saldoAkhir / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang">{{ number_format($saldoAkhir, 2, ',', '.') }}</td>
                                                         @else
-                                                            <td class="uang"> {{ number_format($saldoAkhir / 100, 2, ',', '.') }}</td>
+                                                            <td class="uang"> {{ number_format($saldoAkhir, 2, ',', '.') }}</td>
                                                         @endif
                                                     </tr>
                                                 @endforeach

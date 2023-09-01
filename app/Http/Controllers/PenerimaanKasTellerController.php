@@ -17,11 +17,16 @@ class PenerimaanKasTellerController extends Controller
     {
 
         $currentDate = Carbon::now()->toDateString();
-        $pembayaran = SaldoTeller::where('status','pembayaran')
-                                ->where('id_user',auth()->user()->id)
-                                ->where('tanggal',$currentDate)
-                                // ->sum('pembayaran');
-                                ->first();
+        $query_pembayaran = SaldoTeller::where('status','pembayaran')
+                                        ->where('tanggal',$currentDate);
+                                if (Auth::user()->hasRole('head-teller')) {
+                                    $pembayaran = $query_pembayaran
+                                                    ->sum('penerimaan');
+                                }else{
+                                    $pembayaran = $query_pembayaran
+                                                    ->where('id_user',auth()->user()->id)
+                                                    ->sum('penerimaan');
+                                }
         $penerimaan = SaldoTeller::where('penerimaan','!=',0)
                     ->where('id_user',auth()->user()->id)
                     ->where('tanggal',$currentDate)
@@ -29,13 +34,17 @@ class PenerimaanKasTellerController extends Controller
                     ->count();
 
         $denominasi = Denominasi::where('id_user',auth()->user()->id)->whereDate('created_at','=',$currentDate)->groupBy('id_user')->get();
-        $nominal_denominasi = Denominasi::where('id_user',auth()->user()->id)
-                            ->whereDate('created_at','=',$currentDate)
-                            ->sum('total');
-                            // ->map(function ($item) {
-                            //     $item->hasil_perkalian = $item->total + (int)$item->total;
-                            //     return $item;
-                            // });
+        $query = Denominasi::where('id_user',auth()->user()->id);
+                            if (Auth::user()->hasRole('head-teller')) {
+                              $nominal_denominasi = $query
+                                                    ->where('status_akun','general')
+                                                    ->whereDate('created_at','=',$currentDate)
+                                                    // ->where('status_akun','non-general')
+                                                    ->sum('total');
+                            }
+                            $nominal_denominasi = $query
+                                                    ->whereDate('created_at','=',$currentDate)
+                                                    ->sum('total');
 
         return view('pages.penerimaan.index',compact('pembayaran','penerimaan','denominasi','nominal_denominasi'));
     }

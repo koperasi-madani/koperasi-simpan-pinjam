@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('test',[CadanganBukuController::class,'cadangSuku']);
+Route::get('test',[CadanganBukuController::class,'cadapenerimaan-kas-tellerngSuku']);
 Route::get('tampilan', function () {
     return view('pages.setor-tunai.pdf');
 });

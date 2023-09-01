@@ -68,19 +68,22 @@
             $('#addBtn').on('click',function() {
                 var formRow = `
                     <div class="row form-row my-3 item-row">
-                        <select name="nominal[]" id="nominal" class="form-control @error('nominal') is-invalid @enderror nominal-input" >
-                            <option value="100">Rp 100</option>
-                            <option value="200">Rp 200</option>
-                            <option value="500">Rp 500</option>
-                            <option value="1000">Rp 1.000</option>
-                            <option value="2000">Rp 2.000</option>
-                            <option value="5000">Rp 5.000</option>
-                            <option value="10000">Rp 10.000</option>
-                            <option value="20000">Rp 20.000</option>
-                            <option value="50000">Rp 50.000</option>
-                            <option value="75000">Rp 75.000</option>
-                            <option value="100000">Rp 100.000</option>
-                        </select>
+                        <div class="form-group col-md-4">
+                            <label for="jumlah">Nominal</label>
+                            <select name="nominal[]" id="nominal" class="form-control @error('nominal') is-invalid @enderror nominal-input" >
+                                <option value="100">Rp 100</option>
+                                <option value="200">Rp 200</option>
+                                <option value="500">Rp 500</option>
+                                <option value="1000">Rp 1.000</option>
+                                <option value="2000">Rp 2.000</option>
+                                <option value="5000">Rp 5.000</option>
+                                <option value="10000">Rp 10.000</option>
+                                <option value="20000">Rp 20.000</option>
+                                <option value="50000">Rp 50.000</option>
+                                <option value="75000">Rp 75.000</option>
+                                <option value="100000">Rp 100.000</option>
+                            </select>
+                        </div>
                         <div class="form-group col-md-3">
                             <label for="jumlah">Jumlah</label>
                             <input type="number" class="form-control jumlah-input" name="jumlah[]" required min="1" placeholder="Masukkan Jumlah">

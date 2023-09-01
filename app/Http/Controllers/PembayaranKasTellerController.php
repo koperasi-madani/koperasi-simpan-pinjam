@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KodeAkun;
+use App\Models\KodeInduk;
 use App\Models\PPeminjamanKas;
 use App\Models\SaldoTeller;
 use App\Models\User;
@@ -22,7 +23,14 @@ class PembayaranKasTellerController extends Controller
         $currentDate = Carbon::now()->toDateString();
         $peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->sum('nominal');
 
-        return view('pages.pembayaran.index',compact('teller','kode','kode_akun','peminjaman'));
+        $item_induk = KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                                ->where('kode_ledger.nama','A K T I V A')
+                                ->groupBy('kode_ledger.nama')
+                                ->orderBy('kode_induk.kode_induk')
+                                ->first();
+
+        return view('pages.pembayaran.index',compact('teller','kode','kode_akun','peminjaman','item_induk'));
     }
 
     public function post(Request $request)

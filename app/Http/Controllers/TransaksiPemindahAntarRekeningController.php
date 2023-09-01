@@ -84,7 +84,7 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 $setor = new TransaksiTabungan;
                 $setor->id_nasabah = $_POST['akun_nasabah'][$key];
                 if ($_POST['tipe'][$key] == 'Masuk') {
-                    $setor->kode = $this->generateTransaksiSetoran();
+                    $setor->kode = $this->generateTransaksiPenarikan();
                 }else{
                     $setor->kode = $this->generateTransaksiSetoran();
                 }
@@ -97,25 +97,24 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 if ($_POST['tipe'][$key] == 'Masuk') {
                     $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
                     $saldo_akhir = $tabungan->first()->saldo;
+                    $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
+                    $tabungan->update([
+                        'saldo' => $result_saldo,
+                    ]);
+                }else{
+                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
+                    $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo = $this->formatNumber($_POST['nominal'][$key]) + $saldo_akhir;
 
                     $tabungan->update([
                         'saldo' => $result_saldo,
                     ]);
                     $setor->saldo = $result_saldo;
-
-                }else{
-                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
-                    $saldo_akhir = $tabungan->first()->saldo;
-                    $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
-                    $tabungan->update([
-                        'saldo' => $result_saldo,
-                    ]);
                 }
                 $setor->save();
 
                 // jurnal
-                $kode_akun = KodeAkun::where('kode_akun','22001')->first();
+                $kode_akun = KodeAkun::where('kode_akun','23001')->first();
                 $jurnal = new Jurnal;
                 $jurnal->tanggal = Carbon::now();
                 $jurnal->kode_transaksi = $transaksi->kode_transaksi;
