@@ -84,9 +84,9 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 $setor = new TransaksiTabungan;
                 $setor->id_nasabah = $_POST['akun_nasabah'][$key];
                 if ($_POST['tipe'][$key] == 'Masuk') {
-                    $setor->kode = $this->generateTransaksiSetoran();
-                }else{
                     $setor->kode = $this->generateTransaksiPenarikan();
+                }else{
+                    $setor->kode = $this->generateTransaksiSetoran();
                 }
                 $setor->tgl = Carbon::now();
                 $setor->nominal = $this->formatNumber($_POST['nominal'][$key]);
@@ -97,19 +97,19 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 if ($_POST['tipe'][$key] == 'Masuk') {
                     $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
                     $saldo_akhir = $tabungan->first()->saldo;
+                    $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
+                    $tabungan->update([
+                        'saldo' => $result_saldo,
+                        ]);
+                }else{
+                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
+                    $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo = $this->formatNumber($_POST['nominal'][$key]) + $saldo_akhir;
 
                     $tabungan->update([
                         'saldo' => $result_saldo,
                     ]);
                     $setor->saldo = $result_saldo;
-                }else{
-                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
-                    $saldo_akhir = $tabungan->first()->saldo;
-                    $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
-                    $tabungan->update([
-                        'saldo' => $result_saldo,
-                    ]);
                 }
                 $setor->save();
 
