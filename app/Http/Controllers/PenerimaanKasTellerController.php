@@ -17,10 +17,16 @@ class PenerimaanKasTellerController extends Controller
     {
 
         $currentDate = Carbon::now()->toDateString();
+        // return $pembayaran = SaldoTeller::where('status','pembayaran')
+        // ->where('id_user',auth()->user()->id)
+        // ->where('tanggal',$currentDate)
+        // ->sum('pembayaran');
+        // ->first();
         $query_pembayaran = SaldoTeller::where('status','pembayaran')
                                         ->where('tanggal',$currentDate);
                                 if (Auth::user()->hasRole('head-teller')) {
                                     $pembayaran = $query_pembayaran
+                                                    ->where('id_user',auth()->user()->id)
                                                     ->sum('penerimaan');
                                 }else{
                                     $pembayaran = $query_pembayaran
@@ -37,9 +43,9 @@ class PenerimaanKasTellerController extends Controller
         $query = Denominasi::where('id_user',auth()->user()->id);
                             if (Auth::user()->hasRole('head-teller')) {
                               $nominal_denominasi = $query
-                                                    ->where('status_akun','general')
+                                                    // ->where('status_akun','general')
                                                     ->whereDate('created_at','=',$currentDate)
-                                                    // ->where('status_akun','non-general')
+                                                    ->where('status_akun','non-general')
                                                     ->sum('total');
                             }
                             $nominal_denominasi = $query

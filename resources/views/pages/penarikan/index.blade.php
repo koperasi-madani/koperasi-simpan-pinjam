@@ -99,6 +99,7 @@
                 }
                 $('#sisa_saldo').val(result);
                 var sisa_saldo = document.getElementById("sisa_saldo");
+                console.log(sisa_saldo);
                 sisa_saldo.value = formatRupiah(sisa_saldo.value);
             }
             function hapus_uang(params) {

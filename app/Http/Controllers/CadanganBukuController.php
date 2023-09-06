@@ -69,7 +69,7 @@ class CadanganBukuController extends Controller
                 }else{
                     $jurnal->tipe = 'kredit';
                 }
-                $jurnal->nominal =  $total;
+                $jurnal->nominal =  $result;
                 $jurnal->id_detail = 0;
                 $jurnal->save();
 

@@ -22,7 +22,6 @@ class PembayaranKasTellerController extends Controller
 
         $currentDate = Carbon::now()->toDateString();
         $peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->sum('nominal');
-
         $item_induk = KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
                                 ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
                                 ->where('kode_ledger.nama','A K T I V A')

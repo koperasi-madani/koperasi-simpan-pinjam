@@ -193,44 +193,44 @@ class PenarikanController extends Controller
                 }
 
                 $penarikan->status = 'setuju';
-            }
-            $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+                $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
 
-            $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
+                $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
-            foreach ($kode_akun_kas as $item) {
-                $transaksi = new TransaksiManyToMany();
-                $transaksi->kode_transaksi = $this->generateKode();
-                $transaksi->id_user = auth()->user()->id;
-                $transaksi->tanggal = $request->get('tgl');
-                $transaksi->kode_akun = $item->id;
-                $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
-                $transaksi->keterangan = 'Transaksi Many To Many';
-                $transaksi->save();
+                foreach ($kode_akun_kas as $item) {
+                    $transaksi = new TransaksiManyToMany();
+                    $transaksi->kode_transaksi = $this->generateKode();
+                    $transaksi->id_user = auth()->user()->id;
+                    $transaksi->tanggal = $request->get('tgl');
+                    $transaksi->kode_akun = $item->id;
+                    $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
+                    $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
+                    $transaksi->keterangan = 'Transaksi Many To Many';
+                    $transaksi->save();
 
-                $detailTransaksi = new DTransaksiManyToMany();
-                $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
-                $detailTransaksi->kode_akun = $item->id;
-                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
-                $detailTransaksi->keterangan = 'tabungan';
-                $detailTransaksi->save();
+                    $detailTransaksi = new DTransaksiManyToMany();
+                    $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+                    $detailTransaksi->kode_akun = $item->id;
+                    $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
+                    $detailTransaksi->keterangan = 'tabungan';
+                    $detailTransaksi->save();
 
-                $jurnal = new Jurnal;
-                $jurnal->tanggal = $request->get('tgl');
-                $jurnal->kode_transaksi = $transaksi->kode_transaksi;
-                $jurnal->keterangan = 'tabungan';
-                $jurnal->kode_akun =$item->id;
-                $jurnal->kode_lawan = 0;
-                $jurnal->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $jurnal->nominal = $this->formatNumber($request->get('nominal_penarikan'));
-                $jurnal->id_detail = $detailTransaksi->id;
-                $jurnal->save();
+                    $jurnal = new Jurnal;
+                    $jurnal->tanggal = $request->get('tgl');
+                    $jurnal->kode_transaksi = $transaksi->kode_transaksi;
+                    $jurnal->keterangan = 'tabungan';
+                    $jurnal->kode_akun =$item->id;
+                    $jurnal->kode_lawan = 0;
+                    $jurnal->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
+                    $jurnal->nominal = $this->formatNumber($request->get('nominal_penarikan'));
+                    $jurnal->id_detail = $detailTransaksi->id;
+                    $jurnal->save();
+                }
             }
             $penarikan->save();
-
-
-
+            if ($this->formatNumber($request->get('nominal_penarikan')) > 1000000) {
+                return redirect()->back()->withStatus('Penarikan harus otorisasi terlebih dahulu.');
+            }
             return redirect()->route('penarikan.pdf',['id' => $penarikan->id])->withStatus('Berhasil melakukan penarikan.');
 
         } catch (Exception $e) {

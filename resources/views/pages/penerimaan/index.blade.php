@@ -225,6 +225,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card card-body mb-4">
+
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
