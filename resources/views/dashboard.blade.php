@@ -14,6 +14,93 @@
             }
         </style>
     @endpush
+    @push('js')
+    <script>
+         function updateClock() {
+                var currentTime = new Date();
+                var hours = currentTime.getHours();
+                var minutes = currentTime.getMinutes();
+                var seconds = currentTime.getSeconds();
+                // mengatur format menjadi "HH:MM:SSS"
+                hours = (hours < 10 ? "0" : "") + hours;
+                minutes = (minutes < 10 ? "0" : "") + minutes;
+                seconds = (seconds < 10 ? "0" : "") + seconds;
+
+                // menampilkan jam dalam elemen dengan id
+                $('#waktu').text(`${hours} : ${minutes} : ${seconds }`)
+            }
+            setInterval(updateClock, 1000);
+    </script>
+        <script>
+            // Assuming your PHP $data variable is available in JavaScript
+            var transaksiData = <?php echo json_encode($data); ?>;
+
+            // Extract and aggregate the data by date
+            var dateLabels = [];
+            var totalIncomeData = [];
+            var totalExpenseData = [];
+            var currentDate = '';
+
+            transaksiData.forEach(function(item) {
+                // Extract date from the 'tgl' field
+                var date = item.tgl;
+
+                // Format date as desired, e.g., 'YYYY-MM-DD'
+                // You can use a date formatting library like moment.js for this
+                // Here, we assume the date format is already 'YYYY-MM-DD'
+
+                if (currentDate !== date) {
+                    dateLabels.push(date);
+                    currentDate = date;
+                }
+
+                // Calculate income and expense for this date
+                var income = item.jenis === 'masuk' && item.status === 'setuju' ? item.nominal : 0;
+                var expense = item.jenis === 'keluar' && item.status === 'setuju' ? item.nominal : 0;
+
+                if (totalIncomeData.length === dateLabels.length) {
+                    totalIncomeData[totalIncomeData.length - 1] += income;
+                    totalExpenseData[totalExpenseData.length - 1] += expense;
+                } else {
+                    totalIncomeData.push(income);
+                    totalExpenseData.push(expense);
+                }
+            });
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dateLabels,
+                    datasets: [{
+                        label: 'Total Masuk',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                        borderColor: 'rgba(44, 120, 220)',
+                        data: totalIncomeData
+                    }, {
+                        label: 'Total Keluar',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132)',
+                        data: totalExpenseData
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            labels: {
+                                usePointStyle: true,
+                            },
+                        }
+                    }
+                }
+            });
+
+        </script>
+    @endpush
 
     @section('content')
     <section class="content-main">
@@ -32,8 +119,76 @@
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Total Pendapatan</h6>
-                            <span>Rp. {{ Session::get('status') }}</span>
+                            <h3 class="mb-1 card-title">Pinjaman Kredit</h3>
+                            <hr>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2">: Transaksi Bulan Ini</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2"> : Jumlah Tagihan Tahun Ini</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2"> : Sisa Tagihan Tahun Ini</small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="alert {{ $tutupBuku->status == 'buka' ? 'alert-success' : 'alert-danger'}} d-flex align-items-center" role="alert">
+                    <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-admin_panel_settings"></i></span>
+                    <div class="mx-3 d-flex flex-column">
+                        <div>
+                            <strong class="fw-bold">Status Tutup Cabang : </strong> <span class="badge {{ $tutupBuku->status == 'buka' ? 'bg-primary' : 'bg-danger'}} ">{{ $tutupBuku->status == 'buka' ? 'Buka' : 'Tutup'}}</span>
+                        </div>
+                        <div>
+                            @php
+                                    $lastUpdatedTime = \Carbon\Carbon::parse($tutupBuku->updated_at);
+                                    $timeAgo = $lastUpdatedTime->diffForHumans();
+                            @endphp
+                            Last update : <strong class="fw-bold">{{ $timeAgo }}</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-body">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-timer"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Waktu</h6>
+                            <span id="waktu"></span>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <div class="text">
+                            <h3 class="mb-1 card-title">Data Peminjam</h3>
+                            <hr>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2">: Peminjam</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2"> : Sudah Lunas</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">0</strong>
+                                    <small class="mx-2"> : Belum Lunas</small>
+                                </div>
+
+                            </div>
                         </div>
                     </article>
                 </div>
@@ -43,8 +198,24 @@
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-secondary-light"><i class="text-secondary material-icons md-shopping_bag"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Total Rekening</h6>
-                            <span>12</span>
+                            <h3 class="mb-1 card-title">Data Pengguna</h3>
+                            <hr>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $user }}</strong>
+                                    <small class="mx-2">: Pengguna Aktif</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $hak_akses }}</strong>
+                                    <small class="mx-2"> : Hak Akses</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $user }}</strong>
+                                    <small class="mx-2"> : Jumlah Pengguna</small>
+                                </div>
+
+                            </div>
+
                         </div>
                     </article>
                 </div>
@@ -54,9 +225,23 @@
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Total Nasabah</h6>
-                            <span>1214</span>
-                            <span class="text-sm">  </span>
+                            <h3 class="mb-1 card-title">Data Nasabah</h3>
+                            <hr>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $nasabah_aktif }}</strong>
+                                    <small class="mx-2">: Anggota Aktif</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $nasabah_non_aktif }}</strong>
+                                    <small class="mx-2"> : Anggota Tidak Aktif</small>
+                                </div>
+                                <div class="d-flex flex-row mb-2">
+                                    <strong class="fw-bold">{{ $nasabah }}</strong>
+                                    <small class="mx-2"> : Jumlah Anggota</small>
+                                </div>
+
+                            </div>
 
                         </div>
                     </article>
@@ -65,12 +250,10 @@
 
         </div>
         <div class="row">
-            <div class="col-xl-8 col-lg-12">
+            <div class="col-xl-12 col-lg-12">
                 <div class="card mb-4">
+                    <header class="card-header"><h4 class="card-title">Grafik Keuangan</h4></header>
                     <article class="card-body position-relative">
-                        <span class="material-icons md-warning sticky-fa-card"></span>
-                        <div class="bg-warning-light position-absolute top-0 start-0 p-2 rounded">
-                        </div>
                         <div class="mt-4">
                             <canvas id="myChart" height="120px"></canvas>
                         </div>
@@ -78,21 +261,7 @@
                 </div>
 
             </div>
-            <div class="col-xl-4 col-lg-12">
-                <div class="card mb-4">
-                    <article class="card-body">
-                        <h5 class="card-title">Log Aktivitas</h5>
-                        <ul class="verti-timeline list-unstyled font-sm">
 
-                            <tr>
-                                <td>Tidak ada data</td>
-                            </tr>
-
-                        </ul>
-                    </article>
-                </div>
-
-            </div>
 
         </div>
     </section>
