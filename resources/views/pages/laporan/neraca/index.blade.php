@@ -596,7 +596,7 @@
 
                                                 }
                                                 if ($item->nama_ledger == 'P E N D A P A T A N' || $item->nama_ledger == 'PASSIVA') {
-                                                    $saldoAwal =  $mutasiAwalDebet > 0 ? 0 : $mutasiAwalKredit;
+                                                    $saldoAwal =  $mutasiAwalDebet > 0 ? $mutasiAwalDebet : $mutasiAwalKredit;
                                                 }else{
                                                     $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
                                                 }
