@@ -183,7 +183,7 @@
                                                 if ($item_ledger->nama_ledger == 'P E N D A P A T A N' || $item_ledger->nama_ledger == 'PASSIVA') {
                                                     $saldoAwal =  $mutasiAwalKredit - $mutasiAwalDebet;
                                                 }else{
-                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  0 : $mutasiAwalKredit;
+                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  $mutasiAwalKredit - $mutasiAwalDebet : $mutasiAwalKredit;
                                                 }
                                                 if ($item_ledger->nama_ledger == 'P E N D A P A T A N') {
                                                     $saldoAkhir = ($saldoAwal + $mutasiKredit) - $mutasiDebet;
@@ -395,7 +395,7 @@
                                                 if ($item_dua->nama_ledger == 'P E N D A P A T A N' || $item_dua->nama_ledger == 'PASSIVA') {
                                                     $saldoAwal =  $mutasiAwalKredit - $mutasiAwalDebet;
                                                 }else{
-                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  0 : $mutasiAwalKredit;
+                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  $mutasiAwalKredit - $mutasiAwalDebet : $mutasiAwalKredit;
                                                 }
                                                 // $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
 
@@ -598,7 +598,7 @@
                                                 if ($item->nama_ledger == 'P E N D A P A T A N' || $item->nama_ledger == 'PASSIVA') {
                                                     $saldoAwal =  $mutasiAwalKredit - $mutasiAwalDebet;
                                                 }else{
-                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  0 : $mutasiAwalKredit;
+                                                    $saldoAwal = $mutasiAwalDebet > 0 ?  $mutasiAwalKredit - $mutasiAwalDebet : $mutasiAwalKredit;
                                                 }
                                                 // $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
 
