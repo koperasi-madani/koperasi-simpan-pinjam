@@ -242,7 +242,7 @@
                                                                 $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
 
                                                             }
-                                                            $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+                                                             $saldoAwal = $mutasiAwalKreditPendapatan - $mutasiAwalDebetPendapatan;
 
 
                                                             $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
@@ -455,7 +455,7 @@
                                                                 $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
 
                                                             }
-                                                            $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+                                                            $saldoAwal = $mutasiAwalKreditPendapatan - $mutasiAwalDebetPendapatan;
 
 
                                                             $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
@@ -660,7 +660,7 @@
                                                                 $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
 
                                                             }
-                                                            $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+                                                             $saldoAwal = $mutasiAwalKreditPendapatan - $mutasiAwalDebetPendapatan;
 
 
                                                             $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
