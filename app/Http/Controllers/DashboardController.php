@@ -111,7 +111,7 @@ class DashboardController extends Controller
                                     $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
 
                                 }
-                                $saldoAwal = $mutasiAwalKreditPendapatan -  $mutasiAwalDebetPendapatan;
+                                $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
 
 
                                 $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
@@ -183,7 +183,7 @@ class DashboardController extends Controller
                 }
             }
         }
-        dd($totalPendapatan);
+        // dd($totalModal);
         $this->param['grafik'] =[$totalPendapatan,$totalModal,$totalSaldoAwalKreditDua];
         $this->param['tgl'] = Carbon::now()->translatedFormat('d-F-Y');
         return view('dashboard',$this->param);
