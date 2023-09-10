@@ -32,73 +32,39 @@
             setInterval(updateClock, 1000);
     </script>
         <script>
-            // Assuming your PHP $data variable is available in JavaScript
-            var transaksiData = <?php echo json_encode($data); ?>;
-
-            // Extract and aggregate the data by date
-            var dateLabels = [];
-            var totalIncomeData = [];
-            var totalExpenseData = [];
-            var currentDate = '';
-
-            transaksiData.forEach(function(item) {
-                // Extract date from the 'tgl' field
-                var date = item.tgl;
-
-                // Format date as desired, e.g., 'YYYY-MM-DD'
-                // You can use a date formatting library like moment.js for this
-                // Here, we assume the date format is already 'YYYY-MM-DD'
-
-                if (currentDate !== date) {
-                    dateLabels.push(date);
-                    currentDate = date;
-                }
-
-                // Calculate income and expense for this date
-                var income = item.jenis === 'masuk' && item.status === 'setuju' ? item.nominal : 0;
-                var expense = item.jenis === 'keluar' && item.status === 'setuju' ? item.nominal : 0;
-
-                if (totalIncomeData.length === dateLabels.length) {
-                    totalIncomeData[totalIncomeData.length - 1] += income;
-                    totalExpenseData[totalExpenseData.length - 1] += expense;
-                } else {
-                    totalIncomeData.push(income);
-                    totalExpenseData.push(expense);
-                }
-            });
-
             var ctx = document.getElementById('myChart').getContext('2d');
             var chart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: dateLabels,
+                    labels: ['Pendapatan','Pengeluaran', 'Keuntungan'],
                     datasets: [{
-                        label: 'Total Masuk',
-                        tension: 0.3,
-                        fill: true,
-                        backgroundColor: 'rgba(44, 120, 220, 0.2)',
-                        borderColor: 'rgba(44, 120, 220)',
-                        data: totalIncomeData
-                    }, {
-                        label: 'Total Keluar',
-                        tension: 0.3,
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132)',
-                        data: totalExpenseData
+                        label: 'Dalam Juta Rupiah',
+                        data: [
+                            @foreach ($grafik as $item)
+                                {{ $item }},
+                            @endforeach
+                        ], // Nilai yang diinginkan
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',  // Warna latar belakang untuk 'Pendapatan'
+                            'rgba(255, 206, 86, 0.2)',  // Warna latar belakang untuk 'Pengeluaran'
+                            'rgba(75, 205, 86, 0.2)'   // Warna latar belakang untuk 'Keuntungan'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 205, 86, 1)'
+                        ],
+                        borderWidth: 1
                     }]
                 },
                 options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                usePointStyle: true,
-                            },
+                    scales: {
+                        y: {
+                            beginAtZero: true
                         }
                     }
                 }
             });
-
         </script>
     @endpush
 
@@ -252,7 +218,7 @@
         <div class="row">
             <div class="col-xl-12 col-lg-12">
                 <div class="card mb-4">
-                    <header class="card-header"><h4 class="card-title">Grafik Keuangan</h4></header>
+                    <header class="card-header"><h4 class="card-title">Grafik Laba Rugi - {{ $tgl }}</h4></header>
                     <article class="card-body position-relative">
                         <div class="mt-4">
                             <canvas id="myChart" height="120px"></canvas>
