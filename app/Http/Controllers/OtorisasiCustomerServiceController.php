@@ -136,7 +136,7 @@ class OtorisasiCustomerServiceController extends Controller
                 $transaksi = new TransaksiManyToMany();
                 $transaksi->kode_transaksi = $this->generateKode();
                 $transaksi->id_user = auth()->user()->id;
-                $transaksi->tanggal = $request->get('tgl');
+                $transaksi->tanggal = $currentDate;
                 $transaksi->kode_akun = $item->id;
                 $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
                 $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
