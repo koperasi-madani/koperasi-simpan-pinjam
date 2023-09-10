@@ -151,7 +151,7 @@ class OtorisasiCustomerServiceController extends Controller
                 $detailTransaksi->save();
 
                 $jurnal = new Jurnal;
-                $jurnal->tanggal = $request->get('tgl');
+                $jurnal->tanggal = $currentDate;
                 $jurnal->kode_transaksi = $transaksi->kode_transaksi;
                 $jurnal->keterangan = 'tabungan';
                 $jurnal->kode_akun =$item->id;
