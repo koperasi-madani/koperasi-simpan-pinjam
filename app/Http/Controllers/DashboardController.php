@@ -183,7 +183,7 @@ class DashboardController extends Controller
                 }
             }
         }
-        // dd($totalModal);
+        dd($totalPendapatan);
         $this->param['grafik'] =[$totalPendapatan,$totalModal,$totalSaldoAwalKreditDua];
         $this->param['tgl'] = Carbon::now()->translatedFormat('d-F-Y');
         return view('dashboard',$this->param);
