@@ -111,7 +111,7 @@ class DashboardController extends Controller
                                     $mutasiKreditPendapatan += $sumMutasiKreditDiKode;
 
                                 }
-                                $saldoAwal = $mutasiAwalDebetPendapatan - $mutasiAwalKreditPendapatan;
+                                $saldoAwal = $mutasiAwalKreditPendapatan -  $mutasiAwalDebetPendapatan;
 
 
                                 $saldoAkhir = ($mutasiAwalDebetPendapatan + $mutasiDebetPendapatan) - ($mutasiAwalKreditPendapatan + $mutasiKreditPendapatan);
