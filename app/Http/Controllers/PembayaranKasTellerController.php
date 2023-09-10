@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PembayaranKasTellerController extends Controller
 {
@@ -28,12 +29,26 @@ class PembayaranKasTellerController extends Controller
                                 ->groupBy('kode_ledger.nama')
                                 ->orderBy('kode_induk.kode_induk')
                                 ->first();
+        $ledger = \App\Models\KodeAkun::select('kode_akun.*',
+                                'kode_induk.id as induk_id',
+                                'kode_induk.kode_induk',
+                                'kode_induk.nama as nama_induk','kode_induk.jenis',
+                                'kode_ledger.id as ledger_id',
+                                'kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                                ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                                // ->where('kode_induk.id_ledger',$item_induk->id)
+                                ->where('kode_akun.kode_akun','11001')
+                                ->where('kode_akun.id_induk',$item_induk->id)
+                                ->first();
+        $saldoAkhir = $this->saldoAkhir($item_induk);
 
-        return view('pages.pembayaran.index',compact('teller','kode','kode_akun','peminjaman','item_induk'));
+        return view('pages.pembayaran.index',compact('teller','kode','kode_akun','peminjaman','item_induk','saldoAkhir','ledger'));
     }
 
     public function post(Request $request)
     {
+
         $request->validate([
             'id_akun' => 'required',
             'kode_pembayaran' => 'required',
@@ -88,7 +103,81 @@ class PembayaranKasTellerController extends Controller
         }
 
     }
+    public function saldoAkhir($item_induk) {
+        $totalSaldoAwalDebet = 0;
+        $totalSaldoAwalKredit = 0;
+        $totalMutasiDebet = 0;
+        $totalMutasiKredit = 0;
+        $totalSaldoAkhirDebet = 0;
+        $totalSaldoAkhirKredit = 0;
 
+        $ledger = \App\Models\KodeAkun::select('kode_akun.*',
+                        'kode_induk.id as induk_id',
+                        'kode_induk.kode_induk',
+                        'kode_induk.nama as nama_induk','kode_induk.jenis',
+                        'kode_ledger.id as ledger_id',
+                        'kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+                        ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
+                        ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+                        // ->where('kode_induk.id_ledger',$item_induk->id)
+                        ->where('kode_akun.kode_akun','11001')
+                        ->where('kode_akun.id_induk',$item_induk->id)
+                        ->first();
+        $mutasiAwalDebet = 0;
+        $mutasiAwalKredit = 0;
+
+        $mutasiDebet = 0;
+        $mutasiKredit = 0;
+        $current_date = \Carbon\Carbon::now()->format('Y-m-d');
+
+        // cek apakah ada jurnal awal di field kode
+        $cekTransaksiAwalDiKode = \App\Models\Jurnal::where('created_at','<',$current_date)->where('kode_akun', $ledger->id)->count();
+
+        if ($cekTransaksiAwalDiKode > 0) {
+            $sumMutasiAwalDebetDiKode = DB::table('jurnal')->where('kode_akun', $ledger->id)->where('created_at','<',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+            $sumMutasiAwalKreditDiKode = DB::table('jurnal')->where('kode_akun', $ledger->id)->where('created_at','<',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+            if ($ledger->jenis == 'debit') {
+                $mutasiAwalDebet += $sumMutasiAwalDebetDiKode;
+                $mutasiAwalKredit += $sumMutasiAwalKreditDiKode;
+            }
+            else{
+                $mutasiAwalDebet += $sumMutasiAwalDebetDiKode;
+                $mutasiAwalKredit += $sumMutasiAwalKreditDiKode;
+            }
+        }
+
+        // cek transaksi di field kode
+        $cekTransaksiDiKode = \App\Models\Jurnal::where('created_at','>=',$current_date)->where('kode_akun', $ledger->id)->count();
+
+        if ($cekTransaksiDiKode > 0) {
+            $sumMutasiDebetDiKode = DB::table('jurnal')->where('kode_akun', $ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'debit')->sum('jurnal.nominal');
+
+            $sumMutasiKreditDiKode = DB::table('jurnal')->where('kode_akun', $ledger->id)->where('created_at','>=',$current_date)->where('tipe', 'kredit')->sum('jurnal.nominal');
+
+            $mutasiDebet += $sumMutasiDebetDiKode;
+            $mutasiKredit += $sumMutasiKreditDiKode;
+
+        }
+        $saldoAwal = $mutasiAwalDebet - $mutasiAwalKredit;
+
+
+        $saldoAkhir = ($mutasiAwalDebet + $mutasiDebet) - ($mutasiAwalKredit + $mutasiKredit);
+
+        $totalMutasiDebet += $mutasiDebet;
+        $totalMutasiKredit += $mutasiKredit;
+
+        if ($ledger->jenis == 'debit') {
+            $totalSaldoAwalDebet += $saldoAwal;
+            $totalSaldoAkhirDebet += $saldoAkhir;
+        }
+        else{
+            $totalSaldoAwalKredit += $saldoAwal;
+            $totalSaldoAkhirKredit += $saldoAkhir;
+        }
+        return $saldoAkhir;
+    }
     public function generate()
     {
         $nosaldo = null;
