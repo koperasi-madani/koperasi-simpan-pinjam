@@ -91,7 +91,7 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 $setor->tgl = Carbon::now();
                 $setor->nominal = $this->formatNumber($_POST['nominal'][$key]);
                 $setor->ket =  $_POST['ket'][$key];
-                $setor->jenis = $_POST['tipe'][$key] == 'Masuk' ? 'masuk' : 'keluar';
+                $setor->jenis = $_POST['tipe'][$key] == 'Masuk' ? 'keluar' : 'masuk';
                 $setor->status = $_POST['tipe'][$key];
                 $setor->id_user = Auth::user()->id;
                 if ($_POST['tipe'][$key] == 'Masuk') {

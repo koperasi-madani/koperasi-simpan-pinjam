@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class OtorisasiCustomerServiceController extends Controller
 {
@@ -131,33 +132,32 @@ class OtorisasiCustomerServiceController extends Controller
             $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
 
             $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
-
             foreach ($kode_akun_kas as $item) {
                 $transaksi = new TransaksiManyToMany();
                 $transaksi->kode_transaksi = $this->generateKode();
                 $transaksi->id_user = auth()->user()->id;
-                $transaksi->tanggal = $currentDate;
+                $transaksi->tanggal = Date::now();
                 $transaksi->kode_akun = $item->id;
                 $transaksi->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $transaksi->total = $this->formatNumber($request->get('nominal_penarikan'));
+                $transaksi->total = $penarikan->nominal;
                 $transaksi->keterangan = 'Transaksi Many To Many';
                 $transaksi->save();
 
                 $detailTransaksi = new DTransaksiManyToMany();
                 $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
                 $detailTransaksi->kode_akun = $item->id;
-                $detailTransaksi->subtotal = $this->formatNumber($request->get('nominal_penarikan'));
+                $detailTransaksi->subtotal = $penarikan->nominal;
                 $detailTransaksi->keterangan = 'tabungan';
                 $detailTransaksi->save();
 
                 $jurnal = new Jurnal;
-                $jurnal->tanggal = $currentDate;
+                $jurnal->tanggal = Date::now();
                 $jurnal->kode_transaksi = $transaksi->kode_transaksi;
                 $jurnal->keterangan = 'tabungan';
-                $jurnal->kode_akun =$item->id;
+                $jurnal->kode_akun = $item->id;
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $item->jenis == 'debit' ? 'kredit' : 'debit';
-                $jurnal->nominal = $this->formatNumber($request->get('nominal_penarikan'));
+                $jurnal->nominal = $penarikan->nominal;
                 $jurnal->id_detail = $detailTransaksi->id;
                 $jurnal->save();
             }
