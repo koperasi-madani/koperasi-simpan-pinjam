@@ -121,7 +121,9 @@ class PembukaanRekeningController extends Controller
             $buku->save();
 
              // jurnal;
-             $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+             $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
 
              $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 

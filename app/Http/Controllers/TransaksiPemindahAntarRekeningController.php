@@ -95,14 +95,18 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 $setor->status = $_POST['tipe'][$key];
                 $setor->id_user = Auth::user()->id;
                 if ($_POST['tipe'][$key] == 'Masuk') {
-                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
+                    $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                            ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                            ->where('rekening_tabungan.nasabah_id',$_POST['akun_nasabah'][$key]);
                     $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
                     $tabungan->update([
                         'saldo' => $result_saldo,
                         ]);
                 }else{
-                    $tabungan = BukuTabungan::where('id_rekening_tabungan',$_POST['akun_nasabah'][$key]);
+                    $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                            ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                            ->where('rekening_tabungan.nasabah_id',$_POST['akun_nasabah'][$key]);
                     $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo = $this->formatNumber($_POST['nominal'][$key]) + $saldo_akhir;
 
