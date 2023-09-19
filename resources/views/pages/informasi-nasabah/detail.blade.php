@@ -95,7 +95,7 @@
                                             'users.kode_user'
                                             )
                                             ->join(
-                                                'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_nasabah'
+                                                'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
                                             )->join(
                                                 'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                             )
@@ -108,7 +108,7 @@
                                             ->where(
                                                 'rekening_tabungan.nasabah_id',$data->nasabah_id
                                             );
-                                    if (Auth::user()->hasRole('akuntansi')){
+                                    if (Auth::user()->hasRole('akuntansi ')){
                                         $data_tabungan = $query->get();
                                     }else{
                                         $data_tabungan = $query->where(

@@ -37,7 +37,6 @@ class SetorTunaiController extends Controller
                                 ->where('nasabah.status','aktif')
                                 ->get();
 
-
         /* generate no setoran  */
         $noSetoran = null;
         $setoran = TransaksiTabungan::where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
@@ -124,7 +123,9 @@ class SetorTunaiController extends Controller
 
 
             if (count($cek_setor) > 0) {
-                $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
+                $tabungan =BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
                 $result_saldo = $setor->nominal + $saldo_akhir;
 
@@ -136,7 +137,9 @@ class SetorTunaiController extends Controller
                 $pembayaran->update();
                 $setor->saldo = $result_saldo;
             }else{
-                $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
+                $tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                        ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                        ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
                 $saldo_awal = $tabungan->first()->saldo;
                 $result_saldo = $saldo_awal + $setor->nominal;
 
@@ -150,7 +153,9 @@ class SetorTunaiController extends Controller
                 $setor->saldo = $result_saldo;
             }
                 // jurnal;
-                $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+                $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
 
                 $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
@@ -199,8 +204,10 @@ class SetorTunaiController extends Controller
             // return response()->route(['transaction' => $transaction]);
 
         } catch (Exception $e) {
+            return $e;
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            return $e;
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         }
     }
@@ -248,7 +255,9 @@ class SetorTunaiController extends Controller
                 $setor->nominal = $this->formatNumber($request->get('nominal_setor'));
                 // update saldo tabungan jika ada perubahan data
                 $rekening = TransaksiTabungan::find($id);
-                $tabungan = BukuTabungan::where('id_rekening_tabungan',$rekening->id_nasabah);
+                $tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
                 $current_tabungan = $tabungan->first()->saldo;
                 $current_saldo = $current_tabungan - $rekening->nominal;
                 // update penerimaan
@@ -292,7 +301,9 @@ class SetorTunaiController extends Controller
         try{
             $setor = TransaksiTabungan::find($id);
             $rekening = TransaksiTabungan::find($id);
-            $tabungan = BukuTabungan::where('id_rekening_tabungan',$rekening->id_nasabah);
+            $tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                        ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                        ->where('rekening_tabungan.nasabah_id',$setor->id_nasabah);
             $current_tabungan = $tabungan->first()->saldo;
             $current_saldo = $current_tabungan - $rekening->nominal;
             $tabungan->update([

@@ -140,7 +140,7 @@
                                             <label for="product_name" class="form-label">Kode Rekening</label>
                                             <select name="id_nasabah" id="id_nasabah" class="form-control">
                                                 @foreach ($data as $item)
-                                                    <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
+                                                    <option value="{{ $item->nasabah_id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
                                                 @endforeach
                                             </select>
                                             @error('id_nasabah')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PembukaanRekening;
 use App\Models\Penarikan;
 use App\Models\Setoran;
+use App\Models\TransaksiTabungan;
 use Illuminate\Http\Request;
 
 class InformasiNasabahTellerController extends Controller

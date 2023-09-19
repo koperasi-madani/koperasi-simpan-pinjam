@@ -79,7 +79,9 @@ class PenarikanController extends Controller
     public function cekTabungan(Request $request)
     {
         try{
-            $data = BukuTabungan::where('id_rekening_tabungan',$request->get('id'))->first()->saldo;
+            $data = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                ->where('rekening_tabungan.nasabah_id',$request->get('id'))->first()->saldo;
             return $data;
 
         } catch (Exception $e) {
@@ -115,7 +117,9 @@ class PenarikanController extends Controller
         if ($this->formatNumber($request->get('nominal_penarikan')) < 20000) {
             return redirect()->route('penarikan.index')->withError('Maaf batas penarikan sebesar Rp. 20.000');
         }
-        $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
+        $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
         $saldo_akhir = $tabungan->first()->saldo;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
@@ -158,7 +162,9 @@ class PenarikanController extends Controller
             if ($this->formatNumber($request->get('nominal_penarikan')) > 1000000) {
                 $penarikan->status = 'pending';
             }else{
-                $tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'));
+                $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                        ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                        ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
                 $saldo_akhir = $tabungan->first()->saldo;
                 $result_saldo =  $saldo_akhir - $penarikan->nominal;
                 if ($result_saldo < 20000 ) {
@@ -193,7 +199,9 @@ class PenarikanController extends Controller
                 }
 
                 $penarikan->status = 'setuju';
-                $kode_akun_tabungan = BukuTabungan::where('id_rekening_tabungan',$request->get('id_nasabah'))->first()->id_kode_akun;
+                $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
 
                 $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
@@ -293,7 +301,9 @@ class PenarikanController extends Controller
         ]);
 
         $penarikan = TransaksiTabungan::find($id);
-        $tabungan = BukuTabungan::where('id_rekening_tabungan',$penarikan->id_nasabah);
+        $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah);
         $saldo_akhir = $tabungan->first()->saldo + $penarikan->nominal;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
@@ -308,7 +318,9 @@ class PenarikanController extends Controller
             if ($this->formatNumber($request->get('nominal_penarikan')) > 1000000) {
                 $penarikan->status = 'pending';
             }else{
-                $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_nasabah);
+                $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah);
 
                 // update penerimaan
                 $currentDate = Carbon::now()->toDateString();
@@ -342,7 +354,9 @@ class PenarikanController extends Controller
     {
         try{
             $penarikan = TransaksiTabungan::find($id);
-            $tabungan = BukuTabungan::where('id_rekening_tabungan', $penarikan->id_nasabah);
+            $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+            ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+            ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah);
             $saldo_akhir = $tabungan->first()->saldo;
             $result_saldo =  $saldo_akhir + $penarikan->nominal;
             $tabungan->update([

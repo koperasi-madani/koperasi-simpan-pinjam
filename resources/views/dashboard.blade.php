@@ -33,28 +33,53 @@
     </script>
         <script>
             var ctx = document.getElementById('myChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
+            var ctxPerbulan = document.getElementById('myChartPerbulan').getContext('2d');
+            var chartPerbulan = new Chart(ctxPerbulan, {
+                type: 'line',
                 data: {
-                    labels: ['Pendapatan','Pengeluaran', 'Keuntungan'],
+                    labels: [
+                        @foreach ($grafik_perbulan as $key => $value )
+                            `{{ $key }}`,
+                        @endforeach
+                    ],
                     datasets: [{
-                        label: 'Dalam Juta Rupiah',
+                        label: 'Laba Rugi Perbulan',
                         data: [
-                            @foreach ($grafik as $item)
-                                {{ $item }},
-                            @endforeach
-                        ], // Nilai yang diinginkan
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',  // Warna latar belakang untuk 'Pendapatan'
-                            'rgba(255, 206, 86, 0.2)',  // Warna latar belakang untuk 'Pengeluaran'
-                            'rgba(75, 205, 86, 0.2)'   // Warna latar belakang untuk 'Keuntungan'
+                            @foreach ($grafik_perbulan as $key => $value )
+                            {{ $value }},
+                        @endforeach
                         ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 205, 86, 1)'
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        @foreach ($grafik_perhari as $key => $value )
+                            `{{ $key }}`,
+                        @endforeach
+                    ],
+                    datasets: [{
+                        label: 'Laba Rugi Perhari',
+                        data: [
+                            @foreach ($grafik_perhari as $key => $value )
+                            {{ $value }},
+                        @endforeach
                         ],
-                        borderWidth: 1
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
                     }]
                 },
                 options: {
@@ -217,14 +242,47 @@
         </div>
         <div class="row">
             <div class="col-xl-12 col-lg-12">
-                <div class="card mb-4">
-                    <header class="card-header"><h4 class="card-title">Grafik Laba Rugi - {{ $tgl }}</h4></header>
-                    <article class="card-body position-relative">
-                        <div class="mt-4">
-                            <canvas id="myChart" height="120px"></canvas>
-                        </div>
-                    </article>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Grafik Laba Rugi Perhari</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Grafik Laba Rugi Perbulan</button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                <div class="card mb-4">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <header class="card-header">
+                                <h4>Grafik Laba Rugi Perhari</h4>
+                            </header>
+                            <div class="card-body">
+                                <article class="card-body position-relative">
+                                    <div class="mt-4">
+                                        <canvas id="myChart" height="120px"></canvas>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
+                            <header class="card-header">
+                                <h4>Grafik Laba Rugi Perbulan</h4>
+                            </header>
+                            <div class="card-body">
+                                <article class="card-body position-relative">
+                                    <div class="mt-4">
+                                        <canvas id="myChartPerbulan" height="120px"></canvas>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 

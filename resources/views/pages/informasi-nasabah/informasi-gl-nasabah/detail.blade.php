@@ -95,7 +95,7 @@
                                             'users.kode_user'
                                             )
                                             ->join(
-                                                'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_nasabah'
+                                                'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
                                             )->join(
                                                 'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                             )
