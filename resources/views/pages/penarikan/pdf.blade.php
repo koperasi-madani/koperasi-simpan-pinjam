@@ -126,7 +126,8 @@
         // Mendeteksi setelah cetak
         window.onafterprint = function() {
             // Kembali ke halaman sebelumnya
-            window.history.back();
+            // window.history.back();
+            window.location.href = "{{ route('after-print.penarikan') }}";
         }
     }
 </script>

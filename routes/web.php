@@ -50,6 +50,12 @@ Route::get('test',[CadanganBukuController::class,'cadapenerimaan-kas-tellerngSuk
 Route::get('tampilan', function () {
     return view('pages.setor-tunai.pdf');
 });
+Route::get('/after-print', function() {
+    return redirect()->route('setor-tunai.index')->withStatus('Berhasil Mencetak Struk.');;
+})->name('after-print');
+Route::get('/after-print/penarikan', function() {
+    return redirect()->route('penarikan.index')->withStatus('Berhasil Mencetak Struk.');;
+})->name('after-print.penarikan');
 // cek tabungan
 Route::get('penarikan/cek',[PenarikanController::class,'cekTabungan'])->name('cek.tabungan');
 
@@ -124,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
                 // setor tunai
                 Route::get('setor-tunai/pdf/{id}',[SetorTunaiController::class,'pdf'])->name('setor-tunai.pdf');
                 Route::resource('setor-tunai', SetorTunaiController::class);
+
                 // Penarikan
                 Route::get('penarikan/pdf/{id}',[PenarikanController::class,'pdf'])->name('penarikan.pdf');
                 Route::resource('penarikan',PenarikanController::class);

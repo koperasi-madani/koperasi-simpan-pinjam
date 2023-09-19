@@ -126,7 +126,9 @@
         // Mendeteksi setelah cetak
         window.onafterprint = function() {
             // Kembali ke halaman sebelumnya
-            window.history.back();
+            // window.history.back();
+             // Redirect to the specific Laravel route after printing
+             window.location.href = "{{ route('after-print') }}";
         }
     }
 </script>
