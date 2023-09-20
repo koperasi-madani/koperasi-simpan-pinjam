@@ -8,6 +8,13 @@
 
     <title>Document</title>
     <style>
+        .btn{
+            padding: 10px;
+            background-color: #219ebc;
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+        }
          /* Styles khusus untuk tampilan cetak */
         @media print {
             /* Ukuran kertas dan orientasi */
@@ -43,11 +50,18 @@
             .struk p {
                 margin: 3px 0;
             }
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
         }
 
     </style>
 </head>
 <body>
+    <center style="padding: 20px">
+        <a href="{{ route('after-print') }}" class="btn btn-primary btn-icon-text no-print"><i class="ti-angle-left btn-icon-prepend"></i> Kembali</a>
+    </center>
     <div class="struk">
         <h3 style="text-align: center">KOPERASI MADANI</h3>
         <p style="text-align: center; font-size: 10px;">Desa Ledoktempuro, Kec. Randuagung, Kab. Lumajang.</p>
@@ -128,7 +142,7 @@
             // Kembali ke halaman sebelumnya
             // window.history.back();
              // Redirect to the specific Laravel route after printing
-             window.location.href = "{{ route('after-print') }}";
+            //  window.location.href = "{{ route('after-print') }}";
         }
     }
 </script>

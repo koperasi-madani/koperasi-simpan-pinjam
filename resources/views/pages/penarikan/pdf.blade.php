@@ -9,6 +9,13 @@
     <title>Document</title>
     <style>
          /* Styles khusus untuk tampilan cetak */
+         .btn{
+            padding: 10px;
+            background-color: #219ebc;
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+         }
         @media print {
             /* Ukuran kertas dan orientasi */
             @page {
@@ -43,11 +50,19 @@
             .struk p {
                 margin: 3px 0;
             }
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+
         }
 
     </style>
 </head>
 <body>
+    <center style="padding: 20px">
+        <a href="{{ route('after-print.penarikan') }}" class="btn btn-primary btn-icon-text no-print"><i class="ti-angle-left btn-icon-prepend"></i> Kembali</a>
+    </center>
     <div class="struk">
         <h3 style="text-align: center">KOPERASI MADANI</h3>
         <p style="text-align: center; font-size: 10px;">Desa Ledoktempuro, Kec. Randuagung, Kab. Lumajang.</p>
@@ -127,7 +142,7 @@
         window.onafterprint = function() {
             // Kembali ke halaman sebelumnya
             // window.history.back();
-            window.location.href = "{{ route('after-print.penarikan') }}";
+            // window.location.href = "{{ route('after-print.penarikan') }}";
         }
     }
 </script>
