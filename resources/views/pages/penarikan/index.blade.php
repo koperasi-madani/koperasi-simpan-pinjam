@@ -326,7 +326,12 @@
                                             <td><b>{{ $item->kode_user }}</b></td>
                                             <td>
                                                 @if ($item->status == 'setuju')
-                                                    <span class="badge rounded-pill alert-success">Disetujui</span>
+                                                    <div class="d-flex flex-row">
+                                                        <span class="badge rounded-pill alert-success mb-3">Disetujui</span>
+                                                        <div class="mx-2">
+                                                            <a href="{{ route('penarikan.pdf',$item->id) }}" class="badge rounded-pill alert-primary d-flex flex-row"> <i class="icon material-icons md-assignment mr-2" style="font-size: 14px"></i>Cetak Struk</a>
+                                                        </div>
+                                                    </div>
                                                 @elseif ($item->status == 'pending')
                                                     <span class="badge rounded-pill alert-warning">Menunggu Persetujuan</span>
                                                 @else

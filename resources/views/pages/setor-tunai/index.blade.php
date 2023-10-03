@@ -231,6 +231,8 @@
                                         <th scope="col">Tanggal</th>
                                         <th scope="col">Keterangan</th>
                                         <th scope="col">Validasi</th>
+                                        <th scope="col">Aksi</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -246,6 +248,7 @@
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
                                             <td><b>{{ $item->ket }}</b></td>
                                             <td><b>{{ $item->kode_user }}</b></td>
+                                            <td><b><a href="{{ route('setor-tunai.pdf',$item->id) }}" class="btn btn-sm font-sm btn-light rounded"> <i class="icon material-icons md-assignment mr-2" style="font-size: 14px"></i>Cetak Struk</a></b></td>
                                         </tr>
                                     @empty
                                         <tr>

@@ -37,7 +37,6 @@ class PenarikanController extends Controller
                 'nasabah.nama'
             )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->where('nasabah.status','aktif')->get();
 
-
         /* generate no penarikan  */
         $noPenarikan = null;
         $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
