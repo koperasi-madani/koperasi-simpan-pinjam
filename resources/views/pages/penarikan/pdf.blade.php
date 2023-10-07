@@ -105,7 +105,7 @@
                             <td style="font-size: 13px">{{ $data->nasabah->nama }}</td>
                         </tr>
                         <tr>
-                            <td width="35%" style="font-size: 13px">NO ANGGOTA</td>
+                            <td width="35%" style="font-size: 13px">NO REKENING</td>
                             <td width="1%">:</td>
                             <td style="font-size: 13px">{{ $tabungan->no_rekening }}</td>
                         </tr>
