@@ -27,6 +27,7 @@ class PenarikanController extends Controller
      */
     public function index()
     {
+
         $data = PembukaanRekening::select(
                 'rekening_tabungan.id',
                 'rekening_tabungan.nasabah_id',
@@ -40,18 +41,22 @@ class PenarikanController extends Controller
         /* generate no penarikan  */
         $noPenarikan = null;
         $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
-
+        $date = Carbon::now()->format('dmy');
         if($penarikan->count() > 0) {
-            $noPenarikan = $penarikan[0]->kode;
+            // Mengambil bagian kode yang merepresentasikan nomor urutan
+            $lastIncrement = (int) substr($penarikan[0]->kode, -5);
 
-            $lastIncrement = substr($noPenarikan, 7);
-            $noPenarikan = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
-            $noPenarikan = 'TRK'.$noPenarikan;
+            // Menaikkan nomor urutan
+            $nextIncrement = $lastIncrement + 1;
+
+            // Memastikan nomor urutan selalu memiliki 5 digit
+            $formattedIncrement = str_pad($nextIncrement, 5, "0", STR_PAD_LEFT);
         }
         else {
-            $noPenarikan = 'TRK'."00001";
+            $formattedIncrement = "00001";
 
         }
+        $noPenarikan = 'TRK' . $date . $formattedIncrement;
 
         $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
                                 'rekening_tabungan.nasabah_id',

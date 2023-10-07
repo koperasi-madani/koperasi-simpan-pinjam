@@ -29,7 +29,7 @@
 
         <div class="card mb-4">
             <header class="card-header">
-                <h4>List Nasabah</h4>
+                <h4>List Anggota</h4>
             </header>
             <div class="card-body">
                 <div class="table-responsive">

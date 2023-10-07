@@ -27,14 +27,14 @@
         <div class="card mb-4">
             <div class="tab-content" id="myTabContent">
                 <header class="card-header">
-                    <h4>List Informasi Nasabah</h4>
+                    <h4>List Informasi Anggota</h4>
                 </header>
                 <div class="card-body">
                     <table class="table table-hover" id="example">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th scope="col">Nama Nasabah</th>
+                                <th scope="col">Nama Anggota</th>
                                 <th scope="col">No Rekening</th>
                                 <th scope="col">Saldo</th>
                                 <th scope="col">Keterangan</th>

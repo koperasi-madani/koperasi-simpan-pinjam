@@ -15,7 +15,7 @@
         <span class="text ">Informasi Pinjaman</span>
     </a>
     <div class="submenu">
-        <a href="{{ route('informasi.nasabah.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+        <a href="{{ route('informasi.nasabah.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-anggota' ? 'active' : '' }}">Informasi Data Anggota</a>
         <a href="{{ route('informasi.rekening.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
     </div>
 </li>

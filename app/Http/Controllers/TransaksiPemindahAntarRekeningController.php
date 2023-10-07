@@ -182,40 +182,43 @@ class TransaksiPemindahAntarRekeningController extends Controller
     }
 
     function generateTransaksiPenarikan() {
-        $noPenarikan = null;
         $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
-        // Cek antaran TRK sama TF
-        // setoran = STF
-        // Penarikan = TTF
+        $date = Carbon::now()->format('dmy');
         if($penarikan->count() > 0) {
-            $noPenarikan = $penarikan[0]->kode;
-            $lastIncrement = (int) substr($noPenarikan, -5);
-            $noPenarikan = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
-            return $noPenarikan = 'TTF'.$noPenarikan;
+            // Mengambil bagian kode yang merepresentasikan nomor urutan
+            $lastIncrement = (int) substr($penarikan[0]->kode, -5);
+
+            // Menaikkan nomor urutan
+            $nextIncrement = $lastIncrement + 1;
+
+            // Memastikan nomor urutan selalu memiliki 5 digit
+            $formattedIncrement = str_pad($nextIncrement, 5, "0", STR_PAD_LEFT);
         }
         else {
-            return $noPenarikan = 'TTF'."00001";
+            $formattedIncrement = "00001";
 
         }
+        return 'TTF' . $date . $formattedIncrement;
+
     }
     function generateTransaksiSetoran() {
-        $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','masuk')->get();
+        $date = Carbon::now()->format('dmy');
+        $setoran = TransaksiTabungan::where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
+        if($setoran->count() > 0) {
+            // Mengambil bagian kode yang merepresentasikan nomor urutan
+            $lastIncrement = (int) substr($setoran[0]->kode, -5);
 
-        // Prefix untuk penarikan seharusnya TTF, bukan STF, berdasarkan komentar Anda
-        $prefix = 'STF';
+            // Menaikkan nomor urutan
+            $nextIncrement = $lastIncrement + 1;
 
-        if($penarikan->count() > 0) {
-            $noPenarikan = $penarikan[0]->kode;
-
-            // Ambil 5 karakter terakhir dari kode untuk mendapatkan nomor urut
-            $lastIncrement = (int) substr($noPenarikan, -5);
-
-            // Increment nomor urut dan pad dengan 0 di depannya sehingga memiliki panjang 5 digit
-            $nextIncrement = str_pad($lastIncrement + 1, 5, '0', STR_PAD_LEFT);
-
-            return $prefix . $nextIncrement;
-        } else {
-            return $prefix . "00001";
+            // Memastikan nomor urutan selalu memiliki 5 digit
+            $formattedIncrement = str_pad($nextIncrement, 5, "0", STR_PAD_LEFT);
         }
+        else {
+            $formattedIncrement = "00001";
+
+        }
+        return 'STF' . $date . $formattedIncrement;
+
     }
 }

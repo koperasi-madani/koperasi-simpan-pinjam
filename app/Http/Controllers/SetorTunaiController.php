@@ -39,20 +39,23 @@ class SetorTunaiController extends Controller
 
         /* generate no setoran  */
         $noSetoran = null;
+        $date = Carbon::now()->format('dmy');
         $setoran = TransaksiTabungan::where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
-
         if($setoran->count() > 0) {
-            $noSetoran = $setoran[0]->kode;
+            // Mengambil bagian kode yang merepresentasikan nomor urutan
+            $lastIncrement = (int) substr($setoran[0]->kode, -5);
 
-            $lastIncrement = substr($noSetoran, 6);
+            // Menaikkan nomor urutan
+            $nextIncrement = $lastIncrement + 1;
 
-            $noSetoran = str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
-            $noSetoran = 'STR'.$noSetoran;
+            // Memastikan nomor urutan selalu memiliki 5 digit
+            $formattedIncrement = str_pad($nextIncrement, 5, "0", STR_PAD_LEFT);
         }
         else {
-            $noSetoran = 'STR'."00001";
+            $formattedIncrement = "00001";
 
         }
+        $noSetoran = 'STR' . $date . $formattedIncrement;
 
         $setoran = TransaksiTabungan::select('transaksi_tabungan.*',
                                     'rekening_tabungan.nasabah_id',

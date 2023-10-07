@@ -4,7 +4,7 @@
         <span class="text ">Transaksi Customer Service</span>
     </a>
     <div class="submenu">
-        <a href="{{ route('nasabah.index') }}" class="{{ Request::segment(3) == 'nasabah' ? 'active' : '' }}">Pembukaan Nasabah Baru</a>
+        <a href="{{ route('nasabah.index') }}" class="{{ Request::segment(3) == 'nasabah' ? 'active' : '' }}">Pembukaan Anggota Baru</a>
         <a href="{{ route('pembukaan-rekening.index') }}" class="{{ Request::segment(3) == 'pembukaan-rekening' ? 'active' : '' }}">Pembukaan Rekening Baru</a>
         <a href="{{ route('perubahan-data-administrasi.index') }}" class="{{ Request::segment(3) == 'perubahan-data-administrasi' ? 'active' : '' }}">Perubahan Data Administrasi</a>
         <a href="{{ route('pemblokiran.saldo-retail') }}" class="{{ Request::segment(3) == 'pemblokiran-saldo-retail' ? 'active' : '' }}">Pemblokiran Saldo Retail</a>
@@ -17,7 +17,7 @@
         <span class="text ">Informasi Customer Service</span>
     </a>
     <div class="submenu">
-        <a href="{{ route('customer.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+        <a href="{{ route('customer.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-anggota' ? 'active' : '' }}">Informasi Data Anggota</a>
         <a href="{{ route('informasi.rekening') }}" class="{{ Request::segment(3) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
     </div>
 </li>

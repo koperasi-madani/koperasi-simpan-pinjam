@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class NasabahController extends Controller
 {
@@ -60,13 +61,13 @@ class NasabahController extends Controller
         ]);
         try {
             $anggota = new NasabahModel;
-            $anggota->no_anggota = $request->get('no_anggota');
-            $anggota->nama = $request->get('nama');
-            $anggota->nik = $request->get('nik');
+            $anggota->no_anggota = Str::upper($request->get('no_anggota'));
+            $anggota->nama = Str::upper($request->get('nama'));
+            $anggota->nik = Str::upper($request->get('nik'));
             $anggota->no_hp = $request->get('no_hp');
             $anggota->alamat = $request->get('ket');
             $anggota->tgl = $request->get('tgl');
-            $anggota->pekerjaan = $request->get('pekerjaan');
+            $anggota->pekerjaan = Str::upper($request->get('pekerjaan'));
             $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->save();
@@ -112,11 +113,11 @@ class NasabahController extends Controller
         ]);
         try {
             $anggota = NasabahModel::findOrFail($id);
-            $anggota->nama = $request->get('nama');
-            $anggota->nik = $request->get('nik');
+            $anggota->no_anggota = Str::upper($request->get('no_anggota'));
+            $anggota->nama = Str::upper($request->get('nama'));
+            $anggota->nik = Str::upper($request->get('nik'));
+            $anggota->pekerjaan = Str::upper($request->get('pekerjaan'));
             $anggota->no_hp = $request->get('no_hp');
-            $anggota->alamat = $request->get('ket');
-            $anggota->pekerjaan = $request->get('pekerjaan');
             $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->update();

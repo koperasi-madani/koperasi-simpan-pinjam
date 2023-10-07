@@ -61,7 +61,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th scope="col">Nama Nasabah</th>
+                            <th scope="col">Nama Anggota</th>
                             <th scope="col">No Rekening</th>
                             <th scope="col">Saldo</th>
                             <th scope="col">Tanggal</th>

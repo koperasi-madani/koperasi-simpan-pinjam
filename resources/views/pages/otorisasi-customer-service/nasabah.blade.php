@@ -57,7 +57,7 @@
 
         <div class="card mb-4">
             <header class="card-header">
-                <h4>List Nasabah</h4>
+                <h4>List Anggota</h4>
             </header>
             <div class="card-body">
                 <div class="table-responsive">
@@ -66,7 +66,7 @@
                             <tr>
                                 <th>No</th>
                                 <th scope="col">NIK</th>
-                                <th scope="col">Nama Nasabah</th>
+                                <th scope="col">Nama Anggota</th>
                                 <th scope="col">Jenis Kelamin</th>
                                 <th scope="col">Pekerjaan</th>
                                 <th scope="col">Alamat</th>
@@ -129,7 +129,7 @@
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel" hidden>Ganti Status Nasabah</h5>
+                <h5 class="modal-title" id="exampleModalLabel" hidden>Ganti Status Anggota</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

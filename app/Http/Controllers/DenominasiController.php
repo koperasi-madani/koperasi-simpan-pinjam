@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DenominasiController extends Controller
 {
@@ -30,7 +31,10 @@ class DenominasiController extends Controller
                     ->whereDate('created_at','=',$currentDate)
                     ->sum('total');
 
-        $nominal_denominasi = Denominasi::whereDate('denominasi.created_at','=',$currentDate)
+        $nominal_denominasi = Denominasi::
+                            select('denominasi.*',DB::raw('SUM(total) as total_sum'))
+                            ->whereDate('denominasi.created_at','=',$currentDate)
+                            ->groupBy('id_user')
                             ->get();
 
         return view('pages.informasi-head-teller.informasi-denominasi',compact('pembayaran','denominasi','data_pembayaran','nominal_denominasi'));

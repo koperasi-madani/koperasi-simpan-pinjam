@@ -92,16 +92,16 @@ Route::middleware(['auth'])->group(function () {
         });
         // informasi customer service
         Route::prefix('informasi-customer-service')->group(function () {
-            Route::get('informasi-data-nasabah',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('customer.informasi.nasabah');
+            Route::get('informasi-data-anggota',[InformasiCustomerServiceController::class,'informasiNasabah'])->name('customer.informasi.nasabah');
             Route::get('informasi-data-rekening',[InformasiCustomerServiceController::class,'informasiRekening'])->name('informasi.rekening');
 
         });
         // otorisasi customer service
         Route::prefix('otorisasi-customer-service')->group(function () {
             // otorisasi data nasabah
-            Route::post('otorisasi-data-nasabah/ganti-status/post',[OtorisasiCustomerServiceController::class,'postNasabah'])->name('otorisasi.post.nasabah');
-            Route::get('otorisasi-data-nasabah/ganti-status',[OtorisasiCustomerServiceController::class,'getNasabah'])->name('otorisasi.get.nasabah');
-            Route::get('otorisasi-data-nasabah',[OtorisasiCustomerServiceController::class,'nasabah'])->name('otorisasi.nasabah');
+            Route::post('otorisasi-data-anggota/ganti-status/post',[OtorisasiCustomerServiceController::class,'postNasabah'])->name('otorisasi.post.nasabah');
+            Route::get('otorisasi-data-anggota/ganti-status',[OtorisasiCustomerServiceController::class,'getNasabah'])->name('otorisasi.get.nasabah');
+            Route::get('otorisasi-data-anggota',[OtorisasiCustomerServiceController::class,'nasabah'])->name('otorisasi.nasabah');
             // otorisasi rekening
             Route::post('otorisasi-data-rekening/ganti-status/post',[OtorisasiCustomerServiceController::class,'postRekening'])->name('otorisasi.post.rekening');
             Route::get('otorisasi-data-rekening/ganti-status',[OtorisasiCustomerServiceController::class,'getRekening'])->name('otorisasi.get.rekening');
@@ -143,9 +143,9 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('penerimaan-kas-teller/post',[PenerimaanKasTellerController::class,'post'])->name('penerimaan.kas-teller.post');
                 Route::get('penerimaan-kas-teller',[PenerimaanKasTellerController::class,'index'])->name('penerimaan.kas-teller');
                 // informasi nasabah
-                Route::get('informasi-tabungan-nasabah/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
-                Route::get('informasi-tabungan-nasabah/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
-                Route::get('informasi-tabungan-nasabah',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
+                Route::get('informasi-tabungan-anggota/{id}',[InformasiNasabahTellerController::class,'informasiNasabahDetail'])->name('teller.informasi.nasabah-detail');
+                Route::get('informasi-tabungan-anggota/penarikan/{id}',[InformasiNasabahTellerController::class,'detailPenarikan'])->name('teller.informasi.nasabah-penarikan');
+                Route::get('informasi-tabungan-anggota',[InformasiNasabahTellerController::class,'informasiNasabah'])->name('teller.informasi.nasabah');
             });
         });
         // informasi head teller
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
             // saldo teller
             Route::get('saldo-teller',[InformasiHeadTellerController::class,'informasiSaldoTeller'])->name('informasi.saldo-teller');
             // informasi tabungan nasabah
-            Route::get('informasi-tabungan-nasabah',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
+            Route::get('informasi-tabungan-anggota',[InformasiHeadTellerController::class,'informasiNasabah'])->name('informasi.nasabah');
             // denominasi
             Route::post('informasi-denominasi/post',[DenominasiController::class,'post'])->name('informasi.denominasi.post');
             Route::get('informasi-denominasi',[DenominasiController::class,'index'])->name('informasi.denominasi');
@@ -229,8 +229,8 @@ Route::middleware(['auth'])->group(function () {
                 return view('tampilan');
             })->name('melihat.data.rekening.tabungan');
             // informasi tabungan
-            Route::get('informasi-tabungan-nasabah/{id}',[InformasiGLController::class,'informasiNasabahDetail'])->name('informasi-gl.informasi.nasabah-detail');
-            Route::get('informasi-tabungan-nasabah',[InformasiGLController::class,'informasiNasabah'])->name('informasi-gl.informasi.nasabah');
+            Route::get('informasi-tabungan-anggota/{id}',[InformasiGLController::class,'informasiNasabahDetail'])->name('informasi-gl.informasi.nasabah-detail');
+            Route::get('informasi-tabungan-anggota',[InformasiGLController::class,'informasiNasabah'])->name('informasi-gl.informasi.nasabah');
 
         });
         //laporan

@@ -134,7 +134,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Nama Nasabah</label>
+                                            <label for="product_name" class="form-label">Nama Anggota</label>
                                             <select name="id_nasabah" id="id_nasabah" class="form-control">
                                                 @foreach ($nasabah as $item)
                                                     <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_anggota }}--{{ $item->nama }}</option>
@@ -252,7 +252,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th scope="col">Nama Nasabah</th>
+                                        <th scope="col">Nama Anggota</th>
                                         <th scope="col">No Rekening</th>
                                         <th scope="col">Saldo Awal</th>
                                         <th scope="col">Tanggal</th>

@@ -27,10 +27,10 @@
             <div class="col-xl-12 col-lg-12">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Setor Tunai Nasabah</button>
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Setor Tunai Anggota</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Penarikan Nasabah</button>
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Penarikan Anggota</button>
                     </li>
                 </ul>
             </div>
@@ -39,14 +39,14 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <header class="card-header">
-                        <h4>List Setor Nasabah</h4>
+                        <h4>List Setor Anggota</h4>
                     </header>
                     <div class="card-body">
                         <table class="table table-hover" id="example">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th scope="col">Nama Nasabah</th>
+                                    <th scope="col">Nama Anggota</th>
                                     <th scope="col">No Rekening</th>
                                     <th scope="col">Nominal Setoran </th>
                                     <th scope="col">Keterangan</th>
@@ -82,14 +82,14 @@
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="home-tab">
                     <header class="card-header">
-                        <h4>List Penarikan Nasabah</h4>
+                        <h4>List Penarikan Anggota</h4>
                     </header>
                     <div class="card-body">
                         <table class="table table-hover" id="example">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th scope="col">Nama Nasabah</th>
+                                    <th scope="col">Nama Anggota</th>
                                     <th scope="col">No Rekening</th>
                                     <th scope="col">Nominal Penarikan </th>
                                     <th scope="col">Keterangan</th>

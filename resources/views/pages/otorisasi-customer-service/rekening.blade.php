@@ -75,7 +75,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <header class="card-header">
-                        <h4>List Nasabah</h4>
+                        <h4>List Anggota</h4>
                     </header>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -83,7 +83,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th scope="col">Nama Nasabah</th>
+                                        <th scope="col">Nama Anggota</th>
                                         <th scope="col">No Rekening</th>
                                         <th scope="col">Nominal Penarikan </th>
                                         <th scope="col">Keterangan</th>

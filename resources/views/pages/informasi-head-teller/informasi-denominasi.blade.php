@@ -272,7 +272,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
-                                            <td>Rp {{ number_format($item->total,2, ",", ".") }}</td>
+                                            <td>Rp {{ number_format($item->total_sum,2, ",", ".") }}</td>
                                             <td>{{ ucwords($item->status_akun) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('H:i:s') }}</td>
                                         </tr>

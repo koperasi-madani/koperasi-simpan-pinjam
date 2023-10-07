@@ -44,7 +44,7 @@
                                         <td >{{ $data->no_rekening }}</td>
                                     </tr>
                                     <tr>
-                                        <td width="20%">Nama Nasabah</td>
+                                        <td width="20%">Nama Anggota</td>
                                         <td width="1%">:</td>
                                         <td >{{ $data->nama_nasabah }}</td>
                                     </tr>

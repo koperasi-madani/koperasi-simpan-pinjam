@@ -35,7 +35,7 @@
 
         <div class="card mb-4">
             <header class="card-header">
-                <h4>List Nasabah</h4>
+                <h4>List Anggota</h4>
             </header>
             <div class="card-body">
                 <div class="table-responsive">
@@ -44,7 +44,7 @@
                             <tr>
                                 <th>No</th>
                                 <th scope="col">NIK</th>
-                                <th scope="col">Nama Nasabah</th>
+                                <th scope="col">Nama Anggota</th>
                                 <th scope="col">Jenis Kelamin</th>
                                 <th scope="col">Pekerjaan</th>
                                 <th scope="col">Alamat</th>

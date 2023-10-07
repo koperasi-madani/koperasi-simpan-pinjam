@@ -5,7 +5,7 @@
         <span class="text ">Informasi Customer Service</span>
     </a>
     <div class="submenu">
-        <a href="{{ route('customer.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+        <a href="{{ route('customer.informasi.nasabah') }}" class="{{ Request::segment(3) == 'informasi-data-anggota' ? 'active' : '' }}">Informasi Data Anggota</a>
         <a href="{{ route('informasi.rekening') }}" class="{{ Request::segment(3) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
     </div>
 </li>
@@ -26,7 +26,7 @@
         <span class="text ">Otorisasi</span>
     </a>
     <div class="submenu">
-        <a href="{{ route('otorisasi.nasabah') }}" class="{{ Request::segment(3) == 'otorisasi-data-nasabah' ? 'active' : '' }}">Otorisasi Data Nasabah</a>
+        <a href="{{ route('otorisasi.nasabah') }}" class="{{ Request::segment(3) == 'otorisasi-data-anggota' ? 'active' : '' }}">Otorisasi Data Anggota</a>
         <a href="{{ route('otorisasi.rekening') }}" class="{{ Request::segment(3) == 'otorisasi-data-rekening' ? 'active' : '' }}">Otorisasi Data Rekening</a>
     </div>
 </li>
@@ -40,15 +40,7 @@
         <a href="{{ route('informasi.saldo-teller') }}" class="{{ Request::segment(3) == 'saldo-teller' ? 'active' : '' }}">Saldo Teller</a>
     </div>
 </li>
-{{-- <li class="menu-item has-submenu {{ Request::segment(2) == 'otorisasi-head-teller' ? 'active' : '' }} {{ Request::segment(2) == 'kategori-biaya-variabel' ? 'active' : '' }}">
-    <a class="menu-link " href="page-form-product-1.html">
-        <i class="icon material-icons md-sync"></i>
-        <span class="text ">Otorisasi Head Teller</span>
-    </a>
-    <div class="submenu">
-        <a href="{{ route('otorisasi.transaksi-operator') }}" class="{{ Request::segment(3) == 'otorisasi-transaksi-per-operator' ? 'active' : '' }}">Otorisasi Transaksi Per Operotor</a>
-    </div>
-</li> --}}
+
 <li class="menu-item has-submenu {{ Request::segment(2) == 'admin-kredit' ? 'active' : '' }} ">
     <a class="menu-link " href="page-form-product-1.html">
         <i class="icon material-icons md-ballot"></i>
@@ -57,7 +49,7 @@
     <div class="submenu">
         <a href="{{ route('informasi.pinjaman') }}" class="{{ Request::segment(4) == 'data-informasi-pinjaman' ? 'active' : '' }}">Informasi Pinjaman</a>
         @role('admin-kredit')
-            <a href="{{ route('informasi.nasabah.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-nasabah' ? 'active' : '' }}">Informasi Data Nasabah</a>
+            <a href="{{ route('informasi.nasabah.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-anggota' ? 'active' : '' }}">Informasi Data Anggota</a>
             <a href="{{ route('informasi.rekening.admin-kredit') }}" class="{{ Request::segment(4) == 'informasi-data-rekening' ? 'active' : '' }}">Informasi Rekening</a>
         @endrole
     </div>

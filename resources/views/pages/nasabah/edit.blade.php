@@ -65,7 +65,7 @@
                 <div class="card mb-4">
                     <header class="card-header">
                         <div class="d-flex justify-content-between">
-                            <h4>Edit Data Nasabah</h4>
+                            <h4>Edit Data Anggota</h4>
                             <div>
                             </div>
                         </div>
