@@ -51,7 +51,7 @@ class NasabahController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
+            'nama' => 'required|unique:nasabah,nama',
             'nik' => 'required|unique:nasabah,nik',
             'no_anggota' => 'required',
             'ket' => 'required',
