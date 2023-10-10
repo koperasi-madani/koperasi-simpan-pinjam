@@ -247,7 +247,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Akun Teller</label>
-                                        <select name="id_akun" id="id_akun" class="form-control">
+                                        <select name="id_akun" id="id_akun" class="form-control" {{ count($teller) == 0 ? 'disabled' : '' }}>
                                             @foreach ($teller as $item)
                                                 <option value="{{ $item->id }}" {{ old('id_akun') == $item->id ? 'selected' : '' }}>{{ $item->kode_user }} -- {{ $item->name }}</option>
                                             @endforeach
