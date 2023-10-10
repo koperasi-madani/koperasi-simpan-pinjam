@@ -18,8 +18,9 @@ class PembayaranKasTellerController extends Controller
     public function index()
     {
         $currentDate = Carbon::now()->toDateString();
-        $saldo_teller = SaldoTeller::where('tanggal', $currentDate)->pluck('id_user');
-        $teller = User::role('teller')->whereNotIn('id',$saldo_teller)->get();
+        // $saldo_teller = SaldoTeller::where('tanggal', $currentDate)->pluck('id_user');
+        $teller = User::role('teller')->get();
+        // $teller = User::role('teller')->whereNotIn('id',$saldo_teller)->get();
         $kode = $this->generate();
         $kode_akun = KodeAkun::where('nama_akun','like','%Kas%')->get();
 
@@ -50,7 +51,6 @@ class PembayaranKasTellerController extends Controller
 
     public function post(Request $request)
     {
-
         $request->validate([
             'id_akun' => 'required',
             'kode_pembayaran' => 'required',

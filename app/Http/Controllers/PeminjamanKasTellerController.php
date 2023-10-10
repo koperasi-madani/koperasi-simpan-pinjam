@@ -25,15 +25,7 @@ class PeminjamanKasTellerController extends Controller
         $currentDate = Carbon::now()->toDateString();
         $current_peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->get();
         if (count($current_peminjaman) > 0) {
-            $update_peminjaman = PPeminjamanKas::where('tanggal',$currentDate)->first();
-            $update_peminjaman->nominal = $update_peminjaman->nominal + $this->formatNumber($request->get('nominal'));
-            $update_peminjaman->update();
-
-            $update_pembayaran = SaldoTeller::where('tanggal',$currentDate)->where('id_user', auth()->user()->id)->first();
-            $update_pembayaran->pembayaran = $update_pembayaran->pembayaran + $this->formatNumber($request->get('nominal'));
-            $update_pembayaran->penerimaan = $update_pembayaran->penerimaan + $this->formatNumber($request->get('nominal'));
-            $update_pembayaran->update();
-
+            return redirect()->route('pembayaran.kas-teller')->withError('Transaksi hanya dapat dilakukan sekali.');
         }else{
             $pembayaran = new SaldoTeller;
             $pembayaran->kode = $this->generateSaldo();
