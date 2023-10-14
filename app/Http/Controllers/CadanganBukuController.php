@@ -84,7 +84,7 @@ class CadanganBukuController extends Controller
         $data = PembukaanRekening::select('rekening_tabungan.*',
                     'nasabah.no_anggota',
                     'nasabah.nik',
-                    'nasabah.nama',
+                    'nasabah.nama as nama_nasabah',
                     'nasabah.alamat',
                     'nasabah.pekerjaan',
                     'nasabah.tgl',
