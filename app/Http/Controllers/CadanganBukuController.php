@@ -19,7 +19,7 @@ class CadanganBukuController extends Controller
         $data = PembukaanRekening::select('rekening_tabungan.*',
                                 'nasabah.no_anggota',
                                 'nasabah.nik',
-                                'nasabah.nama',
+                                'nasabah.nama as nasabah_nama',
                                 'nasabah.alamat',
                                 'nasabah.pekerjaan',
                                 'nasabah.tgl',
@@ -37,6 +37,8 @@ class CadanganBukuController extends Controller
                                     ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
                                     ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
                                     ->take(1)->get();
+        return $data;
+
         foreach ($data as $item) {
             $sukuBunga = $item->suku_bunga;
             $persen =  $sukuBunga / 365;
