@@ -31,6 +31,7 @@ class InformasiHeadTellerController extends Controller
                                         'users', 'users.id', 'transaksi_tabungan.id_user'
                                     )
                                     ->where('transaksi_tabungan.jenis','masuk')
+                                    ->orderByDesc('transaksi_tabungan.created_at')
                                     ->get();
         $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
                                     'rekening_tabungan.nasabah_id',
@@ -49,6 +50,7 @@ class InformasiHeadTellerController extends Controller
                                         'users', 'users.id', 'transaksi_tabungan.id_user'
                                     )
                                     ->where('transaksi_tabungan.jenis','keluar')
+                                    ->orderByDesc('transaksi_tabungan.created_at')
                                     ->get();
         return view('pages.informasi-head-teller.informasi-nasabah',compact('setoran','penarikan'));
     }
@@ -62,6 +64,7 @@ class InformasiHeadTellerController extends Controller
 
         $data_pembayaran = SaldoTeller::select('saldo_teller.*','users.name')
                                             ->join('users','users.id','saldo_teller.id_user')
+                                            ->orderByDesc('saldo_teller.created_at')
                                             ->get();
         return view('pages.informasi-head-teller.informasi-semua-saldo-teller',
             compact('penerimaan','pembayaran','data_pembayaran'));
@@ -71,7 +74,7 @@ class InformasiHeadTellerController extends Controller
     {
         $data_pembayaran = SaldoTeller::select('saldo_teller.*','users.name')
                             ->join('users','users.id','saldo_teller.id_user')
-                            ->orderBy('saldo_teller.created_at')
+                            ->orderBy('saldo_teller.created_at','DESC')
                             ->get();
         return view('pages.informasi-head-teller.informasi-saldo-teller',
                             compact('data_pembayaran'));

@@ -28,11 +28,12 @@ class LaporanCustomerServiceController extends Controller
                                 'suku_bunga_koperasi.nama',
                                 'suku_bunga_koperasi.suku_bunga')
                                 ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga');
+                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
+                                ;
         if ($request->has('dari') && $request->has('sampai')) {
-            $data = $query->whereBetween('rekening_tabungan.tgl',[$request->get('dari'),$request->get('sampai')])->get();
+            $data = $query->whereBetween('rekening_tabungan.tgl',[$request->get('dari'),$request->get('sampai')])->orderByDesc('rekening_tabungan.created_at')->get();
         }else{
-            $data = $query->get();
+            $data = $query->orderBy('rekening_tabungan.created_at','DESC')->get();
         }
         return view('pages.laporan.laporan-pembukaan-rekening.index',compact('data'));
     }
