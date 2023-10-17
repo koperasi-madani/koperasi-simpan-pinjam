@@ -36,8 +36,7 @@ class CadanganBukuController extends Controller
                                     ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
                                     ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
                                     ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
-                                    ->take(1)->get();
-        return $data;
+                                    ->get();
 
         foreach ($data as $item) {
             $sukuBunga = $item->suku_bunga;
