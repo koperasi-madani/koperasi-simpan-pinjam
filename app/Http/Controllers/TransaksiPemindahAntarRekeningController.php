@@ -182,7 +182,8 @@ class TransaksiPemindahAntarRekeningController extends Controller
     }
 
     function generateTransaksiPenarikan() {
-        $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
+        $tanggal = Carbon::now();
+        $penarikan = TransaksiTabungan::whereDate('created_at',$tanggal)->orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
         $date = Carbon::now()->format('dmy');
         if($penarikan->count() > 0) {
             // Mengambil bagian kode yang merepresentasikan nomor urutan
@@ -202,8 +203,9 @@ class TransaksiPemindahAntarRekeningController extends Controller
 
     }
     function generateTransaksiSetoran() {
+        $tanggal = Carbon::now();
         $date = Carbon::now()->format('dmy');
-        $setoran = TransaksiTabungan::where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
+        $setoran = TransaksiTabungan::whereDate('created_at',$tanggal)->where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
         if($setoran->count() > 0) {
             // Mengambil bagian kode yang merepresentasikan nomor urutan
             $lastIncrement = (int) substr($setoran[0]->kode, -5);

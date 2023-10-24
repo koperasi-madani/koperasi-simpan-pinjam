@@ -40,7 +40,9 @@ class PenarikanController extends Controller
 
         /* generate no penarikan  */
         $noPenarikan = null;
-        $penarikan = TransaksiTabungan::orderBy('created_at', 'DESC')->where('jenis','keluar')->get();
+        $tanggalSekarang = Carbon::now();
+
+        $penarikan = TransaksiTabungan::whereDate('created_at',$tanggalSekarang)->orderByDesc('created_at')->where('jenis','keluar')->get();
         $date = Carbon::now()->format('dmy');
         if($penarikan->count() > 0) {
             // Mengambil bagian kode yang merepresentasikan nomor urutan
@@ -384,8 +386,8 @@ class PenarikanController extends Controller
     }
 
     function generateKode() {
-        $nosaldo = null;
-        $transaksi = TransaksiManyToMany::orderBy('created_at', 'DESC')->get();
+        $tanggalSekarang = Carbon::now();
+        $transaksi = TransaksiManyToMany::whereDate('created_at',$tanggalSekarang)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($transaksi->count() > 0) {
             $notransaksi = $transaksi[0]->kode_transaksi;

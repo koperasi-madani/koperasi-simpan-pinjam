@@ -48,7 +48,8 @@ class PeminjamanKasTellerController extends Controller
     }
     public function generate() {
         $nosaldo = null;
-        $saldo = PPeminjamanKas::orderBy('created_at', 'DESC')->get();
+        $tanggalSekarang = Carbon::now();
+        $saldo = PPeminjamanKas::whereDate('created_at',$tanggalSekarang)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($saldo->count() > 0) {
             $nosaldo = $saldo[0]->kode;
@@ -66,7 +67,8 @@ class PeminjamanKasTellerController extends Controller
     public function generateSaldo()
     {
         $nosaldo = null;
-        $saldo = SaldoTeller::orderBy('created_at', 'DESC')->get();
+        $tanggalSekarang = Carbon::now();
+        $saldo = SaldoTeller::whereDate('created_at',$tanggalSekarang)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($saldo->count() > 0) {
             $nosaldo = $saldo[0]->kode;

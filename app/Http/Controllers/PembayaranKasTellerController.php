@@ -182,8 +182,9 @@ class PembayaranKasTellerController extends Controller
     }
     public function generate()
     {
+        $tanggalSekarang = Carbon::now();
         $nosaldo = null;
-        $saldo = SaldoTeller::orderBy('created_at', 'DESC')->get();
+        $saldo = SaldoTeller::whereDate('created_at',$tanggalSekarang)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($saldo->count() > 0) {
             $nosaldo = $saldo[0]->kode;

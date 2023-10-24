@@ -180,8 +180,8 @@ class OtorisasiCustomerServiceController extends Controller
     }
 
      function generateKode() {
-        $nosaldo = null;
-        $transaksi = TransaksiManyToMany::orderBy('created_at', 'DESC')->get();
+        $tanggal = Carbon::now();
+        $transaksi = TransaksiManyToMany::whereDate('created_at',$tanggal)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($transaksi->count() > 0) {
             $notransaksi = $transaksi[0]->kode_transaksi;

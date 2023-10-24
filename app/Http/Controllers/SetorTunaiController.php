@@ -39,8 +39,9 @@ class SetorTunaiController extends Controller
 
         /* generate no setoran  */
         $noSetoran = null;
+        $cekTanggal = Carbon::now();
         $date = Carbon::now()->format('dmy');
-        $setoran = TransaksiTabungan::where('jenis','masuk')->orderBy('created_at', 'DESC')->get();
+        $setoran = TransaksiTabungan::where('jenis','masuk')->whereDate('created_at',$cekTanggal)->orderBy('created_at', 'DESC')->get();
         if($setoran->count() > 0) {
             // Mengambil bagian kode yang merepresentasikan nomor urutan
             $lastIncrement = (int) substr($setoran[0]->kode, -5);
@@ -333,8 +334,8 @@ class SetorTunaiController extends Controller
     }
 
     function generateKode() {
-        $nosaldo = null;
-        $transaksi = TransaksiManyToMany::orderBy('created_at', 'DESC')->get();
+        $tanggalSekarang = Carbon::now();
+        $transaksi = TransaksiManyToMany::whereDate('created_at',$tanggalSekarang)->orderBy('created_at', 'DESC')->get();
         $date = date('Ymd');
         if($transaksi->count() > 0) {
             $notransaksi = $transaksi[0]->kode_transaksi;
