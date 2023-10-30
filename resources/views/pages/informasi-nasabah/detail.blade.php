@@ -108,14 +108,7 @@
                                             ->where(
                                                 'rekening_tabungan.nasabah_id',$data->nasabah_id
                                             );
-                                    if (Auth::user()->hasRole('akuntansi ')){
-                                        $data_tabungan = $query->get();
-                                    }else{
-                                        $data_tabungan = $query->where(
-                                                'transaksi_tabungan.id_user',auth()->user()->id
-                                            )
-                                            ->get();
-                                    }
+                                $data_tabungan = $query->get();
 
                             @endphp
                             <table class="table table-bordered table-responsive-sm">

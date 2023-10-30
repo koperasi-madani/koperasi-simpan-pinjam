@@ -45,19 +45,19 @@ class PembukaanRekeningController extends Controller
 
         /* generate no anggota  */
         $noAnggota = null;
-        $rekening = PembukaanRekening::orderBy('created_at', 'DESC')->get();
+        $rekening = PembukaanRekening::orderBy('id', 'DESC')->get();
 
         if($rekening->count() > 0) {
             $noRekening = $rekening[0]->no_rekening;
 
-            $lastIncrement = substr($noRekening, 9);
-            $noRekening = str_pad($lastIncrement + 1, 7, 0, STR_PAD_LEFT);
-            $noRekening = '001'.$noRekening;
-            $noRekening;
+            $lastIncrement = (int)substr($noRekening, 3);  // Ambil semua digit setelah "001"
+            $incrementedValue = $lastIncrement + 1;
+
+            $noRekening = '001' . str_pad((string)$incrementedValue, 7, '0', STR_PAD_LEFT);
+
         }
         else {
-            $noRekening = "001"."0000001";
-
+            $noRekening = "001000001";
         }
         return view('pages.pembukaan-rekening.index',compact(
             'data',
@@ -80,17 +80,17 @@ class PembukaanRekeningController extends Controller
      */
     public function store(Request $request)
     {
-        $count = PembukaanRekening::count();
-        if ($count > 0) {
-            $nasabah = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first();
-            $isUniquenasabah = ($nasabah != null) ? $isUniquenasabah = $nasabah->nasabah_id != $request->id_nasabah ? '' : '|unique:rekening_tabungan,nasabah_id' : '' ;
-        }else{
-            $isUniquenasabah = '';
-        }
+        // $count = PembukaanRekening::count();
+        // if ($count > 0) {
+        //     $nasabah = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first();
+        //     $isUniquenasabah = ($nasabah != null) ? $isUniquenasabah = $nasabah->nasabah_id != $request->id_nasabah ? '' : '|unique:rekening_tabungan,nasabah_id' : '' ;
+        // }else{
+        //     $isUniquenasabah = '';
+        // }
         $request->validate([
-            'id_nasabah' => 'required'.$isUniquenasabah,
+            'id_nasabah' => 'required',
             'tgl' => 'required',
-            'no_rekening' => 'required',
+            'no_rekening' => 'required|unique:rekening_tabungan,no_rekening',
         ],[
             'unique' => 'Data sudah tersedia.'
         ]);
