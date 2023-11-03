@@ -26,10 +26,11 @@ class LaporanCustomerServiceController extends Controller
                                 'nasabah.status',
                                 'nasabah.jenis_kelamin',
                                 'suku_bunga_koperasi.nama',
-                                'suku_bunga_koperasi.suku_bunga')
+                                'suku_bunga_koperasi.suku_bunga',
+                                'buku_tabungan.id_rekening_tabungan','buku_tabungan.saldo')
                                 ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
-                                ;
+                                ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
+                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga');
         if ($request->has('dari') && $request->has('sampai')) {
             $data = $query->whereBetween('rekening_tabungan.tgl',[$request->get('dari'),$request->get('sampai')])->orderByDesc('rekening_tabungan.created_at')->get();
         }else{
@@ -50,8 +51,10 @@ class LaporanCustomerServiceController extends Controller
                                 'nasabah.status',
                                 'nasabah.jenis_kelamin',
                                 'suku_bunga_koperasi.nama',
-                                'suku_bunga_koperasi.suku_bunga')
+                                'suku_bunga_koperasi.suku_bunga',
+                                'buku_tabungan.id_rekening_tabungan','buku_tabungan.saldo')
                                 ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+                                ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
                                 ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga');
         if (Session::has('dari') || Session::has('sampai')) {
             $data = $query->whereBetween('rekening_tabungan.tgl',[Session::get('dari'),Session::get('sampai')])->get();

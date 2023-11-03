@@ -16,7 +16,7 @@ class InformasiCustomerServiceController extends Controller
 
     public function informasiRekening()
     {
-        $data = PembukaanRekening::with('sukuBunga')->latest()->get();
+        $data = PembukaanRekening::with('sukuBunga','tabungan')->latest()->get();
         return view('pages.informasi-customer-service.rekening',compact('data'));
 
     }

@@ -26,7 +26,7 @@ class ApiController extends Controller
         )
             ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
             ->where('nasabah.status','aktif')
-            ->where('rekening_tabungan.nasabah_id',$request->get('id'))
+            ->where('rekening_tabungan.id',$request->get('id'))
             ->first();
         return response()->json($data);
     }

@@ -63,6 +63,7 @@
                             <th>No</th>
                             <th scope="col">Nama Anggota</th>
                             <th scope="col">No Rekening</th>
+                            <th scope="col">Saldo Awal</th>
                             <th scope="col">Saldo</th>
                             <th scope="col">Tanggal</th>
                             <th scope="col">Status</th>
@@ -78,6 +79,7 @@
                                 </td>
                                 <td>{{ $item->no_rekening }}</td>
                                 <td>Rp. {{ number_format($item->saldo_awal,2, ",", ".") }}</td>
+                                <td>Rp. {{ number_format($item->saldo,2, ",", ".") }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</td>
                                 <td>
                                     @if ($item->status == 'aktif')

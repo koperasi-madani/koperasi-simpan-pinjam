@@ -47,15 +47,15 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $item->nama_nasabah }} <br>
-                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                        {{ $item->nasabah->nama }} <br>
+                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                     </td>
                                     <td>{{ $item->no_rekening }}</td>
-                                    <td><b>Rp. {{ number_format($item->saldo,2, ",", ".") }}</b></td>
+                                    <td><b>Rp. {{ number_format($item->tabungan->saldo,2, ",", ".") }}</b></td>
                                     <td><b>{{ $item->ket }}</b></td>
                                     <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
                                     <td>
-                                        <a href="{{ route('informasi-gl.informasi.nasabah-detail',$item->nasabah_id) }}"  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-assignment"></i> Detail </a>
+                                        <a href="{{ route('informasi-gl.informasi.nasabah-detail',$item->id) }}"  class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-assignment"></i> Detail </a>
                                     </td>
                                 </tr>
                             @empty

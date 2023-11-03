@@ -67,7 +67,7 @@ class SetorTunaiController extends Controller
                                     'users.id as id_user',
                                     'users.kode_user'
                                     )->join(
-                                        'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                     )->join(
                                         'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                     )
@@ -95,11 +95,23 @@ class SetorTunaiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_nasabah' => 'required',
+            'id_rekening' => 'required',
             'tgl' => 'required',
             'nominal_setor' => 'required',
         ]);
         try {
+            $data_rekening = PembukaanRekening::select(
+                'rekening_tabungan.id',
+                'rekening_tabungan.nasabah_id',
+                'rekening_tabungan.no_rekening',
+                'rekening_tabungan.saldo_awal',
+                'nasabah.no_anggota',
+                'nasabah.nama'
+            )
+            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+            ->where('nasabah.status','aktif')
+            ->where('rekening_tabungan.id',$request->get('id_rekening'))
+            ->first();
             // update penerimaan
             $currentDate = Carbon::now()->toDateString();
             $pembayaran = SaldoTeller::where('status','pembayaran')
@@ -108,12 +120,15 @@ class SetorTunaiController extends Controller
                 // ->sum('pembayaran');
                 ->first();
             if (!isset($pembayaran)) {
-                return response()->json([
-                    'status' => false,
-                    'error' => 'Maaf tidak bisa melakukan setor tunai saldo tidak mencukupi.']);
+               return redirect()->route('setor-tunai.index')->withError('Maaf tidak bisa melakukan setor tunai saldo tidak mencukupi.');
+                // return response()->json([
+                //     'status' => false,
+                //     'error' => 'Maaf tidak bisa melakukan setor tunai saldo tidak mencukupi.']);
             }
+
             $setor = new TransaksiTabungan;
-            $setor->id_nasabah = $request->get('id_nasabah');
+            $setor->id_nasabah = $data_rekening->nasabah_id;
+            $setor->id_rekening = $data_rekening->id;
             $setor->kode = $request->get('kode_setoran');
             $setor->tgl = $request->get('tgl');
             $setor->nominal = $this->formatNumber($request->get('nominal_setor'));
@@ -123,13 +138,13 @@ class SetorTunaiController extends Controller
             $setor->id_user = Auth::user()->id;
 
 
-            $cek_setor = TransaksiTabungan::where('id_nasabah',$request->get('id_nasabah'))->get();
+            $cek_setor = TransaksiTabungan::where('id_rekening',$data_rekening->id)->where('id_nasabah',$data_rekening->id)->first();
+            if ($cek_setor) {
 
-
-            if (count($cek_setor) > 0) {
-                $tabungan =BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                $tabungan =BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id','rekening_tabungan.no_rekening')
                                 ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
+                                ->where('buku_tabungan.id_rekening_tabungan',$data_rekening->id)
+                                ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
                 $saldo_akhir = $tabungan->first()->saldo;
                 $result_saldo = $setor->nominal + $saldo_akhir;
 
@@ -143,7 +158,9 @@ class SetorTunaiController extends Controller
             }else{
                 $tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
                         ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                        ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
+                        ->where('buku_tabungan.id_rekening_tabungan',$data_rekening->id)
+                        ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
+
                 $saldo_awal = $tabungan->first()->saldo;
                 $result_saldo = $saldo_awal + $setor->nominal;
 
@@ -159,9 +176,13 @@ class SetorTunaiController extends Controller
                 // jurnal;
                 $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
+                                    ->where('buku_tabungan.id_rekening_tabungan',$data_rekening->id)
+                                    ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id)
+                                    ->first()->id_kode_akun;
 
-                $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
+                $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')
+                                            ->orWhere('id',$kode_akun_tabungan)
+                                            ->get();
 
             foreach ($kode_akun_kas as $item) {
                 $transaksi = new TransaksiManyToMany();
@@ -194,7 +215,9 @@ class SetorTunaiController extends Controller
             }
 
             $setor->save();
-            $no_rekening = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first()->no_rekening;
+            $no_rekening = PembukaanRekening::where('id',$data_rekening->id)
+                             ->where('nasabah_id',$data_rekening->nasabah_id)
+                            ->first()->no_rekening;
             $validasi = Auth::user()->kode_user;
             $transaction =[
                 'nominal' => $setor->nominal,
@@ -239,7 +262,7 @@ class SetorTunaiController extends Controller
                                     'nasabah.id as id_nasabah',
                                     'nasabah.nama'
                                     )->join(
-                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_nasabah'
+                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                     )->join(
                                         'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                     )->where('transaksi_tabungan.id',$id)
@@ -327,8 +350,9 @@ class SetorTunaiController extends Controller
     {
         $data = TransaksiTabungan::with('user','nasabah')->find($id);
         $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
-                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                    ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)->first();
+                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                ->where('rekening_tabungan.id',$data->id_rekening)
+                                ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)->first();
         return view('pages.setor-tunai.pdf',compact('data','tabungan'));
 
     }

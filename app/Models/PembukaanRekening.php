@@ -25,8 +25,16 @@ class PembukaanRekening extends Model
     {
        return $this->belongsTo(NasabahModel::class,'nasabah_id','id');
     }
+
+    public function tabungan() {
+        return $this->belongsTo(BukuTabungan::class,'id','id_rekening_tabungan');
+    }
     public function sukuBunga()
     {
        return $this->belongsTo(SukuBunga::class,'id_suku_bunga','id');
+    }
+
+    function  cadangan()  {
+        return $this->belongsTo(CadanganBuku::class,'id','id_rekening');
     }
 }

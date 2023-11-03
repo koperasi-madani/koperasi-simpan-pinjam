@@ -11,6 +11,7 @@ class TransaksiTabungan extends Model
     protected $table = "transaksi_tabungan";
     protected $fillable = [
         'id_nasabah',
+        'id_rekening',
         'id_user',
         'kode',
         'nominal',

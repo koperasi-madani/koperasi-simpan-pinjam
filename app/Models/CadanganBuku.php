@@ -12,6 +12,7 @@ class CadanganBuku extends Model
     protected $fillable = [
         'tgl',
         'id_nasabah',
+        'id_rekening',
         'suku_bunga',
         'saldo',
         'bunga_cadangan',

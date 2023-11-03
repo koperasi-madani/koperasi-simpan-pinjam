@@ -29,6 +29,6 @@ class CadanganTotalBukuSuku extends Command
         $cadangkan = new CadanganBukuController();
         $cadangkan->totalBunga();
 
-        $this->info('Suku bunga updated successfully!');
+        $this->info('Suku bunga total successfully!');
     }
 }

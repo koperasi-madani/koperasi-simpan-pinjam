@@ -63,7 +63,7 @@ class OtorisasiCustomerServiceController extends Controller
                                     'users.id as id_user',
                                     'users.kode_user'
                                     )->join(
-                                        'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                     )->join(
                                         'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                     )
@@ -87,7 +87,7 @@ class OtorisasiCustomerServiceController extends Controller
                 'users.id as id_user',
                 'users.kode_user'
                 )->join(
-                    'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                    'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                 )->join(
                     'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                 )
@@ -106,19 +106,15 @@ class OtorisasiCustomerServiceController extends Controller
         $penarikan = TransaksiTabungan::find($request->get('id'));
         if ($request->status == 'setuju') {
             $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
-                                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
+                        ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                        ->where('rekening_tabungan.id',$penarikan->id_rekening)
+                        ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah);
             $saldo_akhir = $tabungan->first()->saldo;
             $result_saldo =  $saldo_akhir - $penarikan->nominal;
             // update penerimaan
-            $head = User::whereHas(
-                'roles', function($q){
-                    $q->where('name', 'head-teller');
-                }
-            )->first();
             $currentDate = Carbon::now()->toDateString();
             $pembayaran = SaldoTeller::where('status','pembayaran')
-                ->where('id_user',$head->id)
+                ->where('id_user',$penarikan->id_user)
                 ->where('tanggal',$currentDate)
                 // ->sum('pembayaran');
                 ->first();
@@ -132,8 +128,9 @@ class OtorisasiCustomerServiceController extends Controller
             $penarikan->status = 'setuju';
 
             $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
-                                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
+                                            ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                            ->where('rekening_tabungan.id',$penarikan->id_rekening)
+                                            ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah)->first()->id_kode_akun;
 
             $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
             foreach ($kode_akun_kas as $item) {

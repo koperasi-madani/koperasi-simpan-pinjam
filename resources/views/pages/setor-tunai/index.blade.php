@@ -65,7 +65,7 @@
     <script>
         $(document).ready(function () {
             $('#kode').select2();
-            $('#id_nasabah').select2();
+            $('#id_rekening').select2();
             $('#example').DataTable();
         })
 
@@ -138,12 +138,12 @@
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Kode Rekening</label>
-                                            <select name="id_nasabah" id="id_nasabah" class="form-control">
+                                            <select name="id_rekening" id="id_rekening" class="form-control">
                                                 @foreach ($data as $item)
-                                                    <option value="{{ $item->nasabah_id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
+                                                    <option value="{{ $item->id }}" {{ old('id_rekening') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('id_nasabah')
+                                            @error('id_rekening')
                                                 <small class="text-danger">
                                                     {{$message}}.
                                                 </small>

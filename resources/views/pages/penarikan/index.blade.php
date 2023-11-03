@@ -138,10 +138,10 @@
                         }
                 });
             }
-            $('#id_nasabah').select2({
+            $('#id_rekening').select2({
                 placeholder: "Pilih Rekening"
             });
-            $('#id_nasabah').on('change',function() {
+            $('#id_rekening').on('change',function() {
                 $("#nominal_penarikan").attr("readonly", false);
                 $("#nominal_penarikan").attr('autofocus', 'true');
                 onChangeSelect('{{ route('cek.tabungan') }}',$(this).val())
@@ -188,13 +188,13 @@
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Kode Rekening</label>
-                                            <select name="id_nasabah" id="id_nasabah" class="form-control">
+                                            <select name="id_rekening" id="id_rekening" class="form-control">
                                                 <option value="">Pilik Rekening</option>
                                                 @foreach ($data as $item)
-                                                    <option value="{{ $item->nasabah_id }}" {{ old('id_nasabah') == $item->nasabah_id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
+                                                    <option value="{{ $item->id }}" {{ old('id_rekening') == $item->id ? 'selected' : '' }}>{{ $item->no_rekening }}--{{ $item->nama }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('id_nasabah')
+                                            @error('id_rekening')
                                                 <small class="text-danger">
                                                     {{$message}}.
                                                 </small>

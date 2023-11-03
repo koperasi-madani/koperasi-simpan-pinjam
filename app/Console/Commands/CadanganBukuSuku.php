@@ -30,6 +30,6 @@ class CadanganBukuSuku extends Command
         $cadangkan = new CadanganBukuController();
         $cadangkan->cadangSuku();
 
-        $this->info('Suku bunga updated successfully!');
+        $this->info('Suku bunga tiap hari updated successfully!');
     }
 }

@@ -36,7 +36,9 @@ class PenarikanController extends Controller
                 'nasabah.id as id_nasabah',
                 'nasabah.no_anggota',
                 'nasabah.nama'
-            )->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')->where('nasabah.status','aktif')->get();
+            )
+            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+            ->where('nasabah.status','aktif')->get();
 
         /* generate no penarikan  */
         $noPenarikan = null;
@@ -69,7 +71,7 @@ class PenarikanController extends Controller
                                 'users.id as id_user',
                                 'users.kode_user'
                                 )->join(
-                                    'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                    'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                 )->join(
                                     'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                 )
@@ -87,7 +89,7 @@ class PenarikanController extends Controller
         try{
             $data = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                 ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                ->where('rekening_tabungan.nasabah_id',$request->get('id'))->first()->saldo;
+                                ->where('rekening_tabungan.id',$request->get('id'))->first()->saldo;
             return $data;
 
         } catch (Exception $e) {
@@ -123,9 +125,22 @@ class PenarikanController extends Controller
         if ($this->formatNumber($request->get('nominal_penarikan')) < 20000) {
             return redirect()->route('penarikan.index')->withError('Maaf batas penarikan sebesar Rp. 20.000');
         }
+        $data_rekening = PembukaanRekening::select(
+            'rekening_tabungan.id',
+            'rekening_tabungan.nasabah_id',
+            'rekening_tabungan.no_rekening',
+            'rekening_tabungan.saldo_awal',
+            'nasabah.no_anggota',
+            'nasabah.nama'
+        )
+            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+            ->where('nasabah.status','aktif')
+            ->where('rekening_tabungan.id',$request->get('id_rekening'))
+            ->first();
         $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
+                                    ->where('rekening_tabungan.id',$data_rekening->id)
+                                    ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
         $saldo_akhir = $tabungan->first()->saldo;
         if ($this->formatNumber($request->get('nominal_penarikan')) > (int)$saldo_akhir) {
             return redirect()->route('penarikan.index')->withError('Maaf saldo anda tidak mencukupi penarikan');
@@ -159,7 +174,8 @@ class PenarikanController extends Controller
         try {
             $penarikan = new TransaksiTabungan;
             $penarikan->kode = $request->get('kode_penarikan');
-            $penarikan->id_nasabah = $request->get('id_nasabah');
+            $penarikan->id_rekening = $data_rekening->id;
+            $penarikan->id_nasabah = $data_rekening->nasabah_id;
             $penarikan->tgl = $request->get('tgl');
             $penarikan->nominal = $this->formatNumber($request->get('nominal_penarikan'));
             $penarikan->ket = $request->get('ket');
@@ -170,7 +186,8 @@ class PenarikanController extends Controller
             }else{
                 $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                         ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                        ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'));
+                                        ->where('rekening_tabungan.id',$data_rekening->id)
+                                        ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
                 $saldo_akhir = $tabungan->first()->saldo;
                 $result_saldo =  $saldo_akhir - $penarikan->nominal;
                 if ($result_saldo < 20000 ) {
@@ -207,7 +224,10 @@ class PenarikanController extends Controller
                 $penarikan->status = 'setuju';
                 $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
+                                                    ->where('rekening_tabungan.id',$data_rekening->id)
+                                                    ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id)
+                                                    ->first()
+                                                    ->id_kode_akun;
 
                 $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
@@ -381,7 +401,9 @@ class PenarikanController extends Controller
        $data = TransaksiTabungan::with('user','nasabah')->find($id);
        $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                         ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                        ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)->first();
+                        ->where('rekening_tabungan.nasabah_id',$data->id_nasabah)
+                        ->where('rekening_tabungan.id',$data->id_rekening)
+                        ->first();
         return view('pages.penarikan.pdf',compact('data','tabungan'));
     }
 

@@ -81,8 +81,22 @@ class TransaksiPemindahAntarRekeningController extends Controller
             // kode akun dibikin jurnal dan kode rekening dibikin jurnal masuk ke
             // untuk tabungan
             foreach ($_POST['nominal'] as $key => $value) {
+                $data_rekening = PembukaanRekening::select(
+                    'rekening_tabungan.id',
+                    'rekening_tabungan.nasabah_id',
+                    'rekening_tabungan.no_rekening',
+                    'rekening_tabungan.saldo_awal',
+                    'nasabah.no_anggota',
+                    'nasabah.nama'
+                )
+                    ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
+                    ->where('nasabah.status','aktif')
+                    ->where('rekening_tabungan.id',$_POST['akun_nasabah'][$key])
+                    ->first();
                 $setor = new TransaksiTabungan;
-                $setor->id_nasabah = $_POST['akun_nasabah'][$key];
+                $setor->id_nasabah = $data_rekening->nasabah_id;
+                $setor->id_rekening = $data_rekening->id;
+
                 if ($_POST['tipe'][$key] == 'Masuk') {
                     $setor->kode = $this->generateTransaksiPenarikan();
                 }else{
@@ -92,21 +106,24 @@ class TransaksiPemindahAntarRekeningController extends Controller
                 $setor->nominal = $this->formatNumber($_POST['nominal'][$key]);
                 $setor->ket =  $_POST['ket'][$key];
                 $setor->jenis = $_POST['tipe'][$key] == 'Masuk' ? 'keluar' : 'masuk';
-                $setor->status = $_POST['tipe'][$key];
+                $setor->status = 'setuju';
                 $setor->id_user = Auth::user()->id;
                 if ($_POST['tipe'][$key] == 'Masuk') {
                     $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                             ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                            ->where('rekening_tabungan.nasabah_id',$_POST['akun_nasabah'][$key]);
+                                            ->where('rekening_tabungan.id',$data_rekening->id)
+                                            ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
                     $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo =  $saldo_akhir - $this->formatNumber($_POST['nominal'][$key]);
                     $tabungan->update([
                         'saldo' => $result_saldo,
                         ]);
+                    $setor->saldo = $result_saldo;
                 }else{
                     $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
                                             ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                            ->where('rekening_tabungan.nasabah_id',$_POST['akun_nasabah'][$key]);
+                                            ->where('rekening_tabungan.id',$data_rekening->id)
+                                            ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id);
                     $saldo_akhir = $tabungan->first()->saldo;
                     $result_saldo = $this->formatNumber($_POST['nominal'][$key]) + $saldo_akhir;
 

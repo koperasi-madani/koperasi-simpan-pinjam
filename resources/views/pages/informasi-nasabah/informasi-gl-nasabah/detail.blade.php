@@ -31,12 +31,12 @@
                                     <tr>
                                         <td width="20%">NIK</td>
                                         <td width="1%">:</td>
-                                        <td >{{ ucwords($data->nik) }}</td>
+                                        <td >{{ ucwords($data->nasabah->nik) }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">No Anggota</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->no_anggota }}</td>
+                                        <td >{{ $data->nasabah->no_anggota }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">No Rekening</td>
@@ -46,17 +46,17 @@
                                     <tr>
                                         <td width="20%">Nama Anggota</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->nama_nasabah }}</td>
+                                        <td >{{ $data->nasabah->nama }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Jenis Kelamin</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->jenis_kelamin == '0' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                        <td >{{ $data->nasabah->jenis_kelamin == '0' ? 'Laki-Laki' : 'Perempuan' }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Alamat</td>
                                         <td width="1%">:</td>
-                                        <td >{{ $data->alamat != null ? $data->alamat : '-'  }}</td>
+                                        <td >{{ $data->nasabah->alamat != null ? $data->nasabah->alamat : '-'  }}</td>
                                     </tr>
                                     {{-- @php
                                         $sukuBunga = $data->suku_bunga;
@@ -68,12 +68,12 @@
                                     <tr>
                                         <td width="20%">Saldo</td>
                                         <td width="1%">:</td>
-                                        <td>Rp. {{ number_format($data->saldo,2, ",", ".") }}</td>
+                                        <td>Rp. {{ number_format($data->tabungan->saldo,2, ",", ".") }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Suku Bunga Dicadangkan</td>
                                         <td width="1%">:</td>
-                                        <td >Rp.  {{ number_format($data->saldo_bunga,2, ",", ".") }}</td>
+                                        <td >Rp.  {{ number_format($data->cadangan == null ? 0 : $data->cadangan->bunga_cadangan,2, ",", ".") }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Tanggal</td>
@@ -95,7 +95,7 @@
                                             'users.kode_user'
                                             )
                                             ->join(
-                                                'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                                'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                             )->join(
                                                 'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                             )
@@ -103,7 +103,7 @@
                                                 'users', 'users.id', 'transaksi_tabungan.id_user'
                                             )
                                             ->where(
-                                                'rekening_tabungan.nasabah_id',$data->nasabah_id
+                                                'rekening_tabungan.id',$data->id
                                             );
                                     if (Auth::user()->hasRole('akuntansi')){
                                         $data_tabungan = $query->get();

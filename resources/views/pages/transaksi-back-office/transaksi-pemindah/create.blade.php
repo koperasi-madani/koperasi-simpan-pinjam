@@ -95,7 +95,7 @@
                             <select class="form-control akun-nasabah" name="akun_nasabah[]" required>
                                 <option value="0">Pilih Rekening</option>
                                 @foreach($kodeRekening as $item)
-                                    <option value="{{ $item->nasabah_id }}">{{ $item->no_rekening }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->no_rekening }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -251,7 +251,7 @@
                                         <select class="form-control akun-nasabah" name="akun_nasabah[]" required>
                                             <option value="0">Pilih Rekening</option>
                                             @foreach($kodeRekening as $item)
-                                                <option value="{{ $item->nasabah_id }}">{{ $item->no_rekening }}</option>
+                                                <option value="{{ $item->id }}">{{ $item->no_rekening }}</option>
                                             @endforeach
                                         </select>
                                     </div>
