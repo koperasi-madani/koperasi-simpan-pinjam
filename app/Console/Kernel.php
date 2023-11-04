@@ -19,17 +19,17 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('suku:cron')
-                // ->dailyAt('00:00') // Atur waktu sesuai kebutuhan
-                ->everyTwoMinutes() // Atur waktu sesuai kebutuhan
+                ->dailyAt('00:00') // Atur waktu sesuai kebutuhan
+                // ->everyTwoMinutes() // Atur waktu sesuai kebutuhan
                 ->appendOutputTo(storage_path('logs/inspire.log'));
        // Jalankan command suku:bulanan pada tanggal terakhir bulan sebelumnya
         $schedule->command('suku:bulanan')
-                ->everyThreeMinutes()
-                // ->monthlyOn(1, '00:00') // Jadwal pada tanggal 1 sebagai cadangan
-                // ->when(function () {
-                //     // Cek apakah hari saat ini adalah tanggal terakhir bulan
-                //     return date('j') == date('t', strtotime('yesterday'));
-                // })
+                // ->everyThreeMinutes()
+                ->monthlyOn(1, '00:00') // Jadwal pada tanggal 1 sebagai cadangan
+                ->when(function () {
+                    // Cek apakah hari saat ini adalah tanggal terakhir bulan
+                    return date('j') == date('t', strtotime('yesterday'));
+                })
                 ->appendOutputTo(storage_path('logs/inspire.log'));
     }
 
