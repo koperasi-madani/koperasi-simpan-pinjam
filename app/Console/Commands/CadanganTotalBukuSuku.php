@@ -12,7 +12,7 @@ class CadanganTotalBukuSuku extends Command
      *
      * @var string
      */
-    protected $signature = 'totalsuku:cron';
+    protected $signature = 'suku:bulanan';
 
     /**
      * The console command description.
