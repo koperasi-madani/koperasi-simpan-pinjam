@@ -110,7 +110,7 @@
                             <td style="font-size: 13px">{{ $tabungan->no_rekening }}</td>
                         </tr>
                         <tr>
-                            <td width="35%" style="font-size: 13px">NILAI SETOR</td>
+                            <td width="35%" style="font-size: 13px">NILAI TARIK</td>
                             <td width="1%">:</td>
                             <td style="font-size: 13px"> Rp. {{ number_format($data->nominal,2, ",", ".") }}</td>
                         </tr>

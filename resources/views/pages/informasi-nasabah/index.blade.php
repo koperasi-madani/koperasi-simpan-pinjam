@@ -48,7 +48,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
                                         {{ $item->nasabah->nama }} <br>
-                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                        <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                     </td>
                                     <td>{{ $item->no_rekening }}</td>
                                     <td><b>Rp. {{ number_format($item->tabungan->saldo,2, ",", ".") }}</b></td>

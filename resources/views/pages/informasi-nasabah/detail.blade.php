@@ -73,7 +73,7 @@
                                     <tr>
                                         <td width="20%">Suku Bunga Dicadangkan</td>
                                         <td width="1%">:</td>
-                                        <td >Rp.  {{ number_format($data->cadangan->bunga_cadangan,2, ",", ".") }}</td>
+                                        <td >Rp.  {{ number_format($data->cadangan != null ? $data->cadangan->bunga_cadangan : 0,2, ",", ".") }}</td>
                                     </tr>
                                     <tr>
                                         <td width="20%">Tanggal</td>

@@ -23,7 +23,7 @@ class InformasiHeadTellerController extends Controller
                                     'users.id as id_user',
                                     'users.kode_user'
                                     )->join(
-                                        'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                     )->join(
                                         'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                     )
@@ -42,7 +42,7 @@ class InformasiHeadTellerController extends Controller
                                     'users.id as id_user',
                                     'users.kode_user'
                                     )->join(
-                                        'rekening_tabungan','rekening_tabungan.nasabah_id','transaksi_tabungan.id_nasabah'
+                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
                                     )->join(
                                         'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
                                     )
