@@ -222,15 +222,13 @@ class PenarikanController extends Controller
                 }
 
                 $penarikan->status = 'setuju';
-                $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+                $kode_akun_tabungan =BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
                                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                                    ->where('rekening_tabungan.id',$data_rekening->id)
+                                                    ->where('buku_tabungan.id_rekening_tabungan',$data_rekening->id)
                                                     ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id)
-                                                    ->first()
-                                                    ->id_kode_akun;
+                                                    ->first()->id_kode_akun;
 
                 $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
-
                 foreach ($kode_akun_kas as $item) {
                     $transaksi = new TransaksiManyToMany();
                     $transaksi->kode_transaksi = $this->generateKode();

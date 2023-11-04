@@ -105,7 +105,7 @@ class OtorisasiCustomerServiceController extends Controller
     {
         $penarikan = TransaksiTabungan::find($request->get('id'));
         if ($request->status == 'setuju') {
-            $tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
+            $tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
                         ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
                         ->where('rekening_tabungan.id',$penarikan->id_rekening)
                         ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah);
@@ -127,10 +127,11 @@ class OtorisasiCustomerServiceController extends Controller
             $penarikan->saldo = $result_saldo;
             $penarikan->status = 'setuju';
 
-            $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
-                                            ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                            ->where('rekening_tabungan.id',$penarikan->id_rekening)
-                                            ->where('rekening_tabungan.nasabah_id',$penarikan->id_nasabah)->first()->id_kode_akun;
+            $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                                    ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
+                                    ->where('buku_tabungan.id_rekening_tabungan',$penarikan->id_nasabah)
+                                    ->where('rekening_tabungan.nasabah_id',$penarikan->id_rekening)
+                                    ->first()->id_kode_akun;
 
             $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
             foreach ($kode_akun_kas as $item) {
