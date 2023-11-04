@@ -297,7 +297,7 @@
                         <h4>List {{ ucwords(str_replace('-',' ',Request::segment(4))) }}</h4>
                     </header>
                     <div class="card-body">
-                        <div class="">
+                        <div class="table-responsive">
                             <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
