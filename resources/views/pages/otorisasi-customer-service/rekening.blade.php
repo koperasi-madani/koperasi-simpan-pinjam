@@ -36,7 +36,10 @@
                 return prefix == undefined ? rupiah : rupiah ? rupiah : "";
             }
             $('#example').DataTable();
-            $('.gantiStatus').on('click',function() {
+            $('body').on('click','.gantiStatus',function(e) {
+            // $('.gantiStatus').on('click',function(e) {
+                // e.preventDefault();
+                // console.log($(this));
                 var id = $(this).data('id');
                 $('#id').val(id);
                 console.log(id);
@@ -113,7 +116,7 @@
                                                 @if ($item->status == 'setuju')
                                                     <span class="badge rounded-pill alert-success">Disetujui</span>
                                                 @elseif ($item->status == 'pending')
-                                                    <a class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</a>
+                                                    <button type="button" class="badge rounded-pill alert-warning gantiStatus" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#gantiStatus">Menunggu Persetujuan</button>
                                                 @else
                                                     <span class="badge rounded-pill alert-danger">Ditolak</span>
                                                 @endif

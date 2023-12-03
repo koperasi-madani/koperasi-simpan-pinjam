@@ -118,21 +118,19 @@ class OtorisasiCustomerServiceController extends Controller
                 ->where('tanggal',$currentDate)
                 // ->sum('pembayaran');
                 ->first();
+            if (!isset($pembayaran)) {
+                return redirect()->route('otorisasi.rekening')->withError('Belum melakukan transaksi pagi.');
+            }
             $penerimaan = $pembayaran->penerimaan - $penarikan->nominal;
             $pembayaran->penerimaan = $penerimaan;
-            $pembayaran->update();
-            $tabungan->update([
-                'saldo' => $result_saldo,
-            ]);
+
             $penarikan->saldo = $result_saldo;
             $penarikan->status = 'setuju';
-
             $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                    ->where('buku_tabungan.id_rekening_tabungan',$penarikan->id_nasabah)
-                                    ->where('rekening_tabungan.nasabah_id',$penarikan->id_rekening)
-                                    ->first()->id_kode_akun;
-
+                                    ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))
+                                    ->where('rekening_tabungan.id',$penarikan->id_rekening)
+                                    ->first();
             $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
             foreach ($kode_akun_kas as $item) {
                 $transaksi = new TransaksiManyToMany();
