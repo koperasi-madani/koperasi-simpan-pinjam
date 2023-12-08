@@ -222,7 +222,7 @@ class PenarikanController extends Controller
                 }
 
                 $penarikan->status = 'setuju';
-                $kode_akun_tabungan =BukuTabungan::select('buku_tabungan.*','rekening_tabungan.nasabah_id')
+                $kode_akun_tabungan =BukuTabungan::select('buku_tabungan.id as id_tabungan','buku_tabungan.id_rekening_tabungan','buku_tabungan.id_kode_akun','buku_tabungan.saldo','rekening_tabungan.nasabah_id','rekening_tabungan.no_rekening')
                                                     ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
                                                     ->where('buku_tabungan.id_rekening_tabungan',$data_rekening->id)
                                                     ->where('rekening_tabungan.nasabah_id',$data_rekening->nasabah_id)
