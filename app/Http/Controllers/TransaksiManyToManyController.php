@@ -58,24 +58,27 @@ class TransaksiManyToManyController extends Controller
             foreach ($_POST['nominal'] as $key => $value) {
                 $total += $_POST['nominal'][$key];
             }
-
             $transaksi = new TransaksiManyToMany;
             $transaksi->kode_transaksi = $this->generateKode();
             $transaksi->id_user = auth()->user()->id;
             $transaksi->tanggal = Carbon::now();
             $transaksi->kode_akun = $request->get('akun_lawan')[0];
-            $transaksi->tipe = $request->get('tipe')[0];
-            $transaksi->total = $total;
+            $transaksi->tipe = $_POST['tipe'][0] == 'Masuk' ? 'masuk' : 'keluar';
+            $transaksi->total = $_POST['nominal'][0];
             $transaksi->keterangan = 'Transaksi Many To Many';
             $transaksi->save();
             foreach ($_POST['nominal'] as $key => $value) {
-                $detailTransaksi = new DTransaksiManyToMany;
-                $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
-                $detailTransaksi->kode_akun = $_POST['akun_lawan'][$key];
-                $detailTransaksi->subtotal =  $_POST['nominal'][$key];
-                $detailTransaksi->keterangan = $_POST['ket'][$key];
-                $detailTransaksi->save();
-
+                $nextKey = $key + 1;
+                $nextKeyExists = isset($_POST['nominal'][$nextKey]) && isset($_POST['akun_lawan'][$nextKey]) && isset($_POST['tipe'][$nextKey]) && isset($_POST['ket'][$nextKey]);
+                if ($nextKeyExists) {
+                    $detailTransaksi = new DTransaksiManyToMany;
+                    $detailTransaksi->kode_transaksi = $transaksi->kode_transaksi;
+                    $detailTransaksi->kode_akun = $_POST['akun_lawan'][$nextKeyExists];
+                    $detailTransaksi->tipe = $_POST['tipe'][$nextKeyExists] == 'Masuk' ? 'masuk' : 'keluar';
+                    $detailTransaksi->subtotal =  $_POST['nominal'][$nextKeyExists];
+                    $detailTransaksi->keterangan = $_POST['ket'][$nextKeyExists];
+                    $detailTransaksi->save();
+                }
                 // jurnal
                 $jurnal = new Jurnal;
                 $jurnal->tanggal = Carbon::now();
@@ -85,19 +88,19 @@ class TransaksiManyToManyController extends Controller
                 $jurnal->kode_lawan = 0;
                 $jurnal->tipe = $_POST['tipe'][$key] == 'Masuk' ? 'debit' : 'kredit';
                 $jurnal->nominal =  $_POST['nominal'][$key];
-                $jurnal->id_detail = $detailTransaksi->id;
+                $jurnal->id_detail = 0;
                 $jurnal->save();
             }
             DB::commit();
             return redirect()->route('transaksi-many-to-many.index')->withStatus('Berhasil menambahkan data transaksi');
 
         } catch (Exception $e) {
-            return $e;
             DB::rollBack();
+            return $e;
             return redirect()->route('transaksi-many-to-many.index')->withError('Terjadi Kesalahan');
         } catch (QueryException $e) {
-            return $e;
             DB::rollBack();
+            return $e;
             return redirect()->back()->withError('Terjadi kesalahan.');
        }
     }

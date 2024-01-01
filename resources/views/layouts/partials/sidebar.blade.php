@@ -45,6 +45,9 @@
                 <div class="submenu">
                     <a href="{{ route('neraca.index') }}" class="{{ Request::segment(3) == 'neraca' ? 'active' : '' }}">Neraca</a>
                     <a href="{{ route('tutup-cabang.index') }}">Tabungan</a>
+                    <a href="{{ route('transaksi.harian') }}">Transaksi Harian</a>
+                    <a href="{{ route('transaksi.head') }}">Transaksi Head Teller</a>
+                    <a href="{{ route('transaksi.many') }}">Transaksi Many To Many</a>
                 </div>
             </li>
 

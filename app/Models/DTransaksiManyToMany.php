@@ -12,6 +12,7 @@ class DTransaksiManyToMany extends Model
     protected $fillable = [
         'kode_transaksi',
         'kode_akun',
+        'tipe',
         'subtotal',
         'keterangan',
     ];

@@ -32,6 +32,7 @@ use App\Http\Controllers\UserController;
 use App\Models\KodeAkun;
 use App\Models\Penarikan;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -238,6 +239,11 @@ Route::middleware(['auth'])->group(function () {
             // neraca
             Route::get('neraca/cetak',[LaporanNeracaController::class,'cetak'])->name('neraca.cetak');
             Route::get('neraca',[LaporanNeracaController::class,'neraca'])->name('neraca.index');
+            // Transaksi
+            Route::get('transaksi-harian',[LaporanNeracaController::class,'transaksiHarian'])->name('transaksi.harian');
+            Route::get('transaksi-head-teller',[LaporanNeracaController::class,'transaksiHeadTeller'])->name('transaksi.head');
+            // Transaksi Many to Many
+            Route::get('transaksi-many-to-many',[LaporanNeracaController::class,'transaksiMany'])->name('transaksi.many');
         });
         // setting
         Route::prefix('setting')->group(function()

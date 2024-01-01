@@ -18,4 +18,12 @@ class TransaksiManyToMany extends Model
         'total',
         'keterangan',
     ];
+
+    function detail() {
+        return $this->hasMany(DTransaksiManyToMany::class,'kode_transaksi','kode_transaksi');
+    }
+
+    function kodeAkun() {
+        return $this->belongsTo(KodeAkun::class,'kode_akun');
+    }
 }

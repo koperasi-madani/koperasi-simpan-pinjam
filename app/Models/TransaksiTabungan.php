@@ -29,4 +29,5 @@ class TransaksiTabungan extends Model
         return $this->belongsTo(NasabahModel::class,'id_nasabah');
     }
 
+
 }
