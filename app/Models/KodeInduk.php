@@ -10,4 +10,8 @@ class KodeInduk extends Model
     use HasFactory;
     protected $table = 'kode_induk';
 
+    public function kodeLedger() {
+        return $this->belongsTo(KodeLedger::class,'id_ledger');
+    }
+
 }

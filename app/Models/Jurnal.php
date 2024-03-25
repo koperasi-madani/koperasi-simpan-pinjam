@@ -19,4 +19,8 @@ class Jurnal extends Model
         'nominal',
         'id_detail',
     ];
+
+    public function kodeAkun() {
+        return $this->belongsTo(KodeAkun::class,'kode_akun');
+    }
 }

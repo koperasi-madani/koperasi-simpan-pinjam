@@ -31,66 +31,52 @@
             }
             setInterval(updateClock, 1000);
     </script>
-        <script>
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var ctxPerbulan = document.getElementById('myChartPerbulan').getContext('2d');
-            var chartPerbulan = new Chart(ctxPerbulan, {
-                type: 'line',
-                data: {
-                    labels: [
-                        @foreach ($grafik_perbulan as $key => $value )
-                            `{{ $key }}`,
-                        @endforeach
-                    ],
-                    datasets: [{
-                        label: 'Laba Rugi Perbulan',
-                        data: [
-                            @foreach ($grafik_perbulan as $key => $value )
-                            {{ $value }},
-                        @endforeach
-                        ],
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var ctxPerbulan = document.getElementById('myChartPerbulan').getContext('2d');
+        const grafik_perbulan = {!! json_encode($grafik_perbulan) !!};
+        const grafik_perhari = {!! json_encode($grafik_perhari) !!};
+        var chartPerbulan = new Chart(ctxPerbulan, {
+            type: 'line',
+            data: {
+                labels: [...Object.keys(grafik_perbulan)],
+                datasets: [{
+                    label: 'Laba Rugi Perbulan',
+                    data: Object.values(grafik_perbulan),
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
-            var chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [
-                        @foreach ($grafik_perhari as $key => $value )
-                            `{{ $key }}`,
-                        @endforeach
-                    ],
-                    datasets: [{
-                        label: 'Laba Rugi Perhari',
-                        data: [
-                            @foreach ($grafik_perhari as $key => $value )
-                            {{ $value }},
-                        @endforeach
-                        ],
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+            }
+        });
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [...Object.keys(grafik_perhari)],
+                datasets: [{
+                    label: 'Laba Rugi Perhari',
+                    data: Object.values(grafik_perhari),
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
-        </script>
+            }
+        });
+    </script>
     @endpush
 
     @section('content')

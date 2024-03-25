@@ -10,4 +10,11 @@ class KodeAkun extends Model
     use HasFactory;
     protected $table = 'kode_akun';
 
+    public function kodeInduk() {
+        return $this->belongsTo(KodeInduk::class,'id_induk');
+    }
+
+
+
 }
+

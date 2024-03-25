@@ -47,7 +47,7 @@ use Spatie\Permission\Contracts\Role;
 
 
 
-Route::get('test',[CadanganBukuController::class,'totalBunga']);
+Route::get('test',[CadanganBukuController::class,'cadangSuku']);
 Route::get('tampilan', function () {
     return view('pages.setor-tunai.pdf');
 });

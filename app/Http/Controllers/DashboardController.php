@@ -25,77 +25,43 @@ class DashboardController extends Controller
         $this->param['nasabah_aktif'] = NasabahModel::where('status','aktif')->count();
         $this->param['nasabah_non_aktif'] = NasabahModel::where('status','non-aktif')->count();
         $this->param['nasabah'] = NasabahModel::count();
-        $kode_pendapatan = KodeAkun::select('kode_akun.id',
-                'kode_induk.id as induk_id',
-                'kode_induk.kode_induk',
-                'kode_induk.nama as nama_induk','kode_induk.jenis',
-                'kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
-                ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
-                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
-                ->where('kode_ledger.kode_ledger','30000')
-                ->get();
-        $kode_modal = KodeAkun::select('kode_akun.id',
-                'kode_induk.id as induk_id',
-                'kode_induk.kode_induk',
-                'kode_induk.nama as nama_induk','kode_induk.jenis',
-                'kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
-                ->join('kode_induk','kode_induk.id','kode_akun.id_induk')
-                ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
-                ->where('kode_ledger.kode_ledger','40000')
-                ->get();
-            $all_dates = \App\Models\Jurnal::select(DB::raw('DATE(created_at) as date'))->distinct()->orderBy('date', 'ASC')->get();
-            $laba_rugi_per_day = [];
 
-            // per bulan
-            $all_month_years = \App\Models\Jurnal::select(DB::raw('MONTH(created_at) as month, YEAR(created_at) as year'))->distinct()->orderBy('year', 'ASC')->orderBy('month', 'ASC')->get();
+        $jurnals = \App\Models\Jurnal::with('kodeAkun.kodeInduk.kodeLedger')->get();
 
-            $laba_rugi_per_month = [];
-            foreach ($all_dates as $date) {
-                $totalPendapatan = 0;
-                $totalBeban = 0;
+        $laba_rugi_per_day = [];
+        $laba_rugi_per_month = [];
 
-                if (count($kode_pendapatan) > 0) {
-                    foreach ($kode_pendapatan as $itemPendapatan) {
-                        $sumDebet = \App\Models\Jurnal::whereDate('created_at', $date->date)->where('kode_akun', $itemPendapatan->id)->where('tipe', 'debit')->sum('nominal');
-                        $sumKredit = \App\Models\Jurnal::whereDate('created_at', $date->date)->where('kode_akun', $itemPendapatan->id)->where('tipe', 'kredit')->sum('nominal');
-                        $totalPendapatan += ($sumKredit - $sumDebet);
-                    }
-                }
+        foreach ($jurnals as $jurnal) {
+            // Ambil tanggal dari jurnal
+            $date = $jurnal->created_at->format('Y-m-d');
 
-                if (count($kode_modal) > 0) { // Saya asumsikan Anda punya array serupa kode_pendapatan untuk beban
-                    foreach ($kode_modal as $itemBeban) {
-                        $sumDebet = \App\Models\Jurnal::whereDate('created_at', $date->date)->where('kode_akun', $itemBeban->id)->where('tipe', 'debit')->sum('nominal');
-                        $sumKredit = \App\Models\Jurnal::whereDate('created_at', $date->date)->where('kode_akun', $itemBeban->id)->where('tipe', 'kredit')->sum('nominal');
-                        $totalBeban += ($sumDebet - $sumKredit);
-                    }
-                }
+            // Inisialisasi total pendapatan dan beban
+            $totalPendapatan = 0;
+            $totalBeban = 0;
 
-                $labaRugiHarian = $totalBeban - $totalPendapatan;
-                $laba_rugi_per_day[$date->date] = $labaRugiHarian;
+            // Cek apakah kode adalah pendapatan atau modal
+            if ($jurnal->kodeAkun->kodeInduk->kodeLedger->kode_ledger === '30000') {
+                // Pendapatan
+                $totalPendapatan += ($jurnal->tipe === 'kredit') ? $jurnal->nominal : -$jurnal->nominal;
+            } elseif ($jurnal->kodeAkun->kodeInduk->kodeLedger->kode_ledger === '40000') {
+                // Modal
+                $totalBeban += ($jurnal->tipe === 'debit') ? $jurnal->nominal : -$jurnal->nominal;
             }
 
-            foreach ($all_month_years as $monthYear) {
-                $totalPendapatan = 0;
-                $totalBeban = 0;
-
-                if (count($kode_pendapatan) > 0) {
-                    foreach ($kode_pendapatan as $itemPendapatan) {
-                        $sumDebet = \App\Models\Jurnal::whereMonth('created_at', $monthYear->month)->whereYear('created_at', $monthYear->year)->where('kode_akun', $itemPendapatan->id)->where('tipe', 'debit')->sum('nominal');
-                        $sumKredit = \App\Models\Jurnal::whereMonth('created_at', $monthYear->month)->whereYear('created_at', $monthYear->year)->where('kode_akun', $itemPendapatan->id)->where('tipe', 'kredit')->sum('nominal');
-                        $totalPendapatan += ($sumKredit - $sumDebet);
-                    }
-                }
-
-                if (count($kode_modal) > 0) { // Asumsi Anda punya array serupa kode_pendapatan untuk beban
-                    foreach ($kode_modal as $itemBeban) {
-                        $sumDebet = \App\Models\Jurnal::whereMonth('created_at', $monthYear->month)->whereYear('created_at', $monthYear->year)->where('kode_akun', $itemBeban->id)->where('tipe', 'debit')->sum('nominal');
-                        $sumKredit = \App\Models\Jurnal::whereMonth('created_at', $monthYear->month)->whereYear('created_at', $monthYear->year)->where('kode_akun', $itemBeban->id)->where('tipe', 'kredit')->sum('nominal');
-                        $totalBeban += ($sumDebet - $sumKredit);
-                    }
-                }
-                $labaRugiBulanan =$totalBeban - $totalPendapatan;
-                $laba_rugi_per_month[$monthYear->year . '-' . str_pad($monthYear->month, 2, "0", STR_PAD_LEFT)] = $labaRugiBulanan; // Menyimpan dalam format 'YYYY-MM'
+            // Simpan data per hari
+            if (!isset($laba_rugi_per_day[$date])) {
+                $laba_rugi_per_day[$date] = 0;
             }
+            $laba_rugi_per_day[$date] += $totalBeban - $totalPendapatan;
+
+            // Simpan data per bulan
+            $monthYear = $jurnal->created_at->format('Y-m');
+            if (!isset($laba_rugi_per_month[$monthYear])) {
+                $laba_rugi_per_month[$monthYear] = 0;
+            }
+            $laba_rugi_per_month[$monthYear] += $totalBeban - $totalPendapatan;
+        }
+
         $this->param['grafik_perbulan'] = $laba_rugi_per_month;
         $this->param['grafik_perhari'] = $laba_rugi_per_day;
         // return $totalSaldoAwalLaba;
