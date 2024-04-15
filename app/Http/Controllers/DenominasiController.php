@@ -45,7 +45,7 @@ class DenominasiController extends Controller
             'nominal.*' => 'required',
             'jumlah.*' => 'required'
         ]);
-
+        DB::beginTransaction();
         try {
             $currentDate = Carbon::now()->toDateString();
             $current_penerimaan = SaldoTeller::where('status','pembayaran')
@@ -64,10 +64,13 @@ class DenominasiController extends Controller
                 $denominasi->status_akun = 'general';
                 $denominasi->save();
             }
+            DB::commit();
             return redirect()->route('informasi.denominasi')->withStatus('Berhasil menambahkan data dengan nominal'.$request->get('penerimaan_total'));
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan.');
         }
     }

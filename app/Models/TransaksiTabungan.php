@@ -29,5 +29,9 @@ class TransaksiTabungan extends Model
         return $this->belongsTo(NasabahModel::class,'id_nasabah');
     }
 
+    function rekening_tabungan() {
+        return $this->belongsTo(PembukaanRekening::class,'id_rekening');
+    }
+
 
 }

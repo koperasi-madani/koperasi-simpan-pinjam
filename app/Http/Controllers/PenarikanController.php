@@ -28,17 +28,9 @@ class PenarikanController extends Controller
     public function index()
     {
 
-        $data = PembukaanRekening::select(
-                'rekening_tabungan.id',
-                'rekening_tabungan.nasabah_id',
-                'rekening_tabungan.no_rekening',
-                'rekening_tabungan.saldo_awal',
-                'nasabah.id as id_nasabah',
-                'nasabah.no_anggota',
-                'nasabah.nama'
-            )
-            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-            ->where('nasabah.status','aktif')->get();
+        $data = PembukaanRekening::whereHas('nasabah',function($query){
+            $query->where('status','aktif');
+        })->latest()->get();
 
         /* generate no penarikan  */
         $noPenarikan = null;
@@ -62,25 +54,28 @@ class PenarikanController extends Controller
         }
         $noPenarikan = 'TRK' . $date . $formattedIncrement;
 
-        $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
-                                'rekening_tabungan.nasabah_id',
-                                'rekening_tabungan.no_rekening',
-                                'nasabah.id as id_nasabah',
-                                'nasabah.nama',
-                                'nasabah.nik',
-                                'users.id as id_user',
-                                'users.kode_user'
-                                )->join(
-                                    'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                )->join(
-                                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                )
-                                ->join(
-                                    'users', 'users.id', 'transaksi_tabungan.id_user'
-                                )
-                                ->where('transaksi_tabungan.jenis','keluar')
-                                ->orderByDesc('transaksi_tabungan.created_at')
-                                ->get();
+        $penarikan = TransaksiTabungan::with('user','nasabah')->whereHas('rekening_tabungan',function($query){
+            $query->where('transaksi_tabungan.jenis','keluar');
+        })->latest()->take(10)->get();
+        // $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
+        //                         'rekening_tabungan.nasabah_id',
+        //                         'rekening_tabungan.no_rekening',
+        //                         'nasabah.id as id_nasabah',
+        //                         'nasabah.nama',
+        //                         'nasabah.nik',
+        //                         'users.id as id_user',
+        //                         'users.kode_user'
+        //                         )->join(
+        //                             'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
+        //                         )->join(
+        //                             'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
+        //                         )
+        //                         ->join(
+        //                             'users', 'users.id', 'transaksi_tabungan.id_user'
+        //                         )
+        //                         ->where('transaksi_tabungan.jenis','keluar')
+        //                         ->orderByDesc('transaksi_tabungan.created_at')
+        //                         ->get();
         return view('pages.penarikan.index',compact('data','noPenarikan','penarikan'));
     }
 

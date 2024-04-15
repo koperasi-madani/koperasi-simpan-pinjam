@@ -17,6 +17,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function App\Helpers\kodeAkunTabungan;
+
 class PembukaanRekeningController extends Controller
 {
     /**
@@ -24,20 +26,7 @@ class PembukaanRekeningController extends Controller
      */
     public function index()
     {
-        $data = PembukaanRekening::select('rekening_tabungan.*',
-                            'nasabah.no_anggota',
-                            'nasabah.nik',
-                            'nasabah.nama',
-                            'nasabah.alamat',
-                            'nasabah.pekerjaan',
-                            'nasabah.tgl',
-                            'nasabah.status',
-                            'nasabah.jenis_kelamin',
-                            'suku_bunga_koperasi.nama',
-                            'suku_bunga_koperasi.suku_bunga')
-                            ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                            ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga')
-                            ->get();
+        $data = PembukaanRekening::with('nasabah','sukuBunga:nama,suku_bunga')->latest()->get();
         $kode = KodeAkun::where('nama_akun', 'LIKE', 'tabungan%')->get();
         $sukuBunga = SukuBunga::where('jenis','tabungan')->get();
         $nasabah = NasabahModel::where('status','aktif')->get();
@@ -80,13 +69,6 @@ class PembukaanRekeningController extends Controller
      */
     public function store(Request $request)
     {
-        // $count = PembukaanRekening::count();
-        // if ($count > 0) {
-        //     $nasabah = PembukaanRekening::where('nasabah_id',$request->get('id_nasabah'))->first();
-        //     $isUniquenasabah = ($nasabah != null) ? $isUniquenasabah = $nasabah->nasabah_id != $request->id_nasabah ? '' : '|unique:rekening_tabungan,nasabah_id' : '' ;
-        // }else{
-        //     $isUniquenasabah = '';
-        // }
         $request->validate([
             'id_nasabah' => 'required',
             'tgl' => 'required',
@@ -94,9 +76,8 @@ class PembukaanRekeningController extends Controller
         ],[
             'unique' => 'Data sudah tersedia.'
         ]);
-
+        DB::beginTransaction();
         try {
-
             // nambah nasabah
             $nasabah = NasabahModel::find($request->get('id_nasabah'));
             $rekening = new PembukaanRekening;
@@ -120,12 +101,10 @@ class PembukaanRekeningController extends Controller
             $buku->jenis = 'masuk';
             $buku->save();
 
-             // jurnal;
-             $kode_akun_tabungan = BukuTabungan::select('buku_tabungan.saldo','rekening_tabungan.no_rekening')
-                                                ->join('rekening_tabungan','rekening_tabungan.id','buku_tabungan.id_rekening_tabungan')
-                                                ->where('rekening_tabungan.nasabah_id',$request->get('id_nasabah'))->first()->id_kode_akun;
+            // jurnal;
+            $kode_akun_tabungan = kodeAkunTabungan($request->get('id_nasabah'));
 
-             $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
+            $kode_akun_kas = KodeAkun::where('nama_akun','Kas Besar')->orWhere('id',$kode_akun_tabungan)->get();
 
             foreach ($kode_akun_kas as $item) {
                 $transaksi = new TransaksiManyToMany();
@@ -157,12 +136,13 @@ class PembukaanRekeningController extends Controller
                 $jurnal->save();
             }
 
+            DB::commit();
             return redirect()->route('pembukaan-rekening.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
-            return $e;
+            DB::rollBack();
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
-            return $e;
+            DB::rollBack();
             return redirect()->route('pembukaan-rekening.index')->withError('Terjadi kesalahan.');
         }
     }

@@ -17,6 +17,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PDF;
 class SetorTunaiController extends Controller
 {
@@ -25,17 +26,9 @@ class SetorTunaiController extends Controller
      */
     public function index()
     {
-        $data = PembukaanRekening::select(
-                                    'rekening_tabungan.id',
-                                    'rekening_tabungan.nasabah_id',
-                                    'rekening_tabungan.no_rekening',
-                                    'rekening_tabungan.saldo_awal',
-                                    'nasabah.no_anggota',
-                                    'nasabah.nama'
-                                )
-                                ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                                ->where('nasabah.status','aktif')
-                                ->get();
+        $data = PembukaanRekening::whereHas('nasabah',function($query){
+            $query->where('status','aktif');
+        })->latest()->get();
 
         /* generate no setoran  */
         $noSetoran = null;
@@ -58,26 +51,9 @@ class SetorTunaiController extends Controller
         }
         $noSetoran = 'STR' . $date . $formattedIncrement;
 
-        $setoran = TransaksiTabungan::select('transaksi_tabungan.*',
-                                    'rekening_tabungan.nasabah_id',
-                                    'rekening_tabungan.no_rekening',
-                                    'nasabah.id as id_nasabah',
-                                    'nasabah.nama',
-                                    'nasabah.nik',
-                                    'users.id as id_user',
-                                    'users.kode_user'
-                                    )->join(
-                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                    )->join(
-                                        'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                    )
-                                    ->join(
-                                        'users', 'users.id', 'transaksi_tabungan.id_user'
-                                    )
-                                    ->where('transaksi_tabungan.jenis','masuk')
-                                    ->orderByDesc('transaksi_tabungan.created_at')
-                                    ->take(10)
-                                    ->get();
+        $setoran = TransaksiTabungan::with('user','nasabah')->whereHas('rekening_tabungan',function($query){
+            $query->where('transaksi_tabungan.jenis','masuk');
+        })->latest()->take(10)->get();
         return view('pages.setor-tunai.index',compact('data','noSetoran','setoran'));
     }
 
@@ -99,6 +75,7 @@ class SetorTunaiController extends Controller
             'tgl' => 'required',
             'nominal_setor' => 'required',
         ]);
+        DB::beginTransaction();
         try {
             $data_rekening = PembukaanRekening::select(
                 'rekening_tabungan.id',
@@ -228,14 +205,15 @@ class SetorTunaiController extends Controller
                 'validasi' => $validasi
 
             ];
+            DB::commit();
             return redirect()->route('setor-tunai.pdf',['id' => $setor->id])->withStatus('Berhasil menambahkan data.');
             // return response()->route(['transaction' => $transaction]);
 
         } catch (Exception $e) {
-            return $e;
+            DB::rollBack();
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
-            return $e;
+            DB::rollBack();
             return redirect()->route('setor-tunai.index')->withError('Terjadi kesalahan.');
         }
     }

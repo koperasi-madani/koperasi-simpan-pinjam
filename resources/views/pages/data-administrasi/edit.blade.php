@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-4">
-                                        <label for="product_name" class="form-label">Nama Anggota</label>
+                                        <label for="product_name" class="form-label">Nama Anggota</label><small class="text-danger">*</small>
                                         <input placeholder="Masukkan Nama Anggota" type="text" value="{{ old('nama',$data->nama) }}" class="form-control @error('nama') is-invalid @enderror" name="nama" />
                                         @error('nama')
                                             <div class="invalid-feedback">
@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-4">
-                                        <label for="product_name" class="form-label">NIK Anggota</label>
+                                        <label for="product_name" class="form-label">NIK Anggota</label><small class="text-danger">*</small>
                                         <input placeholder="Masukkan NIK Anggota" type="text" value="{{ old('nik',$data->nik) }}" class="form-control @error('nik') is-invalid @enderror" name="nik" />
                                         @error('nik')
                                             <div class="invalid-feedback">
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-4">
-                                        <label for="product_name" class="form-label">No HP</label>
+                                        <label for="product_name" class="form-label">No HP</label><small class="text-danger">*</small>
                                         <input placeholder="Masukkan No HP" type="text" value="{{ old('no_hp',$data->no_hp) }}" class="form-control @error('no_hp') is-invalid @enderror" name="no_hp" />
                                         @error('no_hp')
                                             <div class="invalid-feedback">
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-4">
-                                        <label for="product_name" class="form-label">Pekerjaan</label>
+                                        <label for="product_name" class="form-label">Pekerjaan</label><small class="text-danger">*</small>
                                         <input placeholder="Masukkan pekerjaan" type="text" value="{{ old('pekerjaan',$data->pekerjaan) }}" class="form-control @error('pekerjaan') is-invalid @enderror" name="pekerjaan" />
                                         @error('pekerjaan')
                                             <div class="invalid-feedback">
@@ -145,7 +145,7 @@
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-6">
-                                    <label for="product_name" class="form-label">Jenis Kelamin</label>
+                                    <label for="product_name" class="form-label">Jenis Kelamin</label><small class="text-danger">*</small>
                                     <label class="mb-2 form-check form-check-inline" style="width: 45%;">
                                         <input class="form-check-input" id="jenis_kelamin" name="jenis_kelamin" value="0" {{ old('jenis_kelamin',$data->jenis_kelamin) == '0' ? "checked" : '' }} type="radio">
                                         <span class="form-check-label"> Laki-Laki </span>
@@ -163,8 +163,8 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="product_name" class="form-label">Alamat</label>
-                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket',$data->alamat) is-invalid @enderror">{{ $data->alamat }}</textarea>
+                                <label for="product_name" class="form-label">Alamat</label><small class="text-danger">*</small>
+                                <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket',$data->alamat) is-invalid @enderror" placeholder="Alamat Sesuai KTP">{{ $data->alamat }}</textarea>
                                 @error('ket')
                                     <div class="invalid-feedback">
                                         {{$message}}.

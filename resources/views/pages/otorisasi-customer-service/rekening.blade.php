@@ -51,9 +51,9 @@
                     },
                     success: function(data) {
                         console.log(data);
-                        $('#no_anggota').val(data.nik);
+                        $('#no_anggota').val(data.nasabah.nik);
                         $('#id_nasabah').val(data.id_nasabah);
-                        $('#nama').val(data.nama)
+                        $('#nama').val(data.nasabah.nama)
                         var total_saldo = document.getElementById("total_penarikan");
                         total_saldo.value = data.nominal;
                     }
@@ -106,10 +106,10 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
-                                                {{ $item->nama }} <br>
-                                                <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                                {{ $item->nasabah->nama }} <br>
+                                                <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                             </td>
-                                            <td>{{ $item->no_rekening }}</td>
+                                            <td>{{ $item->rekening_tabungan->no_rekening }}</td>
                                             <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
                                             <td><b>{{ $item->ket }}</b></td>
                                             <td>
@@ -121,7 +121,7 @@
                                                     <span class="badge rounded-pill alert-danger">Ditolak</span>
                                                 @endif
                                             </td>
-                                            <td><b>{{ $item->kode_user }}</b></td>
+                                            <td><b>{{ $item->user->kode_user }}</b></td>
                                             <td><b>{{ \Carbon\Carbon::parse($item->tgl_transaksi)->translatedFormat('d F Y') }}</b></td>
 
                                         </tr>

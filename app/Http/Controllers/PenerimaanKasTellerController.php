@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PenerimaanKasTellerController extends Controller
 {
@@ -55,8 +56,9 @@ class PenerimaanKasTellerController extends Controller
             'nominal.*' => 'required',
             'jumlah.*' => 'required'
             ]);
-
+        DB::beginTransaction();
         try {
+
             $currentDate = Carbon::now()->toDateString();
             // Fetch the current penerimaan. If no record is found, default to 0.
             $current_penerimaan_record = SaldoTeller::where('status', 'pembayaran')
@@ -86,10 +88,13 @@ class PenerimaanKasTellerController extends Controller
                 $denominasi->status_akun = 'non-general';
                 $denominasi->save();
             }
+            DB::commit();
             return redirect()->route('penerimaan.kas-teller')->withStatus('Berhasil menambahkan data dengan nominal = '.$request->get('penerimaan_total'));
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan.');
         }
     }

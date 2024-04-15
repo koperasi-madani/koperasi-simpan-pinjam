@@ -14,44 +14,9 @@ class InformasiHeadTellerController extends Controller
 {
     public function informasiNasabah()
     {
-        $setoran = TransaksiTabungan::select('transaksi_tabungan.*',
-                                    'rekening_tabungan.nasabah_id',
-                                    'rekening_tabungan.no_rekening',
-                                    'nasabah.id as id_nasabah',
-                                    'nasabah.nama',
-                                    'nasabah.nik',
-                                    'users.id as id_user',
-                                    'users.kode_user'
-                                    )->join(
-                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                    )->join(
-                                        'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                    )
-                                    ->join(
-                                        'users', 'users.id', 'transaksi_tabungan.id_user'
-                                    )
-                                    ->where('transaksi_tabungan.jenis','masuk')
-                                    ->orderByDesc('transaksi_tabungan.created_at')
-                                    ->get();
-        $penarikan = TransaksiTabungan::select('transaksi_tabungan.*',
-                                    'rekening_tabungan.nasabah_id',
-                                    'rekening_tabungan.no_rekening',
-                                    'nasabah.id as id_nasabah',
-                                    'nasabah.nama',
-                                    'nasabah.nik',
-                                    'users.id as id_user',
-                                    'users.kode_user'
-                                    )->join(
-                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                    )->join(
-                                        'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                    )
-                                    ->join(
-                                        'users', 'users.id', 'transaksi_tabungan.id_user'
-                                    )
-                                    ->where('transaksi_tabungan.jenis','keluar')
-                                    ->orderByDesc('transaksi_tabungan.created_at')
-                                    ->get();
+        $setoran = TransaksiTabungan::with('nasabah','rekening_tabungan','user')->where('transaksi_tabungan.jenis','masuk')->latest()->take(10)->get();
+        $penarikan = TransaksiTabungan::with('nasabah','rekening_tabungan','user')->where('transaksi_tabungan.jenis','keluar')->latest()->take(10)->get();
+
         return view('pages.informasi-head-teller.informasi-nasabah',compact('setoran','penarikan'));
     }
 

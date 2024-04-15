@@ -59,13 +59,13 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
-                                            {{ $item->nama }} <br>
-                                            <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                            {{ $item->nasabah->nama }} <br>
+                                            <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                         </td>
-                                        <td>{{ $item->no_rekening }}</td>
+                                        <td>{{ $item->rekening_tabungan->no_rekening }}</td>
                                         <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
                                         <td><b>{{ $item->ket }}</b></td>
-                                        <td><b>{{ $item->kode_user }}</b></td>
+                                        <td><b>{{ $item->user->kode_user }}</b></td>
                                         <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
 
                                     </tr>
@@ -103,10 +103,10 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
-                                            {{ $item->nama }} <br>
-                                            <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nik }}</small>
+                                            {{ $item->nasabah->nama }} <br>
+                                            <small class="text-muted" style="font-size: 10px;">NIK : {{ $item->nasabah->nik }}</small>
                                         </td>
-                                        <td>{{ $item->no_rekening }}</td>
+                                        <td>{{ $item->rekening_tabungan->no_rekening }}</td>
                                         <td><b>Rp. {{ number_format($item->nominal,2, ",", ".") }}</b></td>
                                         <td><b>{{ $item->ket }}</b></td>
                                         <td>
@@ -118,7 +118,7 @@
                                                 <span class="badge rounded-pill alert-danger">Ditolak</span>
                                             @endif
                                         </td>
-                                        <td><b>{{ $item->kode_user }}</b></td>
+                                        <td><b>{{ $item->user->kode_user }}</b></td>
                                         <td><b>{{ \Carbon\Carbon::parse($item->tgl)->translatedFormat('d F Y') }}</b></td>
                                     </tr>
                                 @empty

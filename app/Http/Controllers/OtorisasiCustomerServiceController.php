@@ -54,48 +54,18 @@ class OtorisasiCustomerServiceController extends Controller
 
     public function rekening()
     {
-        $data  = TransaksiTabungan::select('transaksi_tabungan.*',
-                                    'rekening_tabungan.nasabah_id',
-                                    'rekening_tabungan.no_rekening',
-                                    'nasabah.id as id_nasabah',
-                                    'nasabah.nama',
-                                    'nasabah.nik',
-                                    'users.id as id_user',
-                                    'users.kode_user'
-                                    )->join(
-                                        'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                    )->join(
-                                        'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                    )
-                                    ->join(
-                                        'users', 'users.id', 'transaksi_tabungan.id_user'
-                                    )
-                                    ->where('transaksi_tabungan.jenis','keluar')
-                                    ->orderByDesc('transaksi_tabungan.created_at')
-                                    ->get();
+        $data  = TransaksiTabungan::with('nasabah','rekening_tabungan','user')->whereHas('rekening_tabungan',function($query) {
+                    $query->where('transaksi_tabungan.jenis','keluar');
+                })->latest()->get();
         return view('pages.otorisasi-customer-service.rekening',compact('data'));
     }
 
     public function getRekening(Request $request)
     {
-        $data = TransaksiTabungan::select('transaksi_tabungan.*',
-                'rekening_tabungan.nasabah_id',
-                'rekening_tabungan.no_rekening',
-                'nasabah.id as id_nasabah',
-                'nasabah.nama',
-                'nasabah.nik',
-                'users.id as id_user',
-                'users.kode_user'
-                )->join(
-                    'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                )->join(
-                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                )
-                ->join(
-                    'users', 'users.id', 'transaksi_tabungan.id_user'
-                )
-                ->where('transaksi_tabungan.jenis','keluar')
-                ->where('transaksi_tabungan.id',$request->get('id'))->first();
+        $data  = TransaksiTabungan::with('nasabah','rekening_tabungan','user')->whereHas('rekening_tabungan',function($query) use ($request) {
+                                $query->where('transaksi_tabungan.jenis','keluar')
+                                ->where('transaksi_tabungan.id',$request->get('id'));
+                            })->first();
 
         return response()->json($data);
     }

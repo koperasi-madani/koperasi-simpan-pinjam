@@ -13,12 +13,18 @@ use Illuminate\Support\Facades\DB;
 class PeminjamanKasTellerController extends Controller
 {
     public function post(Request $request) {
-         $item_induk = KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
-                        ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
-                        ->where('kode_ledger.nama','A K T I V A')
-                        ->groupBy('kode_ledger.nama')
-                        ->orderBy('kode_induk.kode_induk')
+         $item_induk = KodeInduk::with('kodeLedger')
+                        ->whereHas('kodeLedger', function($query) {
+                            $query->where('nama', 'A K T I V A');
+                        })
+                        ->orderBy('kode_induk')
                         ->first();
+        // $item_induk = KodeInduk::select('kode_induk.*','kode_ledger.id as ledger_id','kode_ledger.kode_ledger','kode_ledger.nama as nama_ledger')
+        // ->join('kode_ledger','kode_ledger.id','kode_induk.id_ledger')
+        // ->where('kode_ledger.nama','A K T I V A')
+        // ->groupBy('kode_ledger.nama')
+        // ->orderBy('kode_induk.kode_induk')
+        // ->first();
         if ($this->formatNumber($request->get('nominal')) != $this->saldoAkhir($item_induk)) {
             return redirect()->route('pembayaran.kas-teller')->withError('Nominal tidak sesuai.');
         }

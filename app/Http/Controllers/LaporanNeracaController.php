@@ -85,27 +85,14 @@ class LaporanNeracaController extends Controller
     }
 
     function transaksiHarian() {
-        $transaksi = TransaksiTabungan::select('transaksi_tabungan.*',
-                                'rekening_tabungan.nasabah_id',
-                                'rekening_tabungan.no_rekening',
-                                'nasabah.id as id_nasabah',
-                                'nasabah.nama',
-                                'nasabah.nik',
-                                'users.id as id_user',
-                                'users.kode_user'
-                                )->join(
-                                    'rekening_tabungan','rekening_tabungan.id','transaksi_tabungan.id_rekening'
-                                )->join(
-                                    'nasabah','nasabah.id','rekening_tabungan.nasabah_id'
-                                )
-                                ->join(
-                                    'users', 'users.id', 'transaksi_tabungan.id_user'
-                                )
-                                ->where('users.id',auth()->user()->id)
-                                ->whereDate('transaksi_tabungan.created_at',Carbon::now())
-                                ->orderByDesc('transaksi_tabungan.created_at')
-                                ->take(10)
-                                ->get();
+        $transaksi = TransaksiTabungan::with('nasabah','rekening_tabungan')->whereHas('user',function($query) {
+                                            $query->where('users.id',auth()->user()->id);
+                                        })
+                                        ->whereDate('transaksi_tabungan.created_at',Carbon::now())
+                                        ->latest()
+                                        ->take(10)
+                                        ->get();
+
                                 $currentDate = Carbon::now()->toDateString();
         $query_pembayaran = SaldoTeller::where('status','pembayaran')
                                         ->where('tanggal',$currentDate);

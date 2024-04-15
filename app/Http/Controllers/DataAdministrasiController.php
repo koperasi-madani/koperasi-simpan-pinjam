@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DataAdministrasiController extends Controller
 {
@@ -15,7 +16,7 @@ class DataAdministrasiController extends Controller
      */
     public function index()
     {
-        $data = NasabahModel::where('status','aktif')->get();
+        $data = NasabahModel::where('status','aktif')->latest()->get();
         return view('pages.data-administrasi.index',compact('data'));
     }
 
@@ -62,6 +63,7 @@ class DataAdministrasiController extends Controller
             'no_anggota' => 'required',
             'ket' => 'required',
         ]);
+        DB::beginTransaction();
         try {
             $anggota = NasabahModel::findOrFail($id);
             $anggota->nama = $request->get('nama');
@@ -72,10 +74,13 @@ class DataAdministrasiController extends Controller
             $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->update();
+            DB::commit();
             return redirect()->route('perubahan-data-administrasi.index')->withStatus('Berhasil mengganti data.');
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->route('perubahan-data-administrasi.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            DB::rollBack();
             return redirect()->route('perubahan-data-administrasi.index')->withError('Terjadi kesalahan.');
         }
     }

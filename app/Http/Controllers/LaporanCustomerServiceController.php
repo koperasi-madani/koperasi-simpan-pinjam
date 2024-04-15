@@ -16,21 +16,8 @@ class LaporanCustomerServiceController extends Controller
             Session::put('dari',$request->get('dari'));
             Session::put('sampai',$request->get('sampai'));
         }
-        $query = PembukaanRekening::select('rekening_tabungan.*',
-                                'nasabah.no_anggota',
-                                'nasabah.nik',
-                                'nasabah.nama',
-                                'nasabah.alamat',
-                                'nasabah.pekerjaan',
-                                'nasabah.tgl',
-                                'nasabah.status',
-                                'nasabah.jenis_kelamin',
-                                'suku_bunga_koperasi.nama',
-                                'suku_bunga_koperasi.suku_bunga',
-                                'buku_tabungan.id_rekening_tabungan','buku_tabungan.saldo')
-                                ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                                ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
-                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga');
+        $query = PembukaanRekening::with('nasabah','sukuBunga:nama,suku_bunga','tabungan:id_rekening_tabungan,saldo');
+
         if ($request->has('dari') && $request->has('sampai')) {
             $data = $query->whereBetween('rekening_tabungan.tgl',[$request->get('dari'),$request->get('sampai')])->orderByDesc('rekening_tabungan.created_at')->get();
         }else{
@@ -41,21 +28,7 @@ class LaporanCustomerServiceController extends Controller
 
     public function laporanBukaRekeningPdf(Request $request)
     {
-        $query = PembukaanRekening::select('rekening_tabungan.*',
-                                'nasabah.no_anggota',
-                                'nasabah.nik',
-                                'nasabah.nama',
-                                'nasabah.alamat',
-                                'nasabah.pekerjaan',
-                                'nasabah.tgl',
-                                'nasabah.status',
-                                'nasabah.jenis_kelamin',
-                                'suku_bunga_koperasi.nama',
-                                'suku_bunga_koperasi.suku_bunga',
-                                'buku_tabungan.id_rekening_tabungan','buku_tabungan.saldo')
-                                ->join('nasabah','nasabah.id','rekening_tabungan.nasabah_id')
-                                ->join('buku_tabungan','buku_tabungan.id_rekening_tabungan','rekening_tabungan.id')
-                                ->join('suku_bunga_koperasi','suku_bunga_koperasi.id','rekening_tabungan.id_suku_bunga');
+        $query = PembukaanRekening::with('nasabah','sukuBunga:nama,suku_bunga','tabungan:id_rekening_tabungan,saldo');
         if (Session::has('dari') || Session::has('sampai')) {
             $data = $query->whereBetween('rekening_tabungan.tgl',[Session::get('dari'),Session::get('sampai')])->get();
         }else{

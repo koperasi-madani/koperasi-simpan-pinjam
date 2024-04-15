@@ -34,7 +34,7 @@ class PembukaanRekening extends Model
        return $this->belongsTo(SukuBunga::class,'id_suku_bunga','id');
     }
 
-    function  cadangan()  {
+    function cadangan()  {
         return $this->belongsTo(CadanganBuku::class,'id','id_rekening');
     }
 }

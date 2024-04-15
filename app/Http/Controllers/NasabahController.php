@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class NasabahController extends Controller
@@ -16,7 +17,7 @@ class NasabahController extends Controller
      */
     public function index()
     {
-        $data = NasabahModel::all();
+        $data = NasabahModel::latest()->get();
         return view('pages.nasabah.index',compact('data'));
     }
 
@@ -59,6 +60,7 @@ class NasabahController extends Controller
             'jenis_kelamin' => 'required',
             'pekerjaan' => 'required',
         ]);
+        DB::beginTransaction();
         try {
             $anggota = new NasabahModel;
             $anggota->no_anggota = Str::upper($request->get('no_anggota'));
@@ -71,10 +73,13 @@ class NasabahController extends Controller
             $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->save();
+            DB::commit();
             return redirect()->route('nasabah.index')->withStatus('Berhasil menambahkan data.');
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->route('nasabah.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            DB::rollBack();
             return redirect()->route('nasabah.index')->withError('Terjadi kesalahan.');
         }
     }
@@ -111,6 +116,7 @@ class NasabahController extends Controller
             'no_anggota' => 'required',
             'ket' => 'required',
         ]);
+        DB::beginTransaction();
         try {
             $anggota = NasabahModel::findOrFail($id);
             $anggota->no_anggota = Str::upper($request->get('no_anggota'));
@@ -121,10 +127,13 @@ class NasabahController extends Controller
             $anggota->jenis_kelamin = $request->get('jenis_kelamin');
             $anggota->users_id = Auth::user()->id;
             $anggota->update();
+            DB::commit();
             return redirect()->route('nasabah.index')->withStatus('Berhasil mengganti data.');
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->route('nasabah.index')->withError('Terjadi kesalahan.');
         } catch (QueryException $e){
+            DB::rollBack();
             return redirect()->route('nasabah.index')->withError('Terjadi kesalahan.');
         }
     }

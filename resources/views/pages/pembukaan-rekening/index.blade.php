@@ -134,7 +134,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Nama Anggota</label>
+                                            <label for="product_name" class="form-label">Nama Anggota</label><small class="text-danger">*</small>
                                             <select name="id_nasabah" id="id_nasabah" class="form-control">
                                                 @foreach ($nasabah as $item)
                                                     <option value="{{ $item->id }}" {{ old('id_nasabah') == $item->id ? 'selected' : '' }}>{{ $item->no_anggota }}--{{ $item->nama }}</option>
@@ -149,7 +149,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Tanggal</label>
+                                            <label for="product_name" class="form-label">Tanggal</label><small class="text-danger">*</small>
                                             <input placeholder="Tanggal" type="text"  value="{{ old('tgl') }}" class="form-control @error('tgl') is-invalid @enderror" name="tgl"/>
                                             @error('tgl')
                                                 <div class="invalid-feedback">
@@ -160,7 +160,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Kode Rekening</label>
+                                            <label for="product_name" class="form-label">Kode Rekening</label><small class="text-danger">*</small>
                                             <select name="kode" id="kode" class="form-control">
                                                 @foreach ($kode as $item)
                                                     <option value="{{ $item->id }}" {{ old('kode') == $item->id ? 'selected' : '' }}>{{ $item->kode_akun }}--{{ $item->nama_akun }}</option>
@@ -175,7 +175,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">No Rekening</label>
+                                            <label for="product_name" class="form-label">No Rekening</label><small class="text-danger">*</small>
                                             <input placeholder="No Rekening" value="{{ $noRekening }}" type="text" value="{{ old('no_rekening') }}" class="form-control @error('no_rekening') is-invalid @enderror" name="no_rekening" />
                                             @error('no_rekening')
                                                 <div class="invalid-feedback">
@@ -186,7 +186,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Kode Suku Bunga</label>
+                                            <label for="product_name" class="form-label">Kode Suku Bunga</label><small class="text-danger">*</small>
                                             <select name="suku" id="suku" class="form-control">
                                                 @foreach ($sukuBunga as $item)
                                                     <option value="{{ $item->id }}" {{ old('suku') == $item->id ? 'selected' : '' }}>{{ $item->kode_suku }}--{{ $item->nama }}</option>
@@ -201,7 +201,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
-                                            <label for="product_name" class="form-label">Saldo Awal</label>
+                                            <label for="product_name" class="form-label">Saldo Awal</label><small class="text-danger">*</small>
                                             <input placeholder="Masukkan saldo awal" value="{{ old('saldo_awal') }}" type="text" value="{{ old('saldo_awal') }}" class="form-control @error('saldo_awal') is-invalid @enderror" name="saldo_awal" id="saldo_awal" />
                                             @error('saldo_awal')
                                                 <div class="invalid-feedback">
@@ -211,8 +211,8 @@
                                         </div>
                                     </div>
                                     <div class="mb-4">
-                                        <label for="product_name" class="form-label">Keterangan</label>
-                                        <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror"></textarea>
+                                        <label for="product_name" class="form-label">Keterangan</label><small style="font-size: 10px;" class="ms-1">(optional)</small>
+                                        <textarea name="ket" id="" cols="30" rows="10" class="form-control @error('ket') is-invalid @enderror" placeholder="Keterangan Rekening"></textarea>
                                         @error('ket')
                                             <div class="invalid-feedback">
                                                 {{$message}}.

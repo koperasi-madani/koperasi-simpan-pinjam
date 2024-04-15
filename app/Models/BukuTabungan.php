@@ -18,4 +18,8 @@ class BukuTabungan extends Model
         'jenis',
         'id_kode_akun',
     ];
+
+    function rekening_tabungan() {
+        return $this->belongsTo(PembukaanRekening::class,'id_rekening_tabungan');
+    }
 }

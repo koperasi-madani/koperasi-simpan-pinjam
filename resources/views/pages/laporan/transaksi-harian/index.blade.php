@@ -70,9 +70,9 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y / H:i:s') }}</td>
-                                            <td>{{ ucwords($item->nama) }}</td>
-                                            <td>{{  $item->jenis == 'masuk' ? 'SETORAN' : 'PENARIKAN'}}</td>
-                                            <td>{{ number_format($item->nominal,0,",", ".") }}</td>
+                                            <td>{{ ucwords($item->nasabah->nama) }}</td>
+                                            <td >{{  $item->jenis == 'masuk' ? 'SETORAN' : 'PENARIKAN'}}</td>
+                                            <td align="right">{{ number_format($item->nominal,0,",", ".") }}</td>
                                             <td>{{ $item->ket }}</td>
                                         </tr>
                                     @empty
@@ -82,22 +82,22 @@
                                 <tfoot>
                                     <tr class="fw-bold">
                                         <th colspan="4">SALDO AWAL</th>
-                                        <th>{{ number_format($current_penerimaan,0,",",".") }}</th>
+                                        <th align="right">{{ number_format($current_penerimaan,0,",",".") }}</th>
                                         <th>*Saldo AWAL</th>
                                     </tr>
                                     <tr class="fw-bold">
                                         <th colspan="4">SETORAN</th>
-                                        <th>{{ number_format($total_setoran,0,",", ".") }}</th>
+                                        <th align="right">{{ number_format($total_setoran,0,",", ".") }}</th>
                                         <th>*STR</th>
                                     </tr>
                                     <tr class="fw-bold">
                                         <th colspan="4">PENARIKAN</th>
-                                        <th>{{ number_format($total_penarikan,0,",", ".") }}</th>
+                                        <th align="right">{{ number_format($total_penarikan,0,",", ".") }}</th>
                                         <th>*TRK</th>
                                     </tr>
                                     <tr class="fw-bold">
                                         <th colspan="4">SISA SALDO</th>
-                                        <th>{{ number_format($pembayaran,0,",",".") }}</th>
+                                        <th align="right">{{ number_format($pembayaran,0,",",".") }}</th>
                                         <th>*SISA SALDO</th>
                                     </tr>
                                 </tfoot>
